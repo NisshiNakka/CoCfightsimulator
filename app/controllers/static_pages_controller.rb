@@ -12,7 +12,7 @@ class StaticPagesController < ApplicationController
       # alpha版では引数が必要
       # bcdice = game_system_class.new('Cthulhu7th')
       cthulhu7th = BCDice.game_system_class("Cthulhu7th")
-    
+
       # ダイスコマンドを実行
       result = cthulhu7th.eval(params[:command])
 
