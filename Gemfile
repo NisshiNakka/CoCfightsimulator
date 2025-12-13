@@ -1,4 +1,5 @@
 source "https://rubygems.org"
+ruby "3.1.4"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.0"
@@ -55,7 +56,7 @@ group :development do
   gem "web-console"
 
   # Highlight the fine-grained location where an error occurred [https://github.com/ruby/error_highlight]
-  gem "error_highlight", ">= 0.4.0", platforms: [ :ruby ]
+  # gem "error_highlight", ">= 0.4.0", platforms: [ :ruby ]
 
   # エラー確認用
   gem "better_errors"

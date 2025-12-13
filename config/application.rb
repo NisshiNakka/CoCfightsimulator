@@ -29,7 +29,7 @@ module Myapp
       g.test_framework nil
     end
 
-    config.i18n.available_locales = [:en, :ja, :en_us, :ja_jp, :ko_kr, :zh_hans, :zh_hant]
+    config.i18n.available_locales = [ :en, :ja, :en_us, :ja_jp, :ko_kr, :zh_hans, :zh_hant ]
     config.i18n.default_locale = :ja
   end
 end

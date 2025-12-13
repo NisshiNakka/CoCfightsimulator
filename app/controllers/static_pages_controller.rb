@@ -6,14 +6,7 @@ class StaticPagesController < ApplicationController
       require "bcdice"
       require "bcdice/game_system"
 
-      # BCDiceのインスタンスを作成(alpha版の方法)
-      # bcdice = BCDice.game_system_class('Cthulhu7th')
-      # bcdice = BCDice::GameSystem::Cthulhu7th.new
-      # alpha版では引数が必要
-      # bcdice = game_system_class.new('Cthulhu7th')
       cthulhu7th = BCDice.game_system_class("Cthulhu7th")
-    
-      # ダイスコマンドを実行
       result = cthulhu7th.eval(params[:command])
 
       if result
