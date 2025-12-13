@@ -1,0 +1,14 @@
+<%= turbo_stream.update "dice_result" do %>
+  <div class="alert <%= @success ? 'alert-success' : 'alert-info' %> result-box">
+    <h3>ロール結果</h3>
+    <p class="result-text"><%= @result_text %></p>
+    
+    <% if @critical %>
+      <span class="badge bg-warning">クリティカル！</span>
+    <% elsif @fumble %>
+      <span class="badge bg-danger">ファンブル！</span>
+    <% elsif @success %>
+      <span class="badge bg-success">成功</span>
+    <% end %>
+  </div>
+<% end %>

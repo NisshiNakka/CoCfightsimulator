@@ -1,0 +1,22 @@
+<div class="container">
+  <h1>Cthulhu 7th ダイスロール</h1>
+  
+  <%= form_with url: roll_path, method: :post, data: { turbo: true } do |f| %>
+    <div class="form-group">
+      <%= f.label :command, "ダイスコマンド" %>
+      <%= f.text_field :command, 
+          placeholder: "例: CC<=50 (技能値50でロール)", 
+          class: "form-control",
+          autofocus: true %>
+      <small class="form-text text-muted">
+        例: CC<=70 (技能判定), 1D100 (D100を振る), 3D6 (D6を3個振る)
+      </small>
+    </div>
+    
+    <%= f.submit "ロール", class: "btn btn-primary" %>
+  <% end %>
+
+  <div id="dice_result", class="result-area mt-4">
+    <!-- ここに結果が表示されます -->
+  </div>
+</div>
