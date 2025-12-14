@@ -1,11 +1,10 @@
 class StaticPagesController < ApplicationController
+  require "bcdice"
+  require "bcdice/game_system"
   def top; end
 
   def roll
     begin
-      require "bcdice"
-      require "bcdice/game_system"
-
       cthulhu7th = BCDice.game_system_class("Cthulhu7th")
       result = cthulhu7th.eval(params[:command])
 
