@@ -26,7 +26,7 @@
       "check_name": "Evaluation",
       "message": "Parameter value evaluated as code",
       "file": "app/controllers/static_pages_controller.rb",
-      "line": 10,
+      "line": 9,
       "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
       "code": "BCDice.game_system_class(\"Cthulhu7th\").eval(params[:command])",
       "render_path": null,
