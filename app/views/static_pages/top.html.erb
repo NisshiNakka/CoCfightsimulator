@@ -1,7 +1,30 @@
-<div class="top-wrapper">
-  <div class="top-inner-text">
-    <h1>トップページ（仮）</h1>
-
-    <%= render "shared/dice_result" %>
+<div class="d-flex align-items-center justify-content-center min-vh-100">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-10 top-content-offset">
+        
+        <%# メインコンテンツ %>
+        <div class="p-4 bg-success-subtle border border-primary text-center shadow mb-4">
+          <h1>CoC fight simulator</h1>
+          <p>このアプリは、CoCにおける戦闘のシミュレーションを行うことができるアプリです。<br>
+          シナリオ制作をしたり、GMとしてシナリオの調整を行う際の戦闘バランスのシミュレーションを行うことができます。
+          </p>
+          
+          <h3 class="mt-4">このアプリの使い方</h3>
+          <ol class="text-start d-inline-block">
+            <li>キャラクターを登録し、ステータスや技能を決定します。</li>
+            <li>シミュレーションページで敵味方に振り分けます。</li>
+            <li>戦闘条件を設定し、シミュレーション開始ボタンを押します。</li>
+            <li>結果が自動で表示されます</li>
+          </ol>
+        </div>
+        
+        <%# ボタン %>
+        <div class="text-center">
+          <%= link_to "次のページへ", ":another_page_path", class: "btn btn-lg btn-success" %>
+        </div>
+        
+      </div>
+    </div>
   </div>
 </div>
