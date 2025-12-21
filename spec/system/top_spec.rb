@@ -7,7 +7,7 @@ RSpec.describe 'トップ画面', type: :system do
   end
 
   it '正しい画面が表示されていること' do
-    expect(page).to have_title("CoC fight simulator"), 'タイトル[CoC fight simulator]が表示されていません。'
+    expect(page).to have_content("CoC fight simulator"), 'タイトル[CoC fight simulator]が表示されていません。'
   end
 
   describe '遷移確認' do
