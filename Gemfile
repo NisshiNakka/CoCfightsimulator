@@ -51,8 +51,8 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   # rspec用設定
-  gem 'rspec-rails'
-  gem 'factory_bot_rails'
+  gem "rspec-rails"
+  gem "factory_bot_rails"
 end
 
 group :development do
