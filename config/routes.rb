@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   root "static_pages#top"
-  post "roll", to: "static_pages#roll"
+  # post "roll", to: "static_pages#roll"
+  # ↓ 本来は必要なはずだが記載していなくてもルーティングが完了している（コメントアウトを外すと二重にルーティングされエラーが発生する）
+  # devise_for :users
 
   # Defines the root path route ("/")
   # root "posts#index"
