@@ -3,7 +3,6 @@
     <div class="row justify-content-center">
       <div class="col-md-10 top-content-offset">
         
-        <%# メインコンテンツ %>
         <div class="p-4 bg-success-subtle border border-primary text-center shadow mb-4">
           <h1>CoC fight simulator</h1>
           <p>このアプリは、CoCにおける戦闘のシミュレーションを行うことができるアプリです。<br>
@@ -18,12 +17,16 @@
             <li>結果が自動で表示されます</li>
           </ol>
         </div>
-        
-        <%# ボタン %>
-        <div class="text-center">
-          <%= link_to "次のページへ", ":another_page_path", class: "btn btn-lg btn-success" %>
-        </div>
-        
+
+        <% if user_signed_in? %>
+          <div class="text-center">
+            <%= link_to "さっそく始める", "xxx_path", class: "btn btn-lg btn-success" %>
+          </div>
+        <% else %>
+          <div class="text-center">
+            <%= link_to "さっそく始める", new_user_session_path, class: "btn btn-lg btn-success" %>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>

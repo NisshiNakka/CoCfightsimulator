@@ -12,9 +12,9 @@ RSpec.describe 'トップ画面', type: :system do
 
   describe '遷移確認' do
     context 'ログインしていない場合' do
-      xit '[さっそく始める]ボタンをクリックした場合ログインページへ遷移すること' do
+      it '[さっそく始める]ボタンをクリックした場合ログインページへ遷移すること' do
         click_on('さっそく始める')
-        expect(page).to have_current_path(login_path, ignore_query: true),
+        expect(page).to have_current_path(new_user_session_path, ignore_query: true),
         '[さっそく始める]ボタンからログイン画面へ遷移できませんでした'
       end
 
@@ -24,9 +24,9 @@ RSpec.describe 'トップ画面', type: :system do
         'タイトルロゴからトップページへ遷移できませんでした'
       end
 
-      xit 'ユーザー登録ボタンをクリックした場合ユーザー登録ページへ遷移すること' do
+      it 'ユーザー登録ボタンをクリックした場合ユーザー登録ページへ遷移すること' do
         click_on('ユーザー登録')
-        expect(page).to have_current_path(xxx_path, ignore_query: true),
+        expect(page).to have_current_path(new_user_registration_path, ignore_query: true),
         '[ユーザー登録]ボタンからユーザー登録画面へ遷移できませんでした'
       end
 
