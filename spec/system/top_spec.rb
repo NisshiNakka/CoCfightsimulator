@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'トップ画面', type: :system do
-  let(:user){ create(:user) }
+  let(:user) { create(:user) }
   before do
     visit root_path
   end
