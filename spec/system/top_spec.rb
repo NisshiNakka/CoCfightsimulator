@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'トップ画面', type: :system do
-  # let(:user){ create(:user) }
+  let(:user) { create(:user) }
   before do
     visit root_path
   end
@@ -12,9 +12,9 @@ RSpec.describe 'トップ画面', type: :system do
 
   describe '遷移確認' do
     context 'ログインしていない場合' do
-      xit '[さっそく始める]ボタンをクリックした場合ログインページへ遷移すること' do
+      it '[さっそく始める]ボタンをクリックした場合ログインページへ遷移すること' do
         click_on('さっそく始める')
-        expect(page).to have_current_path(login_path, ignore_query: true),
+        expect(page).to have_current_path(new_user_session_path, ignore_query: true),
         '[さっそく始める]ボタンからログイン画面へ遷移できませんでした'
       end
 
@@ -24,9 +24,9 @@ RSpec.describe 'トップ画面', type: :system do
         'タイトルロゴからトップページへ遷移できませんでした'
       end
 
-      xit 'ユーザー登録ボタンをクリックした場合ユーザー登録ページへ遷移すること' do
+      it 'ユーザー登録ボタンをクリックした場合ユーザー登録ページへ遷移すること' do
         click_on('ユーザー登録')
-        expect(page).to have_current_path(xxx_path, ignore_query: true),
+        expect(page).to have_current_path(new_user_registration_path, ignore_query: true),
         '[ユーザー登録]ボタンからユーザー登録画面へ遷移できませんでした'
       end
 
@@ -43,17 +43,17 @@ RSpec.describe 'トップ画面', type: :system do
       end
     end
 
-    xcontext 'ログインしている場合' do
+    context 'ログインしている場合' do
       before do
         login_as(user)
       end
-      it '[さっそく始める]ボタンをクリックした場合シミュレーションページへ遷移すること' do
+      xit '[さっそく始める]ボタンをクリックした場合シミュレーションページへ遷移すること' do
         click_on('さっそく始める')
         expect(page).to have_current_path(xxx_path, ignore_query: true),
         '[さっそく始める]ボタンからシミュレーションページへ遷移できませんでした'
       end
 
-      it '[キャラクター一覧]ボタンをクリックした場合キャラクター一覧ページへ遷移すること' do
+      xit '[キャラクター一覧]ボタンをクリックした場合キャラクター一覧ページへ遷移すること' do
         find('#header-character-menu').click
         within('.dropdown-menu') do
           click_on('キャラクター一覧')
@@ -62,7 +62,7 @@ RSpec.describe 'トップ画面', type: :system do
         '[キャラクター一覧]ボタンからキャラクター一覧ページへ遷移できませんでした'
       end
 
-      it '[キャラクター詳細]ボタンをクリックした場合キャラクター詳細ページへ遷移すること' do
+      xit '[キャラクター詳細]ボタンをクリックした場合キャラクター詳細ページへ遷移すること' do
         find('#header-character-menu').click
         within('.dropdown-menu') do
           click_on('キャラクター詳細')
@@ -71,7 +71,7 @@ RSpec.describe 'トップ画面', type: :system do
         '[キャラクター詳細]ボタンからキャラクター詳細画面へ遷移できませんでした'
       end
 
-      it '[キャラクター登録]ボタンをクリックした場合キャラクター登録ページへ遷移すること' do
+      xit '[キャラクター登録]ボタンをクリックした場合キャラクター登録ページへ遷移すること' do
         find('#header-character-menu').click
         within('.dropdown-menu') do
           click_on('キャラクター登録')
@@ -80,7 +80,7 @@ RSpec.describe 'トップ画面', type: :system do
         '[キャラクター登録]ボタンからキャラクター登録画面へ遷移できませんでした'
       end
 
-      it '[ユーザーページ]ボタンをクリックした場合ユーザーページへ遷移すること' do
+      xit '[ユーザーページ]ボタンをクリックした場合ユーザーページへ遷移すること' do
         click_on('ユーザーページ')
         expect(page).to have_current_path(xxx_path, ignore_query: true),
         '[ユーザーページ]ボタンからユーザーページへ遷移できませんでした'

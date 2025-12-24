@@ -1,6 +1,6 @@
 class StaticPagesController < ApplicationController
-  require "bcdice"
-  require "bcdice/game_system"
+  # require "bcdice"
+  # require "bcdice/game_system"
   def top; end
 
   def roll
