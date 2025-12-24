@@ -43,7 +43,7 @@ RSpec.describe 'トップ画面', type: :system do
       end
     end
 
-    xcontext 'ログインしている場合' do
+    context 'ログインしている場合' do
       before do
         login_as(user)
       end
