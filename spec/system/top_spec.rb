@@ -45,7 +45,7 @@ RSpec.describe 'トップ画面', type: :system do
 
     context 'ログインしている場合' do
       before do
-        login_as(user)
+        sign_in(user)
       end
       xit '[さっそく始める]ボタンをクリックした場合シミュレーションページへ遷移すること' do
         click_on('さっそく始める')
@@ -81,8 +81,8 @@ RSpec.describe 'トップ画面', type: :system do
       end
 
       xit '[ユーザーページ]ボタンをクリックした場合ユーザーページへ遷移すること' do
-        click_on('ユーザーページ')
-        expect(page).to have_current_path(xxx_path, ignore_query: true),
+        click_on("#{current_user.name}")
+        expect(page).to have_current_path(edit_user_registration_path, ignore_query: true),
         '[ユーザーページ]ボタンからユーザーページへ遷移できませんでした'
       end
     end

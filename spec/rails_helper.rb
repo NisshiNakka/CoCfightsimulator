@@ -24,6 +24,7 @@ require 'rspec/rails'
 # require only the support files necessary.
 #
 # Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
+# [spec/support/]配下のファイルを読み込む設定（上は初期設定の記述）
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
@@ -76,4 +77,6 @@ RSpec.configure do |config|
   end
   # rspec/factory bot用設定
   config.include FactoryBot::Syntax::Methods
+  # deviseのメソッド使用のための設定
+  config.include Devise::Test::IntegrationHelpers
 end

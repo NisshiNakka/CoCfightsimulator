@@ -1,8 +1,10 @@
+require 'faker'
+
 FactoryBot.define do
   factory :user do
-    name { "テスト" }
-    sequence(:email) { |n| "user_#{n}@example.com" }
-    password { "password" }
-    password_confirmation { "password" }
+    name { Faker::Name.name }
+    email { Faker::Internet.email }
+    password { Faker::Internet.password }
+    password_confirmation { password }
   end
 end
