@@ -8,6 +8,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
 require 'rspec/rails'
+require 'devise'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -24,7 +25,9 @@ require 'rspec/rails'
 # require only the support files necessary.
 #
 # Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
+# [spec/support/]配下のファイルを読み込む設定（上は初期設定の記述）
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
+# require File.expand_path("spec/support/controller_macros.rb")
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
@@ -76,4 +79,6 @@ RSpec.configure do |config|
   end
   # rspec/factory bot用設定
   config.include FactoryBot::Syntax::Methods
+  # システムスペック用設定2
+  config.include LoginMacros, type: :system
 end

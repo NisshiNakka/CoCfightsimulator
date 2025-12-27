@@ -87,13 +87,13 @@ GEM
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
       rouge (>= 1.0.0)
-    bigdecimal (3.3.1)
+    bigdecimal (4.0.1)
     bindex (0.8.1)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
-    bootsnap (1.19.0)
+    bootsnap (1.20.1)
       msgpack (~> 1.2)
-    brakeman (7.1.1)
+    brakeman (7.1.2)
       racc
     builder (3.3.0)
     capybara (3.40.0)
@@ -106,12 +106,12 @@ GEM
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
     cgi (0.5.1)
-    concurrent-ruby (1.3.5)
+    concurrent-ruby (1.3.6)
     crass (1.0.6)
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     date (3.5.1)
-    debug (1.11.0)
+    debug (1.11.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
     debug_inspector (1.2.0)
@@ -134,12 +134,14 @@ GEM
     factory_bot_rails (6.5.1)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
+    faker (3.5.3)
+      i18n (>= 1.8.11, < 2)
     globalid (1.3.0)
       activesupport (>= 6.1)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
-    io-console (0.8.1)
-    irb (1.15.3)
+    io-console (0.8.2)
+    irb (1.16.0)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
@@ -148,11 +150,11 @@ GEM
       activesupport (>= 7.0.0)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
-    json (2.17.1)
+    json (2.18.0)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
-    loofah (2.24.1)
+    loofah (2.25.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     mail (2.9.0)
@@ -165,10 +167,10 @@ GEM
     matrix (0.4.3)
     method_source (1.1.0)
     mini_mime (1.1.5)
-    minitest (5.26.2)
+    minitest (5.27.0)
     msgpack (1.8.0)
     mutex_m (0.3.0)
-    net-imap (0.5.12)
+    net-imap (0.5.13)
       date
       net-protocol
     net-pop (0.1.2)
@@ -209,8 +211,8 @@ GEM
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
-    prism (1.6.0)
-    psych (5.3.0)
+    prism (1.7.0)
+    psych (5.3.1)
       date
       stringio
     public_suffix (6.0.2)
@@ -253,7 +255,7 @@ GEM
       zeitwerk (~> 2.5)
     rainbow (3.1.1)
     rake (13.3.1)
-    rdoc (6.17.0)
+    rdoc (7.0.3)
       erb
       psych (>= 4.0.0)
       tsort
@@ -282,7 +284,7 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.6)
-    rubocop (1.81.7)
+    rubocop (1.82.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -290,7 +292,7 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.47.1, < 2.0)
+      rubocop-ast (>= 1.48.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.48.0)
@@ -329,9 +331,9 @@ GEM
       sprockets (>= 3.0.0)
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
-    stringio (3.1.9)
+    stringio (3.2.0)
     thor (1.4.0)
-    timeout (0.5.0)
+    timeout (0.6.0)
     tsort (0.2.0)
     turbo-rails (2.0.12)
       actionpack (>= 6.0.0)
@@ -340,7 +342,7 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
-    unicode-emoji (4.1.0)
+    unicode-emoji (4.2.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.1)
@@ -384,6 +386,7 @@ DEPENDENCIES
   devise
   devise-i18n
   factory_bot_rails
+  faker
   jbuilder
   jsbundling-rails
   pg (~> 1.1)
@@ -400,7 +403,7 @@ DEPENDENCIES
   webdrivers
 
 RUBY VERSION
-   ruby 3.1.4p223
+   ruby 3.2.9p265
 
 BUNDLED WITH
    2.6.9
