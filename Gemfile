@@ -64,6 +64,8 @@ group :development do
   # Highlight the fine-grained location where an error occurred [https://github.com/ruby/error_highlight]
   # gem "error_highlight", ">= 0.4.0", platforms: [ :ruby ]
 
+  # メール確認用
+  gem "letter_opener_web", "~> 3.0"
   # エラー確認用
   gem "better_errors"
   gem "binding_of_caller"
