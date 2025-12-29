@@ -5,6 +5,7 @@
         
         <div class="p-4 bg-success-subtle border border-primary text-center shadow mb-4">
           <h1>CoC fight simulator</h1>
+          <h2><%= t('.test') %></h2>
           <p>このアプリは、CoCにおける戦闘のシミュレーションを行うことができるアプリです。<br>
           シナリオ制作をしたり、GMとしてシナリオの調整を行う際の戦闘バランスのシミュレーションを行うことができます。
           </p>
@@ -20,7 +21,7 @@
 
         <% if user_signed_in? %>
           <div class="text-center">
-            <%= link_to "さっそく始める", "xxx_path", class: "btn btn-lg btn-success" %>
+            <%= link_to "さっそく始める", new_simulation_path, class: "btn btn-lg btn-success" %>
           </div>
         <% else %>
           <div class="text-center">
