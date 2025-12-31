@@ -47,9 +47,9 @@ RSpec.describe 'トップ画面', type: :system do
       before do
         login_as(user)
       end
-      xit '[さっそく始める]ボタンをクリックした場合シミュレーションページへ遷移すること' do
+      it '[さっそく始める]ボタンをクリックした場合シミュレーションページへ遷移すること' do
         click_on('さっそく始める')
-        expect(page).to have_current_path(xxx_path, ignore_query: true),
+        expect(page).to have_current_path(new_simulations_path, ignore_query: true),
         '[さっそく始める]ボタンからシミュレーションページへ遷移できませんでした'
       end
 
