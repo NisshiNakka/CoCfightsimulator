@@ -28,11 +28,11 @@
       "file": "app/controllers/simulations_controller.rb",
       "line": 7,
       "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": "result = cthulhu7th.eval(params[:command])",
+      "code": "BCDice.game_system_class(\"Cthulhu7th\").eval(params[:command])",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "StaticPagesController",
+        "class": "SimulationsController",
         "method": "roll"
       },
       "user_input": "params[:command]",
