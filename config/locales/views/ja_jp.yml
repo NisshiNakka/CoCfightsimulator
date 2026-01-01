@@ -1,0 +1,7 @@
+ja_jp:
+  static_pages:
+    top:
+      test: テスト１
+  simulations:
+    new:
+      test: テスト２
