@@ -1,1 +1,7 @@
-<p>test</p>
+<div class="container my-5">
+  <% if @characters.present? %>
+    <%= render @characters %>
+  <% else %>
+    <div class="mb-3">まだ作成されたキャラクターがいません。</div>
+  <% end %>
+</div>
