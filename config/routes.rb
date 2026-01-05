@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   root "static_pages#top"
   resource :simulations, only: %i[new create show]
   post "roll", to: "simulations#roll"
+  resources :characters
 
   # Defines the root path route ("/")
   # root "posts#index"

@@ -1,0 +1,36 @@
+<div class="row row-cols-1 g-3">
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <div class="row g-0 align-items-center">
+            
+        <!-- アイコン -->
+        <div class="col-auto p-2">
+          <%= image_tag "tentative_character_icon.png",
+            class: "img-fluid rounded object-fit-cover", 
+            style: "width: 75px; height: 100px;", 
+            alt: "アイコン" %>
+            <!-- object-fit-coverを使用して、証明写真のような3:4の比率で画像を切り抜き -->
+        </div>
+
+        <!-- キャラクター情報 -->
+        <div class="col">
+          <div class="card-body py-2">
+            <h5 class="card-title mb-1 fw-bold"><%= character.name %></h5>
+            <div class="card-text text-secondary small">
+              HP: <span class="me-3"><%= character.hitpoint %></span>
+              DEX: <span><%= character.dexterity %></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作ボタン -->
+        <div class="col-auto pe-3">
+          <%= link_to '閲覧', "xxx", class: "btn btn-sm btn-outline-primary me-2" %>
+          <%= link_to '編集', "xxx", class: "btn btn-sm btn-outline-success me-2" %>
+          <%= link_to '削除', "xxx", class: "btn btn-sm btn-outline-danger", data: { turbo_method: :delete, turbo_confirm: '削除してよろしいですか？' } %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

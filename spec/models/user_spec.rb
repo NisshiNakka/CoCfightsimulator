@@ -60,10 +60,10 @@ RSpec.describe User, type: :model do
       end
 
       describe '文字数制限のチェック' do
-        it 'ユーザー名が31文字の場合、無効であること' do
-          user = build(:user, name: 'a' * 31)
+        it 'ユーザー名が51文字の場合、無効であること' do
+          user = build(:user, name: 'a' * 51)
           expect(user).to be_invalid
-          expect(user.errors[:name]).to include('は30文字以内で入力してください')
+          expect(user.errors[:name]).to include('は50文字以内で入力してください')
         end
 
         it 'パスワードが5文字の場合、無効であること' do

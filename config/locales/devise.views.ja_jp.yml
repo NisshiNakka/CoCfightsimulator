@@ -35,7 +35,7 @@ ja_jp:
         user:
           attributes:
             name:
-              too_long: は30文字以内で入力してください
+              too_long: は50文字以内で入力してください
             email:
               taken: はすでに存在します
               invalid: は不正な値です

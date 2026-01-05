@@ -1,0 +1,8 @@
+<div class="container my-5">
+  <% if @characters.present? %>
+    <%= render partial: 'character', collection: @characters %>
+  <% else %>
+    <div class="mb-3">まだ作成されたキャラクターがいません。</div>
+  <% end %>
+  <%= paginate @characters, theme: 'bootstrap-5' %>
+</div>
