@@ -1,6 +1,6 @@
 <div class="container my-5">
   <% if @characters.present? %>
-    <%= render @characters %>
+    <%= render partial: 'character', collection: @characters %>
   <% else %>
     <div class="mb-3">まだ作成されたキャラクターがいません。</div>
   <% end %>
