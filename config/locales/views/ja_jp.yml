@@ -6,8 +6,8 @@ ja_jp:
     delete: 削除
     delete_confirm: 削除しますか？
     flash_message:
-      created: "%{item}を作成しました"
-      not_created: "%{item}を作成出来ませんでした"
+      created: "%{item}を登録しました"
+      not_created: "%{item}を登録出来ませんでした"
       updated: "%{item}を更新しました"
       not_updated: "%{item}を更新出来ませんでした"
       deleted: "%{item}を削除しました"
