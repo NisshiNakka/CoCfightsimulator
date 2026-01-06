@@ -12,28 +12,27 @@
       <ul class='navbar-nav ms-auto main-nav align-items-center'>
         <% if user_signed_in? %>
           <li class='nav-item dropdown dropdown-slide'>
-            <%= link_to 'キャラクターページ', '#', class: 'nav-link dropdown-toggle', data: { bs_toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' }, role: 'button', id: 'header-character-menu' %>
+            <%= link_to t('header.character_page'), '#', class: 'nav-link dropdown-toggle', data: { bs_toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' }, role: 'button', id: 'header-character-menu' %>
             <div class='dropdown-menu dropdown-menu-end'>
-              <%= link_to 'キャラクター一覧', characters_path, class: 'dropdown-item' %>
-              <%= link_to 'キャラクター詳細', '#', class: 'dropdown-item' %>
-              <%= link_to 'キャラクター登録', '#', class: 'dropdown-item' %>
+              <%= link_to t('header.character_index'), characters_path, class: 'dropdown-item' %>
+              <%= link_to t('header.character_create'), '#', class: 'dropdown-item' %>
             </div>
           </li>
 
           <li class='nav-item'>
-            <%= link_to 'ログアウト', destroy_user_session_path, class: 'nav-link', data: { turbo_method: :delete } %>
+            <%= link_to t('header.logout'), destroy_user_session_path, class: 'nav-link', data: { turbo_method: :delete } %>
           </li>
 
           <li class='nav-item'>
-            <%= link_to current_user.name, edit_user_registration_path, class: 'nav-link text-truncate', style: 'max-width: 150px;' %>
+            <%= link_to t('header.user_page', name: current_user.name), edit_user_registration_path, class: 'nav-link text-truncate', style: 'max-width: 150px;' %>
           </li>
         <% else %>
           <li class='nav-item'>
-            <%= link_to 'ログイン', new_user_session_path, class: 'nav-link' %>
+            <%= link_to t('header.login'), new_user_session_path, class: 'nav-link' %>
           </li>
 
           <li class='nav-item'>
-            <%= link_to 'ユーザー登録', new_user_registration_path, class: 'nav-link' %>
+            <%= link_to t('header.registration'), new_user_registration_path, class: 'nav-link' %>
           </li>
         <% end %>
       </ul>

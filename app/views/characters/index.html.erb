@@ -2,7 +2,9 @@
   <% if @characters.present? %>
     <%= render partial: 'character', collection: @characters %>
   <% else %>
-    <div class="mb-3">まだ作成されたキャラクターがいません。</div>
+    <div class="mb-3">
+      <%= t('.no_record')%>
+    </div>
   <% end %>
   <%= paginate @characters, theme: 'bootstrap-5' %>
 </div>

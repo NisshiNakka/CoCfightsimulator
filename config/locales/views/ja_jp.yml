@@ -1,7 +1,50 @@
 ja_jp:
+  defaults:
+    create: 作成
+    edit: 編集
+    show: 詳細
+    delete: 削除
+    delete_confirm: 削除しますか？
+    flash_message:
+      created: "%{item}を作成しました"
+      not_created: "%{item}を作成出来ませんでした"
+      updated: "%{item}を更新しました"
+      not_updated: "%{item}を更新出来ませんでした"
+      deleted: "%{item}を削除しました"
+  helpers:
+    submit:
+      create: 登録
+      submit: 保存
+      update: 更新
+    label:
+      test: テスト
+  header:
+    login: ログイン
+    logout: ログアウト
+    registration: ユーザー登録
+    character_page: キャラクターページ
+    character_index: キャラクター一覧
+    character_create: キャラクター登録
+    user_page: "%{name}さん"
+  footer:
+    terms_of_service: 利用規約
+    privacy_policy: プライバシーポリシー
   static_pages:
     top:
-      test: テスト１
+      overview_1: このアプリは、CoCにおける戦闘のシミュレーションを行うことができるアプリです。
+      overview_2: シナリオ制作をしたり、GMとしてシナリオの調整を行う際の戦闘バランスのシミュレーションを行うことができます。
+      how_to_use_title: このアプリの使い方
+      how_to_use_1: キャラクターを登録し、ステータスや技能を決定します。
+      how_to_use_2: シミュレーションページで敵味方に振り分けます。
+      how_to_use_3: 戦闘条件を設定し、シミュレーション開始ボタンを押します。
+      how_to_use_4: 結果が自動で表示されます
+      start: さっそく始める
   simulations:
     new:
-      test: テスト２
+      test: テスト
+  characters:
+    index:
+      no_record: まだ作成されたキャラクターがいません。
+      hitpoint: "HP :"
+      dexterity: "DEX :"
+      

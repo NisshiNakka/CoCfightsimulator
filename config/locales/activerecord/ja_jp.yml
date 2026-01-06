@@ -1,0 +1,13 @@
+ja:
+  activerecord:
+    models:
+      character: キャラクター
+    attributes:
+      character:
+        name: キャラクター名
+        hitpoint: HP
+        dexterity: DEX
+        evasion_rate: 回避
+        evasion_correction: ダイスボーナス(回避)
+        armor: 装甲
+        damage_bonus: ダメージボーナス

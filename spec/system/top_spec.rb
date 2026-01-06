@@ -62,15 +62,6 @@ RSpec.describe 'トップ画面', type: :system do
         '[キャラクター一覧]ボタンからキャラクター一覧ページへ遷移できませんでした'
       end
 
-      xit '[キャラクター詳細]ボタンをクリックした場合キャラクター詳細ページへ遷移すること' do
-        find('#header-character-menu').click
-        within('.dropdown-menu') do
-          click_on('キャラクター詳細')
-        end
-        expect(page).to have_current_path(xxx_path, ignore_query: true),
-        '[キャラクター詳細]ボタンからキャラクター詳細画面へ遷移できませんでした'
-      end
-
       xit '[キャラクター登録]ボタンをクリックした場合キャラクター登録ページへ遷移すること' do
         find('#header-character-menu').click
         within('.dropdown-menu') do
