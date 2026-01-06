@@ -8,7 +8,7 @@ class Character < ApplicationRecord
   validates :evasion_correction, presence: true, numericality: { only_integer: true, in: -10..10 }
   validates :armor, presence: true, numericality: { only_integer: true, in: 0..20 }
   validates :damage_bonus, presence: true, length: { maximum: 15 }, format: {
-    with: /\A-?\d+(?:[dD]\d+(?:[+\-]\d+)?)?\z/,
+    with: /\A-?\d+(?:[dD]\d+)?(?:[+\-]\d+(?:[dD]\d+)?)*\z/,
     message: "は正しいダイスロール記法で入力してください（例: 1, 1d6, 1d6+1d3, 1d6-1d3）"
   }
 
