@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Character, type: :model do
-  let(:user) { build(:user) }
   let(:character) { build(:character) }
 
   describe 'Validation' do
@@ -11,13 +10,83 @@ RSpec.describe Character, type: :model do
       end
     end
 
-    context '異常系: name' do
-      it '名前が空であれば無効であること' do
+    context '異常形: 必須入力' do
+      it 'nameが空であれば無効であること' do
         character.name = nil
         character.valid?
         expect(character.errors[:name]).to include("を入力してください")
       end
 
+      it 'hitpointが空であれば無効であること' do
+        character.hitpoint = nil
+        character.valid?
+        expect(character.errors[:hitpoint]).to include("を入力してください")
+      end
+
+      it 'dexterityが空であれば無効であること' do
+        character.dexterity = nil
+        character.valid?
+        expect(character.errors[:dexterity]).to include("を入力してください")
+      end
+
+      it 'evasion_rateが空であれば無効であること' do
+        character.evasion_rate = nil
+        character.valid?
+        expect(character.errors[:evasion_rate]).to include("を入力してください")
+      end
+
+      it 'evasion_correctionが空であれば無効であること' do
+        character.evasion_correction = nil
+        character.valid?
+        expect(character.errors[:evasion_correction]).to include("を入力してください")
+      end
+
+      it 'armorが空であれば無効であること' do
+        character.armor = nil
+        character.valid?
+        expect(character.errors[:armor]).to include("を入力してください")
+      end
+
+      it 'damage_bonusが空であれば無効であること' do
+        character.damage_bonus = nil
+        character.valid?
+        expect(character.errors[:damage_bonus]).to include("を入力してください")
+      end
+    end
+
+    context '異常系: 整数バリデーション' do
+      it 'hitpointが小数であれば無効であること' do
+        character.hitpoint = 50.5
+        character.valid?
+        expect(character.errors[:hitpoint]).to include("は整数で入力してください")
+      end
+
+      it 'dexterityが小数であれば無効であること' do
+        character.dexterity = 100.5
+        character.valid?
+        expect(character.errors[:dexterity]).to include("は整数で入力してください")
+      end
+
+      it 'evasion_rateが小数であれば無効であること' do
+        character.evasion_rate = 50.5
+        character.valid?
+        expect(character.errors[:evasion_rate]).to include("は整数で入力してください")
+      end
+
+      it 'evasion_correctionが小数であれば無効であること' do
+        character.evasion_correction = 5.5
+        character.valid?
+        expect(character.errors[:evasion_correction]).to include("は整数で入力してください")
+      end
+
+      it 'armorが小数であれば無効であること' do
+        character.armor = 10.5
+        character.valid?
+        expect(character.errors[:armor]).to include("は整数で入力してください")
+      end
+    end
+
+    context '異常系: 名前' do
       it '名前が51文字以上であれば無効であること' do
         character.name = 'a' * 51
         character.valid?
@@ -54,6 +123,18 @@ RSpec.describe Character, type: :model do
         character.evasion_correction = -11
         character.valid?
         expect(character.errors[:evasion_correction]).to include("は-10..10の範囲に含めてください")
+      end
+
+      it 'evasion_rateが範囲外(0)であれば無効であること' do
+        character.evasion_rate = 0
+        character.valid?
+        expect(character.errors[:evasion_rate]).to include("は1..100の範囲に含めてください")
+      end
+
+      it 'evasion_rateが範囲外(101)であれば無効であること' do
+        character.evasion_rate = 101
+        character.valid?
+        expect(character.errors[:evasion_rate]).to include("は1..100の範囲に含めてください")
       end
 
       it 'evasion_correctionが範囲外(11)であれば無効であること' do
@@ -108,6 +189,12 @@ RSpec.describe Character, type: :model do
           character.damage_bonus = 'abc'
           character.valid?
           expect(character.errors[:damage_bonus]).to include("は正しいダイスロール記法で入力してください（例: 1, 1d6, 1d6+1d3, 1d6-1d3）")
+        end
+
+        it 'damage_bonusが16文字以上であれば無効であること' do
+          character.damage_bonus = '1' * 16
+          character.valid?
+          expect(character.errors[:damage_bonus]).to include("は15文字以内で入力してください")
         end
       end
     end

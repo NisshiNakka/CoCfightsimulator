@@ -45,7 +45,8 @@ RSpec.describe 'トップ画面', type: :system do
 
     context 'ログインしている場合' do
       before do
-        login_as(user)
+        sign_in user
+        visit root_path
       end
       it '[さっそく始める]ボタンをクリックした場合シミュレーションページへ遷移すること' do
         click_on('さっそく始める')

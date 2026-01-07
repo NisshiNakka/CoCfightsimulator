@@ -19,11 +19,12 @@ ja_jp:
               in: は1..100の範囲に含めてください
             dexterity:
               in: は1..200の範囲に含めてください
+            evasion_rate:
+              in: は1..100の範囲に含めてください
             evasion_correction:
               in: は-10..10の範囲に含めてください
             armor:
               in: は0..20の範囲に含めてください
-            
       messages:
         blank: を入力してください
         too_long: は%{count}文字以内で入力してください
