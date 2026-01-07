@@ -1,4 +1,6 @@
 ja_jp:
+  # ↓ なぜか translation missing: ja_jp.dexterity となるので一旦ここに設定（原因不明)
+  dexterity: "DEX :"
   defaults:
     create: 作成
     edit: 編集
@@ -52,8 +54,10 @@ ja_jp:
     index:
       title: キャラクター一覧
       no_record: まだ作成されたキャラクターがいません。
+    character:
       hitpoint: "HP :"
-      dexterity: "DEX :"
+      # ↓ なぜかcharacters:からも外れたので表示できる場所へ設定し直し（原因不明）
+      #dexterity: "DEX :"
     new:
       title: キャラクター登録
       damage_bonus_note: ダイスロール記法で入力してください。

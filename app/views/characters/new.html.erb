@@ -3,7 +3,7 @@
     <div class="col-md-8 col-lg-6">
       <h1 class="text-center mb-4 fw-bold"><%= t('.title') %></h1>
 
-      <%= form_with model: @character, class: "shadow-sm p-4 border rounded bg-white" do |f| %>
+      <%= form_with model: @character, local: true, class: "shadow-sm p-4 border rounded bg-white" do |f| %>
         
         <div class="mb-3">
           <%= f.label :name, class: "form-label fw-semibold" %>
