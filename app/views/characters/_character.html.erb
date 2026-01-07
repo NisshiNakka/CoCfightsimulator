@@ -17,17 +17,17 @@
           <div class="card-body py-2">
             <h5 class="card-title mb-1 fw-bold"><%= character.name %></h5>
             <div class="card-text text-secondary small">
-              HP: <span class="me-3"><%= character.hitpoint %></span>
-              DEX: <span><%= character.dexterity %></span>
+              <%= t('.hitpoint') %><span class="me-3"><%= character.hitpoint %></span>
+              <%= t('dexterity') %><span><%= character.dexterity %></span>
             </div>
           </div>
         </div>
 
         <!-- 操作ボタン -->
         <div class="col-auto pe-3">
-          <%= link_to '閲覧', "xxx", class: "btn btn-sm btn-outline-primary me-2" %>
-          <%= link_to '編集', "xxx", class: "btn btn-sm btn-outline-success me-2" %>
-          <%= link_to '削除', "xxx", class: "btn btn-sm btn-outline-danger", data: { turbo_method: :delete, turbo_confirm: '削除してよろしいですか？' } %>
+          <%= link_to t('defaults.show'), "xxx", class: "btn btn-sm btn-outline-primary me-2" %>
+          <%= link_to t('defaults.edit'), "xxx", class: "btn btn-sm btn-outline-success me-2" %>
+          <%= link_to t('defaults.delete'), "xxx", class: "btn btn-sm btn-outline-danger", data: { turbo_method: :delete, turbo_confirm: t('defaults.delete_confirm') } %>
         </div>
 
       </div>

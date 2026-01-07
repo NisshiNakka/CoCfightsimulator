@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  let(:user) { build(:user) }
+
   describe 'バリデーション' do
     context '正常系' do
       it 'ユーザー名、メールアドレスがあり、パスワードは6文字以上であれば有効であること' do
-        user = build(:user)
         expect(user).to be_valid
         expect(user.errors).to be_empty
       end
@@ -13,7 +14,6 @@ RSpec.describe User, type: :model do
     context '異常系' do
       describe '必須項目のチェック' do
         it 'ユーザー名、メールアドレス、パスワードは必須項目であること' do
-          user = build(:user)
           user.email = nil
           user.name = nil
           user.password = nil
@@ -35,25 +35,25 @@ RSpec.describe User, type: :model do
 
       describe 'メールアドレスの形式チェック' do
         it '@がない場合、無効であること' do
-          user = build(:user, email: 'aaaa')
+          user.email = 'aaaa'
           expect(user).to be_invalid
           expect(user.errors[:email]).to include('は不正な値です')
         end
 
         it '@のみの場合、無効であること' do
-          user = build(:user, email: '@')
+          user.email = '@'
           expect(user).to be_invalid
           expect(user.errors[:email]).to include('は不正な値です')
         end
 
         it 'ローカル部のみの場合、無効であること' do
-          user = build(:user, email: 'aaaa@')
+          user.email = 'aaaa@'
           expect(user).to be_invalid
           expect(user.errors[:email]).to include('は不正な値です')
         end
 
         it 'ドメイン部のみの場合、無効であること' do
-          user = build(:user, email: '@aaaa')
+          user.email = '@aaaa'
           expect(user).to be_invalid
           expect(user.errors[:email]).to include('は不正な値です')
         end
@@ -61,19 +61,19 @@ RSpec.describe User, type: :model do
 
       describe '文字数制限のチェック' do
         it 'ユーザー名が51文字の場合、無効であること' do
-          user = build(:user, name: 'a' * 51)
+          user.name = 'a' * 51
           expect(user).to be_invalid
           expect(user.errors[:name]).to include('は50文字以内で入力してください')
         end
 
         it 'パスワードが5文字の場合、無効であること' do
-          user = build(:user, password: 'a' * 5)
+          user.password = 'a' * 5
           expect(user).to be_invalid
           expect(user.errors[:password]).to include('は6文字以上で入力してください')
         end
 
         it 'パスワードが129文字の場合、無効であること' do
-          user = build(:user, password: 'a' * 129)
+          user.password = 'a' * 129
           expect(user).to be_invalid
           expect(user.errors[:password]).to include('は128文字以内で入力してください')
         end

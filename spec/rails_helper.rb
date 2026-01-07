@@ -80,5 +80,5 @@ RSpec.configure do |config|
   # rspec/factory bot用設定
   config.include FactoryBot::Syntax::Methods
   # システムスペック用設定2
-  config.include LoginMacros, type: :system
+  config.include Devise::Test::IntegrationHelpers, type: :system
 end
