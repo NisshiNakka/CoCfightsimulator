@@ -4,7 +4,7 @@
       <h1 class="text-center mb-4 fw-bold"><%= t('.title') %></h1>
 
       <%= form_with model: @character, local: true, class: "shadow-sm p-4 border rounded bg-white" do |f| %>
-        
+        <%= render "shared/error_messages", object: f.object %>
         <div class="mb-3">
           <%= f.label :name, class: "form-label fw-semibold" %>
           <%= f.text_field :name, class: "form-control", placeholder: t('.placeholder.name') %>
@@ -34,7 +34,7 @@
             <%= f.number_field :evasion_rate, class: "form-control", placeholder: "1〜100", min: 1, max: 100 %>
           </div>
           <div class="col-6">
-            <%= f.label :evasion_correction, "回避補正値", class: "form-label fw-semibold" %>
+            <%= f.label :evasion_correction, class: "form-label fw-semibold" %>
             <%= f.number_field :evasion_correction, class: "form-control", placeholder: "-10〜10", min: -10, max: 10 %>
           </div>
         </div>
