@@ -17,7 +17,13 @@ ja_jp:
       submit: 保存
       update: 更新
     label:
-      test: テスト
+      name: キャラクター名
+      hitpoint: HP
+      dexterity: DEX
+      evasion_rate: 回避(%)
+      evasion_correction: ボーナスダイス(回避)
+      armor: 装甲
+      damage_bonus: ダメージボーナス
   header:
     login: ログイン
     logout: ログアウト
@@ -44,7 +50,14 @@ ja_jp:
       test: テスト
   characters:
     index:
+      title: キャラクター一覧
       no_record: まだ作成されたキャラクターがいません。
       hitpoint: "HP :"
       dexterity: "DEX :"
-      
+    new:
+      title: キャラクター登録
+      damage_bonus_note: ダイスロール記法で入力してください。
+      character_create: キャラクターを登録する
+      placeholder:
+        name: キャラクター名(50文字以内)
+        damage_bonus: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"
