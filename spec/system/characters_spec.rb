@@ -10,6 +10,15 @@ RSpec.describe "Characters", type: :system do
   end
 
   describe "一覧表示機能" do
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        sign_out user
+        visit characters_path
+        expect(page).to have_current_path(new_user_session_path, ignore_query: true),
+        'ログイン画面へ遷移していません'
+      end
+    end
+
     it "ログインユーザーが作成したキャラクターのみが表示されること" do
       visit characters_path
       expect(page).to have_content "自分のキャラ"
@@ -31,40 +40,103 @@ RSpec.describe "Characters", type: :system do
       visit characters_path
       expect(page.text).to match(/#{newer_character.name}.*#{older_character.name}/m)
     end
-  end
 
-  describe "ページネーション機能" do
-    before do
-      create_list(:character, 19, user: user)
-    end
+    describe "ページネーション機能" do
+      context "21件以上だった場合" do
+        before do
+          user.characters.destroy_all
+          create_list(:character, 20, user: user)
+        end
+        let!(:last_character) { create(:character, user: user, name: "21番目のキャラ", created_at: 1.month.ago) }
 
-    let!(:last_character) { create(:character, user: user, name: "21番目のキャラ", created_at: 1.month.ago) }
+        it "1ページ目に20件表示されること" do
+          visit characters_path
+          expect(page).to have_selector('.card', count: 20)
+        end
 
-    it "1ページ目に20件表示されること" do
-      visit characters_path
-      expect(page).to have_selector('.card', count: 20)
-    end
-
-    it "21体目以降は2ページ目に表示されること" do
-      visit characters_path
-      expect(page).to_not have_content "21番目のキャラ"
-      expect(page).to have_selector('.pagination')
-      within '.pagination' do
-        click_link '2'
+        it "21体目以降は2ページ目に表示されること" do
+          visit characters_path
+          expect(page).to_not have_content "21番目のキャラ"
+          expect(page).to have_selector('.pagination')
+          within '.pagination' do
+            click_link '2'
+          end
+          expect(page).to have_content "21番目のキャラ"
+          expect(page).to have_current_path(characters_path(page: 2))
+        end
       end
-      expect(page).to have_content "21番目のキャラ"
-      expect(page).to have_current_path(characters_path(page: 2))
+
+      context "20件以下だった場合" do
+        it "ページングが表示されないこと" do
+          user.characters.destroy_all
+          create_list(:character, 20, user: user)
+          visit characters_path
+          expect(page).not_to have_selector('.pagination')
+        end
+      end
+    end
+
+    describe "表示要素の確認" do
+      it "各キャラクターに操作ボタン（詳細・編集・削除）が表示されていること" do
+        visit characters_path
+        within ".card" do
+          expect(page).to have_link I18n.t('defaults.show')
+          expect(page).to have_link I18n.t('defaults.edit')
+          expect(page).to have_link I18n.t('defaults.delete')
+         expect(page).to have_selector "img[alt='アイコン']"
+        end
+      end
     end
   end
 
-  describe "表示要素の確認" do
-    it "各キャラクターに操作ボタン（詳細・編集・削除）が表示されていること" do
-      visit characters_path
-      within ".card" do
-        expect(page).to have_link I18n.t('defaults.show')
-        expect(page).to have_link I18n.t('defaults.edit')
-        expect(page).to have_link I18n.t('defaults.delete')
-        expect(page).to have_selector "img[alt='アイコン']"
+  describe "キャラクター登録機能" do
+    before do
+      visit new_character_path
+    end
+
+    context 'ログインしていない場合' do
+      it 'ログインページにリダイレクトされること' do
+        sign_out user
+        visit new_character_path
+        expect(page).to have_current_path(new_user_session_path, ignore_query: true),
+        'ログイン画面へ遷移していません'
+      end
+    end
+
+    it '正しいタイトルが表示されていること' do
+      expect(page).to have_content("キャラクター登録"), 'キャラクター登録ページのタイトルが表示されていません。'
+    end
+
+    context "入力値が正常な場合" do
+      it "キャラクターの新規作成が成功し、一覧画面にリダイレクトされること" do
+        fill_in "character_name", with: "新規キャラクター"
+        fill_in "character_hitpoint", with: 10
+        fill_in "character_dexterity", with: 50
+        fill_in "character_evasion_rate", with: 20
+        fill_in "character_evasion_correction", with: 1
+        fill_in "character_armor", with: 1
+        fill_in "character_damage_bonus", with: "1d6+1"
+        click_button I18n.t('characters.new.character_create')
+        expect(page).to have_content I18n.t("defaults.flash_message.created", item: Character.model_name.human)
+        expect(page).to have_content "新規キャラクター"
+        expect(current_path).to eq characters_path
+      end
+    end
+
+    context "入力値が不正な場合" do
+      it "新規作成が失敗しフラッシュメッセージが表示されること" do
+        fill_in "character_name", with: ""
+        click_button I18n.t('characters.new.character_create')
+        expect(current_path).to eq new_character_path
+        expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_content "キャラクター名 を入力してください"
+      end
+
+      it "damage_bonusの形式が不正な場合、登録に失敗すること" do
+        fill_in "character_damage_bonus", with: "不正なダイス"
+        click_button I18n.t('characters.new.character_create')
+        expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_content "ダメージボーナス は正しいダイスロール記法で入力してください（例: 1, 1d6, 1d6+1d3, 1d6-1d3）"
       end
     end
   end

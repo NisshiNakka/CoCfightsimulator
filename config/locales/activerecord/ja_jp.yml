@@ -8,7 +8,7 @@ ja_jp:
         hitpoint: HP
         dexterity: DEX
         evasion_rate: 回避
-        evasion_correction: ダイスボーナス(回避)
+        evasion_correction: ボーナスダイス(回避)
         armor: 装甲
         damage_bonus: ダメージボーナス
     errors:
