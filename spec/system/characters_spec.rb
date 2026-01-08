@@ -10,13 +10,12 @@ RSpec.describe "Characters", type: :system do
   end
 
   describe "一覧表示機能" do
-    context 'ログインしていない場合' do
-      it 'ログインページにリダイレクトされること' do
-        sign_out user
-        visit characters_path
-        expect(page).to have_current_path(new_user_session_path, ignore_query: true),
-        'ログイン画面へ遷移していません'
-      end
+    let(:path) { characters_path }
+    it_behaves_like 'require login'
+
+    it '正しいタイトルが表示されていること' do
+      visit characters_path
+      expect(page).to have_content("キャラクター一覧"), 'キャラクター一覧ページのタイトルが表示されていません。'
     end
 
     it "ログインユーザーが作成したキャラクターのみが表示されること" do
@@ -91,17 +90,14 @@ RSpec.describe "Characters", type: :system do
 
   describe "キャラクター登録機能" do
     before do
-      visit new_character_path
-    end
-
-    context 'ログインしていない場合' do
-      it 'ログインページにリダイレクトされること' do
-        sign_out user
-        visit new_character_path
-        expect(page).to have_current_path(new_user_session_path, ignore_query: true),
-        'ログイン画面へ遷移していません'
+      visit characters_path
+      within ".gap-2" do
+        click_on 'キャラクター登録'
       end
     end
+
+    let(:path) { new_character_path }
+    it_behaves_like 'require login'
 
     it '正しいタイトルが表示されていること' do
       expect(page).to have_content("キャラクター登録"), 'キャラクター登録ページのタイトルが表示されていません。'
