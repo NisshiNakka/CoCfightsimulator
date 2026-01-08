@@ -54,6 +54,8 @@ ja_jp:
     index:
       title: キャラクター一覧
       no_record: まだ作成されたキャラクターがいません。
+      go_simulation: シミュレーションする
+      character_create: キャラクター登録
     character:
       hitpoint: "HP :"
       # ↓ なぜかcharacters:からも外れたので表示できる場所へ設定し直し（原因不明）

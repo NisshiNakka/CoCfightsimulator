@@ -1,10 +1,22 @@
 <div class="container my-5">
-  <% if @characters.present? %>
-    <%= render partial: 'character', collection: @characters %>
-  <% else %>
-    <div class="mb-3">
-      <%= t('.no_record')%>
+  <h1 class="text-center mb-4 fw-bold"><%= t('.title') %></h1>
+    <div class="border p-3 bg-light mb-0 rounded-top">
+      <div class="col-auto d-flex gap-2">
+        <%= link_to t('.go_simulation'), '#', class: 'btn btn-success text-nowrap' %>
+        <%= link_to t('.character_create'), new_character_path, class: 'btn btn-primary text-nowrap' %>
+      </div>
     </div>
-  <% end %>
-  <%= paginate @characters, theme: 'bootstrap-5' %>
+  <div class="border-start border-end border-bottom p-3 rounded-bottom">
+    <% if @characters.present? %>
+      <%= render partial: 'character', collection: @characters %>
+    <% else %>
+      <div class="text-secondary">
+        <%= t('.no_record')%>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-4">
+    <%= paginate @characters, theme: 'bootstrap-5' %>
+  </div>
 </div>
