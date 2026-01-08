@@ -15,7 +15,7 @@
             <%= link_to t('header.character_page'), '#', class: 'nav-link dropdown-toggle', data: { bs_toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' }, role: 'button', id: 'header-character-menu' %>
             <div class='dropdown-menu dropdown-menu-end'>
               <%= link_to t('header.character_index'), characters_path, class: 'dropdown-item' %>
-              <%= link_to t('header.character_create'), '#', class: 'dropdown-item' %>
+              <%= link_to t('header.character_create'), new_character_path, class: 'dropdown-item' %>
             </div>
           </li>
 

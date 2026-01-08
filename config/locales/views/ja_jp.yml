@@ -1,4 +1,6 @@
 ja_jp:
+  # ↓ なぜか translation missing: ja_jp.dexterity となるので一旦ここに設定（原因不明)
+  dexterity: "DEX :"
   defaults:
     create: 作成
     edit: 編集
@@ -17,7 +19,13 @@ ja_jp:
       submit: 保存
       update: 更新
     label:
-      test: テスト
+      name: キャラクター名
+      hitpoint: HP
+      dexterity: DEX
+      evasion_rate: 回避(%)
+      evasion_correction: ボーナスダイス(回避)
+      armor: 装甲
+      damage_bonus: ダメージボーナス
   header:
     login: ログイン
     logout: ログアウト
@@ -44,7 +52,18 @@ ja_jp:
       test: テスト
   characters:
     index:
+      title: キャラクター一覧
       no_record: まだ作成されたキャラクターがいません。
+      go_simulation: シミュレーションする
+      character_create: キャラクター登録
+    character:
       hitpoint: "HP :"
-      dexterity: "DEX :"
-      
+      # ↓ なぜかcharacters:からも外れたので表示できる場所へ設定し直し（原因不明）
+      #dexterity: "DEX :"
+    new:
+      title: キャラクター登録
+      damage_bonus_note: ダイスロール記法で入力してください。
+      character_create: キャラクターを登録する
+      placeholder:
+        name: キャラクター名(50文字以内)
+        damage_bonus: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"

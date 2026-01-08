@@ -1,0 +1,59 @@
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <h1 class="text-center mb-4 fw-bold"><%= t('.title') %></h1>
+
+      <%= form_with model: @character, class: "shadow-sm p-4 border rounded bg-white" do |f| %>
+        <%= render "shared/error_messages", object: f.object %>
+        <div class="mb-3">
+          <%= f.label :name, class: "form-label fw-semibold" %>
+          <%= f.text_field :name, class: "form-control", placeholder: t('.placeholder.name') %>
+        </div>
+
+        <!-- activrecordを使用した画像添付機能用（MVPリリース後実装）
+        <div class="mb-3">
+          <%= f.label :icon, "アイコン画像", class: "form-label fw-semibold" %>
+          <%= f.file_field :icon, class: "form-control" %>
+        </div>
+        -->
+
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <%= f.label :hitpoint, class: "form-label fw-semibold" %>
+            <%= f.number_field :hitpoint, class: "form-control", placeholder: "1〜100", min: 1, max: 100 %>
+          </div>
+          <div class="col-6">
+            <%= f.label :dexterity, class: "form-label fw-semibold" %>
+            <%= f.number_field :dexterity, class: "form-control", placeholder: "1〜200", min: 1, max: 200 %>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <%= f.label :evasion_rate, class: "form-label fw-semibold" %>
+            <%= f.number_field :evasion_rate, class: "form-control", placeholder: "1〜100", min: 1, max: 100 %>
+          </div>
+          <div class="col-6">
+            <%= f.label :evasion_correction, class: "form-label fw-semibold" %>
+            <%= f.number_field :evasion_correction, class: "form-control", placeholder: "-10〜10", min: -10, max: 10 %>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :armor, class: "form-label fw-semibold" %>
+          <%= f.number_field :armor, class: "form-control", placeholder: "0〜20", min: 0, max: 20 %>
+        </div>
+
+        <div class="mb-4">
+          <%= f.label :damage_bonus, class: "form-label fw-semibold" %>
+          <%= f.text_field :damage_bonus, class: "form-control", placeholder: t('.placeholder.damage_bonus') %>
+          <div class="form-text small"><%= t('.damage_bonus_note') %></div>
+        </div>
+
+        <div class="d-grid">
+          <%= f.submit t('.character_create'), class: "btn btn-primary btn-lg" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
