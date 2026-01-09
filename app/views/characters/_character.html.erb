@@ -24,7 +24,7 @@
         <div class="col-auto pe-3">
           <%= link_to t('defaults.show'), "xxx", class: "btn btn-sm btn-outline-primary me-2" %>
           <%= link_to t('defaults.edit'), "xxx", class: "btn btn-sm btn-outline-success me-2" %>
-          <%= link_to t('defaults.delete'), "xxx", class: "btn btn-sm btn-outline-danger", data: { turbo_method: :delete, turbo_confirm: t('defaults.delete_confirm') } %>
+          <%= link_to t('defaults.delete'), character_path(character), id: "button-delete-#{character.id}", class: "btn btn-sm btn-outline-danger", data: { turbo_method: :delete, turbo_confirm: t('defaults.delete_confirm') } %>
         </div>
 
       </div>
