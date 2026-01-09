@@ -18,6 +18,10 @@ class CharactersController < ApplicationController
     end
   end
 
+  def show
+    @character = Character.find(params[:id])
+  end
+
   def destroy
     character = current_user.characters.find(params[:id])
     character.destroy!

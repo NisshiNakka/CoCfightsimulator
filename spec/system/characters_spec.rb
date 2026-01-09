@@ -79,7 +79,6 @@ RSpec.describe "Characters", type: :system do
       it "各キャラクターに操作ボタン（詳細・編集・削除）が表示されていること" do
         visit characters_path
         within ".card" do
-          expect(page).to have_link I18n.t('defaults.show')
           expect(page).to have_link I18n.t('defaults.edit')
           expect(page).to have_link I18n.t('defaults.delete')
          expect(page).to have_selector "img[alt='アイコン']"
@@ -110,7 +109,7 @@ RSpec.describe "Characters", type: :system do
     let(:path) { new_character_path }
     it_behaves_like 'require login'
 
-    it 'キャラクター一覧画面のボタンからkタラクター登録画面へ遷移できること' do
+    it 'キャラクター一覧画面のボタンからキャラクター登録画面へ遷移できること' do
       visit characters_path
       within ".gap-2" do
         click_on 'キャラクター登録'
@@ -174,6 +173,40 @@ RSpec.describe "Characters", type: :system do
         click_button I18n.t('characters.new.character_create')
         expect(page).to have_content "ダメージ は正しいダイスロール記法で入力してください"
       end
+    end
+  end
+
+  describe "詳細表示機能" do
+    let!(:attack) { create(:attack, character: character_by_me, name: "パンチ", success_probability: 50, damage: "1d3") }
+
+    it "キャラクターの詳細情報と攻撃技能が表示されること" do
+      visit characters_path
+      click_link character_by_me.name
+      expect(page).to have_content I18n.t('characters.show.title')
+      expect(page).to have_content character_by_me.name
+      expect(page).to have_content "#{character_by_me.evasion_rate}%"
+      expect(page).to have_content I18n.t('characters.show.attack_title')
+      expect(page).to have_content "パンチ"
+      expect(page).to have_content "50%"
+      expect(page).to have_link I18n.t('defaults.back_index'), href: characters_path
+    end
+
+    it "詳細画面からキャラクターを削除できること", js: true do
+      visit character_path(character_by_me)
+
+      accept_confirm do
+        click_link I18n.t('defaults.delete')
+      end
+
+      expect(page).to have_content I18n.t("defaults.flash_message.deleted", item: Character.model_name.human)
+      expect(current_path).to eq characters_path
+    end
+
+    it "詳細画面からシミュレーションページへ遷移できること" do
+      visit character_path(character_by_me)
+      click_on I18n.t('defaults.go_simulation')
+      expect(page).to have_current_path(new_simulations_path, ignore_query: true),
+      "[シミュレーションする]ボタンからキャラクター登録画面へ遷移できませんでした"
     end
   end
 end
