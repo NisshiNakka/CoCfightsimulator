@@ -39,6 +39,12 @@ ja_jp:
               in: は-10..10の範囲に含めてください
             armor:
               in: は0..20の範囲に含めてください
+        attack:
+          attributes:
+            success_probability:
+              in: は1..100の範囲に含めてください
+            dice_correction:
+              in: は-10..10の範囲に含めてください
       messages:
         blank: を入力してください
         too_long: は%{count}文字以内で入力してください
