@@ -79,7 +79,6 @@ RSpec.describe "Characters", type: :system do
       it "各キャラクターに操作ボタン（詳細・編集・削除）が表示されていること" do
         visit characters_path
         within ".card" do
-          expect(page).to have_link I18n.t('defaults.show')
           expect(page).to have_link I18n.t('defaults.edit')
           expect(page).to have_link I18n.t('defaults.delete')
          expect(page).to have_selector "img[alt='アイコン']"

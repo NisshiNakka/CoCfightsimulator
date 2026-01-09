@@ -17,7 +17,7 @@ ja_jp:
         success_probability: 成功率
         dice_correction: ボーナスダイス
         damage: ダメージ
-        attack_range: 攻撃種
+        attack_range: 攻撃種類
       # Nested Form用設定
       "character/attacks":
         name: 技能名
