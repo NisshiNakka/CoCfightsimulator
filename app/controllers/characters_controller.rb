@@ -18,6 +18,12 @@ class CharactersController < ApplicationController
     end
   end
 
+  def destroy
+    character = current_user.characters.find(params[:id])
+    character.destroy!
+    redirect_to characters_path, success: t("defaults.flash_message.deleted", item: Character.model_name.human), status: :see_other
+  end
+
   private
 
   # def set_character
