@@ -78,7 +78,7 @@ GEM
       public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
     base64 (0.3.0)
-    bcdice (3.14.0)
+    bcdice (3.16.1)
       i18n (~> 1.8.5)
       racc (~> 1.7.3)
     bcrypt (3.1.20)
@@ -405,7 +405,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  bcdice (= 3.14.0)
+  bcdice (= 3.16.1)
   better_errors
   binding_of_caller
   bootsnap
