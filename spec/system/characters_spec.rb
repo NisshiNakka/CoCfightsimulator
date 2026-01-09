@@ -86,6 +86,20 @@ RSpec.describe "Characters", type: :system do
         end
       end
     end
+
+    describe "キャラクター削除機能" do
+    let!(:character_by_me) { create(:character, user: user, name: "削除テストのキャラ") }
+
+      it "キャラクターを削除できること" do
+        visit characters_path
+        accept_confirm do
+          click_link "button-delete-#{character_by_me.id}"
+        end
+        expect(page).to have_content I18n.t("defaults.flash_message.deleted", item: Character.model_name.human)
+        expect(page).not_to have_content "削除テストのキャラ"
+        expect(Character.where(id: character_by_me.id)).not_to exist
+      end
+    end
   end
 
   describe "キャラクター登録機能" do
