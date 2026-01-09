@@ -131,6 +131,8 @@ GEM
       rails-i18n
     diff-lcs (1.6.2)
     drb (2.2.3)
+    enum_help (0.0.20)
+      activesupport (>= 3.0.0)
     erb (4.0.4)
       cgi (>= 0.3.3)
     erubi (1.13.1)
@@ -414,6 +416,7 @@ DEPENDENCIES
   debug
   devise
   devise-i18n
+  enum_help
   factory_bot_rails
   faker
   jbuilder

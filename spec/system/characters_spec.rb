@@ -90,14 +90,20 @@ RSpec.describe "Characters", type: :system do
 
   describe "キャラクター登録機能" do
     before do
-      visit characters_path
-      within ".gap-2" do
-        click_on 'キャラクター登録'
-      end
+      visit new_character_path
     end
 
     let(:path) { new_character_path }
     it_behaves_like 'require login'
+
+    it 'キャラクター一覧画面のボタンからkタラクター登録画面へ遷移できること' do
+      visit characters_path
+      within ".gap-2" do
+        click_on 'キャラクター登録'
+      end
+      expect(page).to have_current_path(new_character_path, ignore_query: true),
+      '[キャラクター登録]ボタンからキャラクター登録画面へ遷移できませんでした'
+    end
 
     it '正しいタイトルが表示されていること' do
       expect(page).to have_content("キャラクター登録"), 'キャラクター登録ページのタイトルが表示されていません。'
@@ -112,10 +118,17 @@ RSpec.describe "Characters", type: :system do
         fill_in "character_evasion_correction", with: 1
         fill_in "character_armor", with: 1
         fill_in "character_damage_bonus", with: "1d6+1"
+        fill_in "character_attacks_attributes_0_name", with: "新規技能"
+        fill_in "character_attacks_attributes_0_success_probability", with: 50
+        fill_in "character_attacks_attributes_0_dice_correction", with: 0
+        fill_in "character_attacks_attributes_0_damage", with: "1d6"
         click_button I18n.t('characters.new.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.created", item: Character.model_name.human)
         expect(page).to have_content "新規キャラクター"
         expect(current_path).to eq characters_path
+        new_character = Character.last
+        expect(new_character.attacks.count).to eq 1
+        expect(new_character.attacks.first.name).to eq "新規技能"
       end
     end
 
@@ -128,11 +141,24 @@ RSpec.describe "Characters", type: :system do
         expect(page).to have_content "キャラクター名 を入力してください"
       end
 
+      it "攻撃技能の名前が空の場合、登録に失敗しエラーメッセージが表示されること" do
+        fill_in "character_attacks_attributes_0_name", with: ""
+        click_button I18n.t('characters.new.character_create')
+        expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_content "技能名 を入力してください"
+      end
+
       it "damage_bonusの形式が不正な場合、登録に失敗すること" do
         fill_in "character_damage_bonus", with: "不正なダイス"
         click_button I18n.t('characters.new.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
         expect(page).to have_content "ダメージボーナス は正しいダイスロール記法で入力してください（例: 1, 1d6, 1d6+1d3, 1d6-1d3）"
+      end
+
+      it "攻撃技能のダメージ形式が不正な場合、登録に失敗すること" do
+        fill_in "character_attacks_attributes_0_damage", with: "不適切な形式"
+        click_button I18n.t('characters.new.character_create')
+        expect(page).to have_content "ダメージ は正しいダイスロール記法で入力してください"
       end
     end
   end

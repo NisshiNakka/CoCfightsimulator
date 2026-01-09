@@ -13,4 +13,22 @@ class Character < ApplicationRecord
   }
 
   belongs_to :user
+  has_many :attacks, dependent: :destroy
+  accepts_nested_attributes_for :attacks,
+                                allow_destroy: true,
+                                reject_if: :all_blank
+
+  validate :attacks_count_range
+
+  private
+
+  def attacks_count_range
+    valid_attacks = attacks.reject(&:marked_for_destruction?)
+
+    if valid_attacks.empty?
+      errors.add(:base, "攻撃技能を最低1つ登録してください")
+    elsif valid_attacks.size > 3
+      errors.add(:base, "攻撃技能は3つまでしか登録できません")
+    end
+  end
 end

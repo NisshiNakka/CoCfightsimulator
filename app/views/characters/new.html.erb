@@ -31,7 +31,7 @@
         <div class="row g-3 mb-3">
           <div class="col-6">
             <%= f.label :evasion_rate, class: "form-label fw-semibold" %>
-            <%= f.number_field :evasion_rate, class: "form-control", placeholder: "1〜100", min: 1, max: 100 %>
+            <%= f.number_field :evasion_rate, class: "form-control", placeholder: t('.placeholder.probability'), min: 1, max: 100 %>
           </div>
           <div class="col-6">
             <%= f.label :evasion_correction, class: "form-label fw-semibold" %>
@@ -49,6 +49,46 @@
           <%= f.text_field :damage_bonus, class: "form-control", placeholder: t('.placeholder.damage_bonus') %>
           <div class="form-text small"><%= t('.damage_bonus_note') %></div>
         </div>
+
+        <h3><%= t('.attack_title') %></h3>
+        <ul>
+          <%= f.fields_for :attacks do |attack_form| %>
+            <li>
+              <div class="mb-3">
+                <%= attack_form.label :name, class: "form-label fw-semibold" %>
+                <%= attack_form.text_field :name, class: "form-control", placeholder: t('.placeholder.attack_name') %>
+              </div>
+
+              <div class="mb-3">
+                <%= attack_form.label :success_probability, class: 'form-label' %>
+                <%= attack_form.number_field :success_probability, class: 'form-control', placeholder: t('.placeholder.probability'), min: 1, max: 100 %>
+              </div>
+
+              <div class="mb-3">
+                <%= attack_form.label :dice_correction, class: 'form-label' %>
+                <%= attack_form.number_field :dice_correction, class: 'form-control', placeholder: "-10〜10", min: -10, max: 10 %>
+              </div>
+
+              <div class="mb-3">
+                <%= attack_form.label :damage, class: 'form-label' %>
+                <%= attack_form.text_field :damage, class: 'form-control', placeholder: t('.placeholder.damage') %>
+                <div class="form-text small"><%= t('.damage_note') %></div>
+              </div>
+
+              <div class="mb-3">
+                <%= attack_form.label :attack_range, class: "form-label fw-semibold" %>
+                <%= attack_form.select :attack_range, 
+                  Attack.attack_ranges_i18n.invert, 
+                  { include_blank: false }, 
+                  { class: "form-select" } %>
+              </div>
+              
+              <%# 削除用のチェックボックス(MVPリリース後) %>
+              <%# attack_form.check_box :_destroy %>
+              <%# attack_form.label :_destroy, t('.remove') %>
+            </li>
+          <% end %>
+        </ul>
 
         <div class="d-grid">
           <%= f.submit t('.character_create'), class: "btn btn-primary btn-lg" %>
