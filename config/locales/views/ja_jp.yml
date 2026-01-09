@@ -1,5 +1,5 @@
 ja_jp:
-  # ↓ なぜか translation missing: ja_jp.dexterity となるので一旦ここに設定（原因不明)
+  # ↓ characters_pathにて、なぜか translation missing: ja_jp.dexterity となるので一旦ここに設定（原因不明)
   dexterity: "DEX :"
   defaults:
     create: 作成
@@ -26,6 +26,12 @@ ja_jp:
       evasion_correction: ボーナスダイス(回避)
       armor: 装甲
       damage_bonus: ダメージボーナス
+      attack:
+        name: 技能名
+        success_probability: 成功率
+        dice_correction: ボーナスダイス
+        damage: ダメージ
+        attack_range: 攻撃種類
   header:
     login: ログイン
     logout: ログアウト
@@ -62,8 +68,14 @@ ja_jp:
       #dexterity: "DEX :"
     new:
       title: キャラクター登録
-      damage_bonus_note: ダイスロール記法で入力してください。
+      damage_bonus_note: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"
+      damage_note: ダイスロール記法で入力してください。
       character_create: キャラクターを登録する
+      attack_title: 攻撃技能
+      remove: 攻撃技能を削除
       placeholder:
         name: キャラクター名(50文字以内)
+        probability: 1〜100(%) 
         damage_bonus: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"
+        damage: "例: 1,1d6,1d6+2,1d6+1d3"
+        attack_name: 攻撃技能名(25文字以内)

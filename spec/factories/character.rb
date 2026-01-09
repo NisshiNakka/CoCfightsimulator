@@ -8,5 +8,19 @@ FactoryBot.define do
     armor { Faker::Number.between(from: 0, to: 20) }
     damage_bonus { '1d3' }
     association :user
+
+    after(:build) do |character|
+      character.attacks << build(:attack, character: character) if character.attacks.empty?
+    end
+
+    after(:create) do |character|
+      create(:attack, character: character) if character.attacks.empty?
+    end
+
+    trait :without_attacks do
+      after(:create) do |character|
+        character.attacks.destroy_all
+      end
+    end
   end
 end

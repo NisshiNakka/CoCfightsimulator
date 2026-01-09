@@ -112,6 +112,10 @@ RSpec.describe "Characters", type: :system do
         fill_in "character_evasion_correction", with: 1
         fill_in "character_armor", with: 1
         fill_in "character_damage_bonus", with: "1d6+1"
+        fill_in "character_attacks_attributes_0_name", with: "新規技能"
+        fill_in "character_attacks_attributes_0_success_probability", with: 50
+        fill_in "character_attacks_attributes_0_dice_correction", with: 0
+        fill_in "character_attacks_attributes_0_damage", with: "1d6"
         click_button I18n.t('characters.new.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.created", item: Character.model_name.human)
         expect(page).to have_content "新規キャラクター"

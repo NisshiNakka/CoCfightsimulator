@@ -41,6 +41,9 @@ gem "bootsnap", require: false
 gem "kaminari"
 gem "bootstrap5-kaminari-views"
 
+# eunm 翻訳用
+gem "enum_help"
+
 # 仮置き
 gem "bcdice", "3.14.0", require: false
 
