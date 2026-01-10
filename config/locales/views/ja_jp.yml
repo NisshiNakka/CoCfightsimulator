@@ -66,17 +66,6 @@ ja_jp:
       dexterity: "DEX :"
     new:
       title: キャラクター登録
-      damage_bonus_note: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"
-      damage_note: ダイスロール記法で入力してください。
-      character_create: キャラクターを登録する
-      attack_title: 攻撃技能
-      remove: 攻撃技能を削除
-      placeholder:
-        name: キャラクター名(50文字以内)
-        probability: 1〜100(%) 
-        damage_bonus: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"
-        damage: "例: 1,1d6,1d6+2,1d6+1d3"
-        attack_name: 攻撃技能名(25文字以内)
     show:
       title: キャラクター詳細
       attack_title: 攻撃技能
@@ -91,3 +80,18 @@ ja_jp:
       dice_correction: "ボーナスダイス(攻撃技能) :"
       damage: "ダメージ :"
       attack_range: "攻撃種類 :"
+    edit:
+      title: キャラクター編集
+    form:
+      damage_bonus_note: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"
+      damage_note: ダイスロール記法で入力してください。
+      character_create: キャラクターを登録する
+      attack_title: 攻撃技能
+      remove: 攻撃技能を削除
+      placeholder:
+        name: キャラクター名(50文字以内)
+        probability: 1〜100(%) 
+        damage_bonus: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"
+        damage: "例: 1,1d6,1d6+2,1d6+1d3"
+        attack_name: 攻撃技能名(25文字以内)
+      

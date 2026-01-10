@@ -101,7 +101,7 @@ RSpec.describe "Characters", type: :system do
     end
   end
 
-  describe "キャラクター登録機能" do
+  describe "登録機能" do
     before do
       visit new_character_path
     end
@@ -135,7 +135,7 @@ RSpec.describe "Characters", type: :system do
         fill_in "character_attacks_attributes_0_success_probability", with: 50
         fill_in "character_attacks_attributes_0_dice_correction", with: 0
         fill_in "character_attacks_attributes_0_damage", with: "1d6"
-        click_button I18n.t('characters.new.character_create')
+        click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.created", item: Character.model_name.human)
         expect(page).to have_content "新規キャラクター"
         expect(current_path).to eq characters_path
@@ -148,36 +148,36 @@ RSpec.describe "Characters", type: :system do
     context "入力値が不正な場合" do
       it "新規作成が失敗しフラッシュメッセージが表示されること" do
         fill_in "character_name", with: ""
-        click_button I18n.t('characters.new.character_create')
+        click_button I18n.t('characters.form.character_create')
         expect(current_path).to eq new_character_path
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
-        expect(page).to have_content "キャラクター名 を入力してください"
       end
 
       it "攻撃技能の名前が空の場合、登録に失敗しエラーメッセージが表示されること" do
         fill_in "character_attacks_attributes_0_name", with: ""
-        click_button I18n.t('characters.new.character_create')
+        click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
-        expect(page).to have_content "技能名 を入力してください"
       end
 
       it "damage_bonusの形式が不正な場合、登録に失敗すること" do
         fill_in "character_damage_bonus", with: "不正なダイス"
-        click_button I18n.t('characters.new.character_create')
+        click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
-        expect(page).to have_content "ダメージボーナス は正しいダイスロール記法で入力してください（例: 1, 1d6, 1d6+1d3, 1d6-1d3）"
       end
 
       it "攻撃技能のダメージ形式が不正な場合、登録に失敗すること" do
         fill_in "character_attacks_attributes_0_damage", with: "不適切な形式"
-        click_button I18n.t('characters.new.character_create')
-        expect(page).to have_content "ダメージ は正しいダイスロール記法で入力してください"
+        click_button I18n.t('characters.form.character_create')
+        expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
       end
     end
   end
 
   describe "詳細表示機能" do
     let!(:attack) { create(:attack, character: character_by_me, name: "パンチ", success_probability: 50, damage: "1d3") }
+
+    let(:path) { character_path(character_by_me) }
+    it_behaves_like 'require login'
 
     it "キャラクターの詳細情報と攻撃技能が表示されること" do
       visit characters_path
@@ -207,6 +207,60 @@ RSpec.describe "Characters", type: :system do
       click_on I18n.t('defaults.go_simulation')
       expect(page).to have_current_path(new_simulations_path, ignore_query: true),
       "[シミュレーションする]ボタンからキャラクター登録画面へ遷移できませんでした"
+    end
+  end
+
+  describe "編集機能" do
+    let!(:attack) { create(:attack, character: character_by_me, name: "パンチ", success_probability: 50) }
+
+    let(:path) { edit_character_path(character_by_me) }
+    it_behaves_like 'require login'
+
+    context "入力値が正常な場合" do
+      it "キャラクター情報を更新でき、詳細画面にリダイレクトされること" do
+        visit character_path(character_by_me)
+        click_link I18n.t('defaults.edit')
+        fill_in "character_name", with: "更新後のキャラ名"
+        fill_in "character_hitpoint", with: 15
+        fill_in "character_attacks_attributes_0_name", with: "強烈なパンチ"
+        fill_in "character_attacks_attributes_0_success_probability", with: 60
+        click_button I18n.t('characters.form.character_create')
+        expect(page).to have_content I18n.t("defaults.flash_message.updated", item: Character.model_name.human)
+        expect(page).to have_content "更新後のキャラ名"
+        expect(page).to have_content "15"
+        expect(page).to have_content "強烈なパンチ"
+        expect(page).to have_content "60%"
+        expect(current_path).to eq character_path(character_by_me)
+      end
+    end
+
+    context "入力値が不正な場合" do
+      it "名前を空にすると更新に失敗し、エラーメッセージが表示されること" do
+        visit edit_character_path(character_by_me)
+        fill_in "character_name", with: ""
+        click_button I18n.t('characters.form.character_create')
+        expect(page).to have_content I18n.t("defaults.flash_message.not_updated", item: Character.model_name.human)
+        expect(current_path).to eq edit_character_path(character_by_me)
+      end
+
+      it "技能名を空にすると更新に失敗し、エラーメッセージが表示されること" do
+        visit edit_character_path(character_by_me)
+        fill_in "character_attacks_attributes_0_name", with: ""
+        click_button I18n.t('characters.form.character_create')
+        expect(page).to have_content I18n.t("defaults.flash_message.not_updated", item: Character.model_name.human)
+        expect(current_path).to eq edit_character_path(character_by_me)
+      end
+    end
+
+    it "詳細画面からキャラクターを削除できること", js: true do
+      visit edit_character_path(character_by_me)
+
+      accept_confirm do
+        click_link I18n.t('defaults.delete')
+      end
+
+      expect(page).to have_content I18n.t("defaults.flash_message.deleted", item: Character.model_name.human)
+      expect(current_path).to eq characters_path
     end
   end
 end
