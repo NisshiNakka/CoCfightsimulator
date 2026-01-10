@@ -1,0 +1,92 @@
+<%= form_with model: @character, class: "shadow-sm p-4 border rounded bg-white" do |f| %>
+  <%= render "shared/error_messages", object: f.object %>
+  <div class="mb-3">
+    <%= f.label :name, class: "form-label fw-semibold" %>
+    <%= f.text_field :name, class: "form-control", placeholder: t('.placeholder.name') %>
+  </div>
+
+  <!-- activrecordを使用した画像添付機能用（MVPリリース後実装）
+  <div class="mb-3">
+    <%= f.label :icon, "アイコン画像", class: "form-label fw-semibold" %>
+    <%= f.file_field :icon, class: "form-control" %>
+  </div>
+  -->
+
+  <div class="row g-3 mb-3">
+    <div class="col-6">
+      <%= f.label :hitpoint, class: "form-label fw-semibold" %>
+      <%= f.number_field :hitpoint, class: "form-control", placeholder: "1〜100", min: 1, max: 100 %>
+    </div>
+    <div class="col-6">
+      <%= f.label :dexterity, class: "form-label fw-semibold" %>
+      <%= f.number_field :dexterity, class: "form-control", placeholder: "1〜200", min: 1, max: 200 %>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6">
+      <%= f.label :evasion_rate, class: "form-label fw-semibold" %>
+      <%= f.number_field :evasion_rate, class: "form-control", placeholder: t('.placeholder.probability'), min: 1, max: 100 %>
+    </div>
+    <div class="col-6">
+      <%= f.label :evasion_correction, class: "form-label fw-semibold" %>
+      <%= f.number_field :evasion_correction, class: "form-control", placeholder: "-10〜10", min: -10, max: 10 %>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6">
+      <%= f.label :armor, class: "form-label fw-semibold" %>
+      <%= f.number_field :armor, class: "form-control", placeholder: "0〜20", min: 0, max: 20 %>
+    </div>
+
+    <div class="col-6">
+      <%= f.label :damage_bonus, class: "form-label fw-semibold" %>
+      <%= f.text_field :damage_bonus, class: "form-control", placeholder: t('.placeholder.damage_bonus') %>
+    <div class="form-text small"><%= t('.damage_bonus_note') %></div>
+  </div>
+
+  <div class="mt-5 mb-4">
+    <h3 class="h4 border-bottom pb-2 mb-4"><i class="bi bi-swords me-2"></i><%= t('.attack_title') %></h3>
+    <div class="attack-items">
+      <%= f.fields_for :attacks do |attack_form| %>
+        <div class="p-4 mb-4 border rounded shadow-sm bg-light-subtle">
+          <div class="row g-3">
+            <div class="col-12">
+              <%= attack_form.label :name, class: "form-label fw-bold" %>
+              <%= attack_form.text_field :name, class: "form-control", placeholder: t('.placeholder.attack_name') %>
+            </div>
+
+            <div class="col-md-6">
+              <%= attack_form.label :success_probability, class: 'form-label fw-semibold' %>
+              <%= attack_form.number_field :success_probability, class: 'form-control', placeholder: t('.placeholder.probability'), min: 1, max: 100 %>
+            </div>
+
+            <div class="col-md-6">
+              <%= attack_form.label :dice_correction, class: 'form-label fw-semibold' %>
+              <%= attack_form.number_field :dice_correction, class: 'form-control', placeholder: "-10〜10", min: -10, max: 10 %>
+            </div>
+
+            <div class="col-md-7">
+              <%= attack_form.label :damage, class: 'form-label fw-semibold' %>
+              <%= attack_form.text_field :damage, class: 'form-control', placeholder: t('.placeholder.damage') %>
+              <div class="form-text small"><%= t('.damage_note') %></div>
+            </div>
+
+            <div class="col-md-5">
+              <%= attack_form.label :attack_range, class: "form-label fw-semibold" %>
+              <%= attack_form.select :attack_range, 
+              Attack.attack_ranges_i18n.invert, 
+                { include_blank: false }, 
+                { class: "form-select" } %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="d-grid">
+    <%= f.submit t('.character_create'), class: "btn btn-primary btn-lg shadow-sm" %>
+  </div>
+<% end %>

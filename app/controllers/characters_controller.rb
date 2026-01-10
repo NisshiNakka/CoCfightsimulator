@@ -19,7 +19,11 @@ class CharactersController < ApplicationController
   end
 
   def show
-    @character = Character.find(params[:id])
+    @character = current_user.characters.find(params[:id])
+  end
+
+  def edit
+    @character = current_user.characters.find(params[:id])
   end
 
   def destroy
