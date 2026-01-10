@@ -86,7 +86,10 @@
     </div>
   </div>
 
-  <div class="d-grid">
+  <div class="d-grid gap-3">
     <%= f.submit t('.character_create'), class: "btn btn-primary btn-lg shadow-sm" %>
+    <% if character.persisted? %>
+      <%= link_to t('defaults.delete'), character_path(character), id: "button-delete-#{character.id}", class: "btn btn-outline-danger", data: { turbo_method: :delete, turbo_confirm: t('defaults.delete_confirm') } %>
+    <% end %>  
   </div>
 <% end %>

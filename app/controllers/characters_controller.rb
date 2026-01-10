@@ -24,6 +24,17 @@ class CharactersController < ApplicationController
 
   def edit
     @character = current_user.characters.find(params[:id])
+    @character.attacks.build if @character.attacks.blank?
+  end
+
+  def update
+    @character = current_user.characters.find(params[:id])
+    if @character.update(character_params)
+      redirect_to character_path(@character), success: t("defaults.flash_message.updated", item: Character.model_name.human)
+    else
+      flash.now[:danger] = t("defaults.flash_message.not_updated", item: Character.model_name.human)
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def destroy
