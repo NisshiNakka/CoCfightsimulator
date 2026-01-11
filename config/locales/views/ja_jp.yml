@@ -86,6 +86,7 @@ ja_jp:
       damage_bonus_note: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"
       damage_note: ダイスロール記法で入力してください。
       character_create: キャラクターを登録する
+      character_update: キャラクターを更新する
       attack_title: 攻撃技能
       remove: 攻撃技能を削除
       placeholder:

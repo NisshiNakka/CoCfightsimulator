@@ -151,24 +151,28 @@ RSpec.describe "Characters", type: :system do
         click_button I18n.t('characters.form.character_create')
         expect(current_path).to eq new_character_path
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
       end
 
       it "攻撃技能の名前が空の場合、登録に失敗しエラーメッセージが表示されること" do
         fill_in "character_attacks_attributes_0_name", with: ""
         click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
       end
 
       it "damage_bonusの形式が不正な場合、登録に失敗すること" do
         fill_in "character_damage_bonus", with: "不正なダイス"
         click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
       end
 
       it "攻撃技能のダメージ形式が不正な場合、登録に失敗すること" do
         fill_in "character_attacks_attributes_0_damage", with: "不適切な形式"
         click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
       end
     end
   end
@@ -224,7 +228,7 @@ RSpec.describe "Characters", type: :system do
         fill_in "character_hitpoint", with: 15
         fill_in "character_attacks_attributes_0_name", with: "強烈なパンチ"
         fill_in "character_attacks_attributes_0_success_probability", with: 60
-        click_button I18n.t('characters.form.character_create')
+        click_button I18n.t('characters.form.character_update')
         expect(page).to have_content I18n.t("defaults.flash_message.updated", item: Character.model_name.human)
         expect(page).to have_content "更新後のキャラ名"
         expect(page).to have_content "15"
@@ -238,16 +242,18 @@ RSpec.describe "Characters", type: :system do
       it "名前を空にすると更新に失敗し、エラーメッセージが表示されること" do
         visit edit_character_path(character_by_me)
         fill_in "character_name", with: ""
-        click_button I18n.t('characters.form.character_create')
+        click_button I18n.t('characters.form.character_update')
         expect(page).to have_content I18n.t("defaults.flash_message.not_updated", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
         expect(current_path).to eq edit_character_path(character_by_me)
       end
 
       it "技能名を空にすると更新に失敗し、エラーメッセージが表示されること" do
         visit edit_character_path(character_by_me)
         fill_in "character_attacks_attributes_0_name", with: ""
-        click_button I18n.t('characters.form.character_create')
+        click_button I18n.t('characters.form.character_update')
         expect(page).to have_content I18n.t("defaults.flash_message.not_updated", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
         expect(current_path).to eq edit_character_path(character_by_me)
       end
     end
