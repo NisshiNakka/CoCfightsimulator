@@ -55,7 +55,9 @@ ja_jp:
       start: さっそく始める
   simulations:
     new:
-      test: テスト
+      title: シミュレーションページ
+      select_character: キャラクターを選択
+      not_select: 選択してください
   characters:
     index:
       title: キャラクター一覧

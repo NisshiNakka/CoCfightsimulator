@@ -1,2 +1,30 @@
-<h2><%= t('.test') %></h2>
-<%= render 'shared/dice_result' %>
+<h2><%= t('.title') %></h2>
+<div class="mb-3">
+  <%# 選択時に自動でリクエストを送信するフォーム %>
+  <%= form_with url: new_simulations_path, method: :get, data: { turbo_frame: "character_display" } do |f| %>
+    <%= f.label :character_id, t('.select_character'), class: "form-label" %>
+    <%= f.collection_select :character_id, @characters, :id, :name,
+          { include_blank: t('.not_select') }, 
+          { class: "form-select", onchange: "this.form.requestSubmit()" } %>
+  <% end %>
+</div>
+
+<%# このタグの中身だけが動的に書き換わる %>
+<%= turbo_frame_tag "character_display" do %>
+  <% if @selected_character %>
+    <h3><%= @selected_character.name %></h3>
+    <h3><%= t('activerecord.attributes.character.hitpoint') %> : <%= @selected_character.hitpoint %></h3>
+    <h3><%= t('activerecord.attributes.character.dexterity') %> : <%= @selected_character.dexterity %></h3>
+    <h3><%= t('activerecord.attributes.character.evasion_rate') %> : <%= @selected_character.evasion_rate %></h3>
+    <h3><%= t('activerecord.attributes.character.evasion_correction') %> : <%= @selected_character.evasion_correction %></h3>
+    <h3><%= t('activerecord.attributes.character.armor') %> : <%= @selected_character.armor %></h3>
+    <h3><%= t('activerecord.attributes.character.damage_bonus') %> : <%= @selected_character.damage_bonus %></h3>
+    <h3><%= t('activerecord.models.attack') %></h3>
+    <% @selected_character.attacks.each do |attack| %>
+      <h3><%= t('activerecord.attributes.attack.name') %> : <%= attack.name %></h3>
+      <h3><%= t('activerecord.attributes.attack.success_probability') %> : <%= attack.success_probability %></h3>
+      <h3><%= t('activerecord.attributes.attack.dice_correction') %> : <%= attack.dice_correction %></h3>
+      <h3><%= t('activerecord.attributes.attack.damage') %> : <%= attack.damage %></h3>
+    <% end %>
+  <% end %>
+<% end %>

@@ -1,5 +1,13 @@
 class SimulationsController < ApplicationController
-  def new; end
+  def new
+    @characters = current_user.characters.order(created_at: :desc)
+    # プルダウンで選択されたIDがある場合のみ検索を実行
+    if params[:character_id].present?
+      @selected_character = @characters.includes(:attacks).find(params[:character_id])
+    end
+  end
+
+  def show; end
 
   def roll
     begin
