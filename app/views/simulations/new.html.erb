@@ -1,30 +1,63 @@
 <h2><%= t('.title') %></h2>
-<div class="mb-3">
-  <%# 選択時に自動でリクエストを送信するフォーム %>
+
+<div class="mb-4">
   <%= form_with url: new_simulations_path, method: :get, data: { turbo_frame: "character_display" } do |f| %>
-    <%= f.label :character_id, t('.select_character'), class: "form-label" %>
+    <%= f.label :character_id, t('.select_character'), class: "form-label fw-bold" %>
     <%= f.collection_select :character_id, @characters, :id, :name,
           { include_blank: t('.not_select') }, 
           { class: "form-select", onchange: "this.form.requestSubmit()" } %>
   <% end %>
 </div>
 
-<%# このタグの中身だけが動的に書き換わる %>
 <%= turbo_frame_tag "character_display" do %>
-  <% if @selected_character %>
-    <h3><%= @selected_character.name %></h3>
-    <h3><%= t('activerecord.attributes.character.hitpoint') %> : <%= @selected_character.hitpoint %></h3>
-    <h3><%= t('activerecord.attributes.character.dexterity') %> : <%= @selected_character.dexterity %></h3>
-    <h3><%= t('activerecord.attributes.character.evasion_rate') %> : <%= @selected_character.evasion_rate %></h3>
-    <h3><%= t('activerecord.attributes.character.evasion_correction') %> : <%= @selected_character.evasion_correction %></h3>
-    <h3><%= t('activerecord.attributes.character.armor') %> : <%= @selected_character.armor %></h3>
-    <h3><%= t('activerecord.attributes.character.damage_bonus') %> : <%= @selected_character.damage_bonus %></h3>
-    <h3><%= t('activerecord.models.attack') %></h3>
-    <% @selected_character.attacks.each do |attack| %>
-      <h3><%= t('activerecord.attributes.attack.name') %> : <%= attack.name %></h3>
-      <h3><%= t('activerecord.attributes.attack.success_probability') %> : <%= attack.success_probability %></h3>
-      <h3><%= t('activerecord.attributes.attack.dice_correction') %> : <%= attack.dice_correction %></h3>
-      <h3><%= t('activerecord.attributes.attack.damage') %> : <%= attack.damage %></h3>
-    <% end %>
-  <% end %>
+  <div class="card border-primary-subtle bg-light-subtle shadow-sm" style="min-height: 200px;">
+    <div class="card-body p-4">
+      <% if @selected_character %>
+        
+        <div class="mb-4">
+          <h3 class="h4 border-bottom pb-2 mb-3 fw-bold text-primary">
+            <i class="bi bi-person-fill me-2"></i><%= @selected_character.name %>
+          </h3>
+          <div class="row g-3">
+            <% [
+              ['hitpoint', @selected_character.hitpoint],
+              ['dexterity', @selected_character.dexterity],
+              ['evasion_rate', "#{@selected_character.evasion_rate}%"],
+              ['evasion_correction', @selected_character.evasion_correction],
+              ['armor', @selected_character.armor],
+              ['damage_bonus', @selected_character.damage_bonus]
+            ].each do |attr, value| %>
+              <div class="col-6 col-sm-4">
+                <label class="text-secondary small d-block"><%= t("activerecord.attributes.character.#{attr}") %></label>
+                <span class="fw-semibold"><%= value %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="pt-4 border-top">
+          <h4 class="h6 fw-bold mb-3 text-secondary text-uppercase"><%= t('activerecord.models.attack') %></h4>
+          <div class="row row-cols-1 row-cols-md-3 g-3">
+            <% @selected_character.attacks.first(3).each do |attack| %>
+              <div class="col">
+                <div class="p-3 border rounded bg-white h-100 shadow-sm">
+                  <div class="fw-bold text-dark mb-1"><%= attack.name %></div>
+                  <div class="small text-muted">
+                    <%= t('activerecord.attributes.attack.success_probability') %>: <%= attack.success_probability %>%<br>
+                    <%= t('activerecord.attributes.attack.damage') %>: <%= attack.damage %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+      <% else %>
+        <div class="d-flex flex-column align-items-center justify-content-center text-secondary opacity-75" style="height: 150px;">
+          <i class="bi bi-person-plus fs-1 mb-2"></i>
+          <p class="mb-0"><%= t('.select_character_instruction', default: 'キャラクターを選択してください') %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
 <% end %>
