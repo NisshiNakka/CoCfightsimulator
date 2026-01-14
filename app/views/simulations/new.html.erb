@@ -3,7 +3,7 @@
 <div class="mb-4">
   <%= form_with url: new_simulations_path, method: :get, data: { turbo_frame: "character_display" } do |f| %>
     <%= f.label :character_id, t('.select_character'), class: "form-label fw-bold" %>
-    <%= f.collection_select :character_id, @characters, :id, :name,
+    <%= f.collection_select :character_id, @all_characters, :id, :name,
           { include_blank: t('.not_select') }, 
           { class: "form-select", onchange: "this.form.requestSubmit()" } %>
   <% end %>
@@ -12,46 +12,8 @@
 <%= turbo_frame_tag "character_display" do %>
   <div class="card border-primary-subtle bg-light-subtle shadow-sm" style="min-height: 200px;">
     <div class="card-body p-4">
-      <% if @selected_character %>
-        
-        <div class="mb-4">
-          <h3 class="h4 border-bottom pb-2 mb-3 fw-bold text-primary">
-            <i class="bi bi-person-fill me-2"></i><%= @selected_character.name %>
-          </h3>
-          <div class="row g-3">
-            <% [
-              ['hitpoint', @selected_character.hitpoint],
-              ['dexterity', @selected_character.dexterity],
-              ['evasion_rate', "#{@selected_character.evasion_rate}%"],
-              ['evasion_correction', @selected_character.evasion_correction],
-              ['armor', @selected_character.armor],
-              ['damage_bonus', @selected_character.damage_bonus]
-            ].each do |attr, value| %>
-              <div class="col-6 col-sm-4">
-                <label class="text-secondary small d-block"><%= t("activerecord.attributes.character.#{attr}") %></label>
-                <span class="fw-semibold"><%= value %></span>
-              </div>
-            <% end %>
-          </div>
-        </div>
-
-        <div class="pt-4 border-top">
-          <h4 class="h6 fw-bold mb-3 text-secondary text-uppercase"><%= t('activerecord.models.attack') %></h4>
-          <div class="row row-cols-1 row-cols-md-3 g-3">
-            <% @selected_character.attacks.first(3).each do |attack| %>
-              <div class="col">
-                <div class="p-3 border rounded bg-white h-100 shadow-sm">
-                  <div class="fw-bold text-dark mb-1"><%= attack.name %></div>
-                  <div class="small text-muted">
-                    <%= t('activerecord.attributes.attack.success_probability') %>: <%= attack.success_probability %>%<br>
-                    <%= t('activerecord.attributes.attack.damage') %>: <%= attack.damage %>
-                  </div>
-                </div>
-              </div>
-            <% end %>
-          </div>
-        </div>
-
+      <% if @character %>
+        <%= render "shared/character_card", character: @character %>
       <% else %>
         <div class="d-flex flex-column align-items-center justify-content-center text-secondary opacity-75" style="height: 150px;">
           <i class="bi bi-person-plus fs-1 mb-2"></i>

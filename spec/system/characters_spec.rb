@@ -189,7 +189,7 @@ RSpec.describe "Characters", type: :system do
       expect(page).to have_content I18n.t('characters.show.title')
       expect(page).to have_content character_by_me.name
       expect(page).to have_content "#{character_by_me.evasion_rate}%"
-      expect(page).to have_content I18n.t('characters.show.attack_title')
+      expect(page).to have_content I18n.t('activerecord.models.attack')
       expect(page).to have_content "パンチ"
       expect(page).to have_content "50%"
       expect(page).to have_link I18n.t('defaults.back_index'), href: characters_path

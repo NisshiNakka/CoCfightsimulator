@@ -8,7 +8,6 @@
             class: "img-fluid rounded object-fit-cover", 
             style: "width: 75px; height: 100px;", 
             alt: "アイコン" %>
-            <!-- object-fit-coverを使用して、証明写真のような3:4の比率で画像を切り抜き -->
         </div>
 
         <div class="col">
@@ -17,8 +16,8 @@
               <%= link_to character.name, character_path(character) %>
             </h5>
             <div class="card-text text-secondary small">
-              <%= t('.hitpoint') %><span class="me-3"><%= character.hitpoint %></span>
-              <%= t('.dexterity') %><span><%= character.dexterity %></span>
+              <%= t('activerecord.attributes.character.hitpoint') %> : <span class="me-3"><%= character.hitpoint %></span>
+              <%= t('activerecord.attributes.character.dexterity') %> : <span><%= character.dexterity %></span>
             </div>
           </div>
         </div>
