@@ -26,25 +26,6 @@ ja_jp:
         damage: ダメージ
         attack_range: 攻撃種類
     errors:
-      models:
-        character:
-          attributes:
-            hitpoint:
-              in: は1..100の範囲に含めてください
-            dexterity:
-              in: は1..200の範囲に含めてください
-            evasion_rate:
-              in: は1..100の範囲に含めてください
-            evasion_correction:
-              in: は-10..10の範囲に含めてください
-            armor:
-              in: は0..20の範囲に含めてください
-        attack:
-          attributes:
-            success_probability:
-              in: は1..100の範囲に含めてください
-            dice_correction:
-              in: は-10..10の範囲に含めてください
       messages:
         blank: を入力してください
         too_long: は%{count}文字以内で入力してください
@@ -54,6 +35,7 @@ ja_jp:
         greater_than_or_equal_to: は%{count}以上の値にしてください
         less_than_or_equal_to: は%{count}以下の値にしてください
         invalid: は不正な値です
+        in: は%{count}の範囲に含めてください
   enums:
     attack:
       attack_range:

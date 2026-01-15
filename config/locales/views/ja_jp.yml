@@ -18,20 +18,6 @@ ja_jp:
       create: 登録
       submit: 保存
       update: 更新
-    label:
-      name: キャラクター名
-      hitpoint: HP
-      dexterity: DEX
-      evasion_rate: 回避(%)
-      evasion_correction: ボーナスダイス(回避)
-      armor: 装甲
-      damage_bonus: ダメージボーナス
-      attack:
-        name: 技能名
-        success_probability: 成功率
-        dice_correction: ボーナスダイス
-        damage: ダメージ
-        attack_range: 攻撃種類
   header:
     login: ログイン
     logout: ログアウト
@@ -55,37 +41,25 @@ ja_jp:
       start: さっそく始める
   simulations:
     new:
-      test: テスト
+      title: シミュレーションページ
+      select_character: キャラクターを選択
+      not_select: 選択してください
+      select_character_instruction: キャラクターを選択してください
   characters:
     index:
       title: キャラクター一覧
       no_record: まだ作成されたキャラクターがいません。
-      character_create: キャラクター登録
-    character:
-      hitpoint: "HP :"
-      dexterity: "DEX :"
     new:
       title: キャラクター登録
     show:
       title: キャラクター詳細
-      attack_title: 攻撃技能
-      hitpoint: HP
-      dexterity: DEX
-      evasion_rate: 回避
-      evasion_correction: ボーナスダイス(回避)
-      armor: 装甲
-      damage_bonus: ダメージボーナス
-      name: 技能名
-      success_probability: "成功率 :"
-      dice_correction: "ボーナスダイス(攻撃技能) :"
-      damage: "ダメージ :"
-      attack_range: "攻撃種類 :"
     edit:
       title: キャラクター編集
     form:
       damage_bonus_note: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"
       damage_note: ダイスロール記法で入力してください。
       character_create: キャラクターを登録する
+      character_update: キャラクターを更新する
       attack_title: 攻撃技能
       remove: 攻撃技能を削除
       placeholder:

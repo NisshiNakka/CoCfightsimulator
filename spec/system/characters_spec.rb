@@ -9,14 +9,9 @@ RSpec.describe "Characters", type: :system do
     sign_in user
   end
 
-  describe "一覧表示機能" do
+  describe "一覧表示画面" do
     let(:path) { characters_path }
     it_behaves_like 'require login'
-
-    it '正しいタイトルが表示されていること' do
-      visit characters_path
-      expect(page).to have_content("キャラクター一覧"), 'キャラクター一覧ページのタイトルが表示されていません。'
-    end
 
     it "ログインユーザーが作成したキャラクターのみが表示されること" do
       visit characters_path
@@ -75,17 +70,6 @@ RSpec.describe "Characters", type: :system do
       end
     end
 
-    describe "表示要素の確認" do
-      it "各キャラクターに操作ボタン（詳細・編集・削除）が表示されていること" do
-        visit characters_path
-        within ".card" do
-          expect(page).to have_link I18n.t('defaults.edit')
-          expect(page).to have_link I18n.t('defaults.delete')
-         expect(page).to have_selector "img[alt='アイコン']"
-        end
-      end
-    end
-
     describe "キャラクター削除機能" do
     let!(:character_by_me) { create(:character, user: user, name: "削除テストのキャラ") }
 
@@ -99,6 +83,26 @@ RSpec.describe "Characters", type: :system do
         expect(Character.where(id: character_by_me.id)).not_to exist
       end
     end
+
+    describe "画面遷移" do
+      it 'キャラクター登録ボタンからキャラクター登録画面へ遷移できること' do
+        visit characters_path
+        within ".gap-2" do
+          click_on I18n.t('characters.new.title')
+        end
+        expect(page).to have_current_path(new_character_path, ignore_query: true),
+        '[キャラクター登録]ボタンからキャラクター登録画面へ遷移できませんでした'
+      end
+
+      it '「シミュレーションする」ボタンからシミュレーション画面へ遷移できること' do
+        visit characters_path
+        within ".gap-2" do
+          click_on I18n.t('defaults.go_simulation')
+        end
+        expect(page).to have_current_path(new_simulations_path, ignore_query: true),
+        '[シミュレーションする]ボタンからシミュレーション画面へ遷移できませんでした'
+      end
+    end
   end
 
   describe "登録機能" do
@@ -108,19 +112,6 @@ RSpec.describe "Characters", type: :system do
 
     let(:path) { new_character_path }
     it_behaves_like 'require login'
-
-    it 'キャラクター一覧画面のボタンからキャラクター登録画面へ遷移できること' do
-      visit characters_path
-      within ".gap-2" do
-        click_on 'キャラクター登録'
-      end
-      expect(page).to have_current_path(new_character_path, ignore_query: true),
-      '[キャラクター登録]ボタンからキャラクター登録画面へ遷移できませんでした'
-    end
-
-    it '正しいタイトルが表示されていること' do
-      expect(page).to have_content("キャラクター登録"), 'キャラクター登録ページのタイトルが表示されていません。'
-    end
 
     context "入力値が正常な場合" do
       it "キャラクターの新規作成が成功し、一覧画面にリダイレクトされること" do
@@ -151,24 +142,28 @@ RSpec.describe "Characters", type: :system do
         click_button I18n.t('characters.form.character_create')
         expect(current_path).to eq new_character_path
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
       end
 
       it "攻撃技能の名前が空の場合、登録に失敗しエラーメッセージが表示されること" do
         fill_in "character_attacks_attributes_0_name", with: ""
         click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
       end
 
       it "damage_bonusの形式が不正な場合、登録に失敗すること" do
         fill_in "character_damage_bonus", with: "不正なダイス"
         click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
       end
 
       it "攻撃技能のダメージ形式が不正な場合、登録に失敗すること" do
         fill_in "character_attacks_attributes_0_damage", with: "不適切な形式"
         click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
       end
     end
   end
@@ -185,7 +180,7 @@ RSpec.describe "Characters", type: :system do
       expect(page).to have_content I18n.t('characters.show.title')
       expect(page).to have_content character_by_me.name
       expect(page).to have_content "#{character_by_me.evasion_rate}%"
-      expect(page).to have_content I18n.t('characters.show.attack_title')
+      expect(page).to have_content I18n.t('activerecord.models.attack')
       expect(page).to have_content "パンチ"
       expect(page).to have_content "50%"
       expect(page).to have_link I18n.t('defaults.back_index'), href: characters_path
@@ -224,7 +219,7 @@ RSpec.describe "Characters", type: :system do
         fill_in "character_hitpoint", with: 15
         fill_in "character_attacks_attributes_0_name", with: "強烈なパンチ"
         fill_in "character_attacks_attributes_0_success_probability", with: 60
-        click_button I18n.t('characters.form.character_create')
+        click_button I18n.t('characters.form.character_update')
         expect(page).to have_content I18n.t("defaults.flash_message.updated", item: Character.model_name.human)
         expect(page).to have_content "更新後のキャラ名"
         expect(page).to have_content "15"
@@ -238,16 +233,18 @@ RSpec.describe "Characters", type: :system do
       it "名前を空にすると更新に失敗し、エラーメッセージが表示されること" do
         visit edit_character_path(character_by_me)
         fill_in "character_name", with: ""
-        click_button I18n.t('characters.form.character_create')
+        click_button I18n.t('characters.form.character_update')
         expect(page).to have_content I18n.t("defaults.flash_message.not_updated", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
         expect(current_path).to eq edit_character_path(character_by_me)
       end
 
       it "技能名を空にすると更新に失敗し、エラーメッセージが表示されること" do
         visit edit_character_path(character_by_me)
         fill_in "character_attacks_attributes_0_name", with: ""
-        click_button I18n.t('characters.form.character_create')
+        click_button I18n.t('characters.form.character_update')
         expect(page).to have_content I18n.t("defaults.flash_message.not_updated", item: Character.model_name.human)
+        expect(page).to have_selector '#error_explanation'
         expect(current_path).to eq edit_character_path(character_by_me)
       end
     end

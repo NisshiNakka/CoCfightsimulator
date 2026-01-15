@@ -21,9 +21,7 @@
       <%= f.label :dexterity, class: "form-label fw-semibold" %>
       <%= f.number_field :dexterity, class: "form-control", placeholder: "1〜200", min: 1, max: 200 %>
     </div>
-  </div>
 
-  <div class="row g-3 mb-3">
     <div class="col-6">
       <%= f.label :evasion_rate, class: "form-label fw-semibold" %>
       <%= f.number_field :evasion_rate, class: "form-control", placeholder: t('.placeholder.probability'), min: 1, max: 100 %>
@@ -32,9 +30,7 @@
       <%= f.label :evasion_correction, class: "form-label fw-semibold" %>
       <%= f.number_field :evasion_correction, class: "form-control", placeholder: "-10〜10", min: -10, max: 10 %>
     </div>
-  </div>
 
-  <div class="row g-3 mb-3">
     <div class="col-6">
       <%= f.label :armor, class: "form-label fw-semibold" %>
       <%= f.number_field :armor, class: "form-control", placeholder: "0〜20", min: 0, max: 20 %>
@@ -87,9 +83,11 @@
   </div>
 
   <div class="d-grid gap-3">
-    <%= f.submit t('.character_create'), class: "btn btn-primary btn-lg shadow-sm" %>
     <% if character.persisted? %>
+      <%= f.submit t('.character_update'), class: "btn btn-primary btn-lg shadow-sm" %>
       <%= link_to t('defaults.delete'), character_path(character), id: "button-delete-#{character.id}", class: "btn btn-outline-danger", data: { turbo_method: :delete, turbo_confirm: t('defaults.delete_confirm') } %>
+    <% else %>
+      <%= f.submit t('.character_create'), class: "btn btn-primary btn-lg shadow-sm" %>
     <% end %>  
   </div>
 <% end %>
