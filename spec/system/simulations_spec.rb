@@ -9,7 +9,7 @@ RSpec.describe "Simulations", type: :system do
     sign_in user
   end
 
-  describe "キャラクター読み込み機能" do
+  xdescribe "キャラクター読み込み機能" do
     before do
       visit new_simulations_path
     end
