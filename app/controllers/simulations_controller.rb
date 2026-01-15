@@ -3,7 +3,7 @@ class SimulationsController < ApplicationController
     @all_characters = current_user.characters.order(created_at: :desc)
     # プルダウンで選択されたIDがある場合のみ検索を実行
     if params[:character_id].present?
-      @character = @all_characters.includes(:attacks).find(params[:character_id])
+      @select_character = @all_characters.includes(:attacks).find(params[:character_id])
     end
   end
 

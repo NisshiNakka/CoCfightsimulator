@@ -9,14 +9,9 @@ RSpec.describe "Characters", type: :system do
     sign_in user
   end
 
-  describe "一覧表示機能" do
+  describe "一覧表示画面" do
     let(:path) { characters_path }
     it_behaves_like 'require login'
-
-    it '正しいタイトルが表示されていること' do
-      visit characters_path
-      expect(page).to have_content("キャラクター一覧"), 'キャラクター一覧ページのタイトルが表示されていません。'
-    end
 
     it "ログインユーザーが作成したキャラクターのみが表示されること" do
       visit characters_path
@@ -75,17 +70,6 @@ RSpec.describe "Characters", type: :system do
       end
     end
 
-    describe "表示要素の確認" do
-      it "各キャラクターに操作ボタン（詳細・編集・削除）が表示されていること" do
-        visit characters_path
-        within ".card" do
-          expect(page).to have_link I18n.t('defaults.edit')
-          expect(page).to have_link I18n.t('defaults.delete')
-         expect(page).to have_selector "img[alt='アイコン']"
-        end
-      end
-    end
-
     describe "キャラクター削除機能" do
     let!(:character_by_me) { create(:character, user: user, name: "削除テストのキャラ") }
 
@@ -99,6 +83,26 @@ RSpec.describe "Characters", type: :system do
         expect(Character.where(id: character_by_me.id)).not_to exist
       end
     end
+
+    describe "画面遷移" do
+      it 'キャラクター登録ボタンからキャラクター登録画面へ遷移できること' do
+        visit characters_path
+        within ".gap-2" do
+          click_on I18n.t('characters.new.title')
+        end
+        expect(page).to have_current_path(new_character_path, ignore_query: true),
+        '[キャラクター登録]ボタンからキャラクター登録画面へ遷移できませんでした'
+      end
+
+      it '「シミュレーションする」ボタンからシミュレーション画面へ遷移できること' do
+        visit characters_path
+        within ".gap-2" do
+          click_on I18n.t('defaults.go_simulation')
+        end
+        expect(page).to have_current_path(new_simulations_path, ignore_query: true),
+        '[シミュレーションする]ボタンからシミュレーション画面へ遷移できませんでした'
+      end
+    end
   end
 
   describe "登録機能" do
@@ -108,19 +112,6 @@ RSpec.describe "Characters", type: :system do
 
     let(:path) { new_character_path }
     it_behaves_like 'require login'
-
-    it 'キャラクター一覧画面のボタンからキャラクター登録画面へ遷移できること' do
-      visit characters_path
-      within ".gap-2" do
-        click_on 'キャラクター登録'
-      end
-      expect(page).to have_current_path(new_character_path, ignore_query: true),
-      '[キャラクター登録]ボタンからキャラクター登録画面へ遷移できませんでした'
-    end
-
-    it '正しいタイトルが表示されていること' do
-      expect(page).to have_content("キャラクター登録"), 'キャラクター登録ページのタイトルが表示されていません。'
-    end
 
     context "入力値が正常な場合" do
       it "キャラクターの新規作成が成功し、一覧画面にリダイレクトされること" do

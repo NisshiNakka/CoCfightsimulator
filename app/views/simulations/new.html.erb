@@ -1,4 +1,4 @@
-<h2><%= t('.title') %></h2>
+<h1 class="text-center mt-4 mb-4 fw-bold"><%= t('.title') %></h1>
 
 <div class="mb-4">
   <%= form_with url: new_simulations_path, method: :get, data: { turbo_frame: "character_display" } do |f| %>
@@ -12,12 +12,12 @@
 <%= turbo_frame_tag "character_display" do %>
   <div class="card border-primary-subtle bg-light-subtle shadow-sm" style="min-height: 200px;">
     <div class="card-body p-4">
-      <% if @character %>
-        <%= render "shared/character_card", character: @character %>
+      <% if @select_character %>
+        <%= render "shared/character_card", character: @select_character %>
       <% else %>
         <div class="d-flex flex-column align-items-center justify-content-center text-secondary opacity-75" style="height: 150px;">
           <i class="bi bi-person-plus fs-1 mb-2"></i>
-          <p class="mb-0"><%= t('.select_character_instruction', default: 'キャラクターを選択してください') %></p>
+          <p class="mb-0"><%= t('.select_character_instruction') %></p>
         </div>
       <% end %>
     </div>

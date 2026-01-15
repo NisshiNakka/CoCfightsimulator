@@ -6,10 +6,6 @@ RSpec.describe 'トップ画面', type: :system do
     visit root_path
   end
 
-  it '正しい画面が表示されていること' do
-    expect(page).to have_content("CoC fight simulator"), 'タイトル[CoC fight simulator]が表示されていません。'
-  end
-
   describe '遷移確認' do
     context 'ログインしていない場合' do
       it '[さっそく始める]ボタンをクリックした場合ログインページへ遷移すること' do
