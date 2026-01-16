@@ -1,10 +1,16 @@
 class SimulationsController < ApplicationController
   def new
     @all_characters = current_user.characters.order(created_at: :desc)
-    # プルダウンで選択されたIDがある場合のみ検索を実行
-    if params[:character_id].present?
-      @select_character = @all_characters.includes(:attacks).find(params[:character_id])
+
+    if params.has_key?(:enemy_id)
+      session[:enemy_id] = params[:enemy_id].presence
     end
+    if params.has_key?(:ally_id)
+      session[:ally_id] = params[:ally_id].presence
+    end
+
+    @enemy_character = @all_characters.includes(:attacks).find_by(id: session[:enemy_id])
+    @ally_character = @all_characters.includes(:attacks).find_by(id: session[:ally_id])
   end
 
   def show; end
