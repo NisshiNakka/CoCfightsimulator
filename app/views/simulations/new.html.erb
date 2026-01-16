@@ -9,8 +9,7 @@
           
           <div class="mb-4">
             <%= form_with url: new_simulations_path, method: :get, data: { turbo_frame: "enemy_display" } do |f| %>
-              <%= f.hidden_field :side, value: "enemy" %>
-              <%= f.collection_select :character_id, @all_characters, :id, :name,
+              <%= f.collection_select :enemy_id, @all_characters, :id, :name,
                     { include_blank: t('.not_select') }, 
                     { class: "form-select border-danger", onchange: "this.form.requestSubmit()" } %>
             <% end %>
@@ -39,8 +38,7 @@
           
           <div class="mb-4">
             <%= form_with url: new_simulations_path, method: :get, data: { turbo_frame: "ally_display" } do |f| %>
-              <%= f.hidden_field :side, value: "ally" %>
-              <%= f.collection_select :character_id, @all_characters, :id, :name,
+              <%= f.collection_select :ally_id, @all_characters, :id, :name,
                     { include_blank: t('.not_select') }, 
                     { class: "form-select border-primary", onchange: "this.form.requestSubmit()" } %>
             <% end %>
