@@ -17,10 +17,10 @@ RSpec.describe "Simulations", type: :system do
     end
 
     it "初期表示では敵・味方の両方にキャラクター選択を促すメッセージが表示されていること" do
-      within "turbo-frame#enemy_display" do
+      within "#enemy_display" do
         expect(page).to have_content I18n.t('simulations.new.select_character_instruction')
       end
-      within "turbo-frame#ally_display" do
+      within "#ally_display" do
         expect(page).to have_content I18n.t('simulations.new.select_character_instruction')
       end
     end
@@ -29,12 +29,12 @@ RSpec.describe "Simulations", type: :system do
       within ".card.border-danger" do
         select "キャラクターA", from: "enemy_id"
       end
-      within "turbo-frame#enemy_display" do
+      within "#enemy_display" do
         expect(page).to have_content "キャラクターA"
         expect(page).to have_content "パンチ"
       end
 
-      within "turbo-frame#ally_display" do
+      within "#ally_display" do
         expect(page).to have_content I18n.t('simulations.new.select_character_instruction')
         expect(page).not_to have_content "キャラクターA"
       end
@@ -44,12 +44,12 @@ RSpec.describe "Simulations", type: :system do
       within ".card.border-primary" do
         select "キャラクターB", from: "ally_id"
       end
-      within "turbo-frame#ally_display" do
+      within "#ally_display" do
         expect(page).to have_content "キャラクターB"
         expect(page).to have_content "キック"
       end
 
-      within "turbo-frame#enemy_display" do
+      within "#enemy_display" do
         expect(page).to have_content I18n.t('simulations.new.select_character_instruction')
         expect(page).not_to have_content "キャラクターB"
       end
@@ -70,12 +70,12 @@ RSpec.describe "Simulations", type: :system do
       within(".card.border-primary") { select "キャラクターB", from: "ally_id" }
 
       within(".card.border-danger") { select I18n.t('simulations.new.not_select'), from: "enemy_id" }
-      within "turbo-frame#enemy_display" do
+      within "#enemy_display" do
         expect(page).to have_content I18n.t('simulations.new.select_character_instruction')
         expect(page).not_to have_content "キャラクターA"
       end
 
-      within "turbo-frame#ally_display" do
+      within "#ally_display" do
         expect(page).to have_content "キャラクターB"
       end
     end

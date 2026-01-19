@@ -8,14 +8,14 @@
           <h3 class="h4 fw-bold text-danger mb-4 text-center"><%= t('.enemy_character') %></h3>
           
           <div class="mb-4">
-            <%= form_with url: new_simulations_path, method: :get, data: { turbo_frame: "enemy_display" } do |f| %>
+            <%= form_with url: new_simulations_path, method: :get, data: { turbo: true } do |f| %>
               <%= f.collection_select :enemy_id, @all_characters, :id, :name,
-                    { include_blank: t('.not_select') }, 
+                    { include_blank: t('.not_select'), selected: session[:enemy_id] },
                     { class: "form-select border-danger", onchange: "this.form.requestSubmit()" } %>
             <% end %>
           </div>
 
-          <%= turbo_frame_tag "enemy_display" do %>
+          <div id="enemy_display">
             <div class="bg-white rounded p-3 border" style="min-height: 250px;">
               <% if @enemy_character %>
                 <%= render "shared/character_card", character: @enemy_character %>
@@ -26,7 +26,7 @@
                 </div>
               <% end %>
             </div>
-          <% end %>
+          </div>
         </div>
       </div>
     </div>
@@ -37,14 +37,14 @@
           <h3 class="h4 fw-bold text-primary mb-4 text-center"><%= t('.ally_character') %></h3>
           
           <div class="mb-4">
-            <%= form_with url: new_simulations_path, method: :get, data: { turbo_frame: "ally_display" } do |f| %>
+            <%= form_with url: new_simulations_path, method: :get, data: { turbo: true } do |f| %>
               <%= f.collection_select :ally_id, @all_characters, :id, :name,
-                    { include_blank: t('.not_select') }, 
+                    { include_blank: t('.not_select'), selected: session[:ally_id] }, 
                     { class: "form-select border-primary", onchange: "this.form.requestSubmit()" } %>
             <% end %>
           </div>
 
-          <%= turbo_frame_tag "ally_display" do %>
+          <div id="ally_display">
             <div class="bg-white rounded p-3 border" style="min-height: 250px;">
               <% if @ally_character %>
                 <%= render "shared/character_card", character: @ally_character %>
@@ -55,7 +55,7 @@
                 </div>
               <% end %>
             </div>
-          <% end %>
+          </div>
         </div>
       </div>
     </div>
@@ -63,5 +63,9 @@
 
   <div class="d-flex justify-content-center mt-5 mb-5">
     <%= link_to t('.start_simulation'), '#', class: 'btn btn-success btn-lg px-5 shadow fw-bold' %>
+  </div>
+
+  <div id="dice_roll_area" class="container"> 
+    <%= render "shared/dice_result" %>
   </div>
 </div>

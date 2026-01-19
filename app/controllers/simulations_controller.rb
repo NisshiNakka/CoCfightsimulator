@@ -11,6 +11,11 @@ class SimulationsController < ApplicationController
 
     @enemy_character = @all_characters.includes(:attacks).find_by(id: session[:enemy_id])
     @ally_character = @all_characters.includes(:attacks).find_by(id: session[:ally_id])
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def show; end
