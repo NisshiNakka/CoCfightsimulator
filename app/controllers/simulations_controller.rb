@@ -100,7 +100,11 @@ class SimulationsController < ApplicationController
       @result_text = "#{attacker.name}の攻撃成功(#{attack_result.text}) ── しかし#{defender.name}が回避(#{evasion_result.text})"
       @success = false
     else
-      damage_roll = cthulhu7th.eval("#{use_attack.damage}+#{attacker.damage_bonus}")
+      if use_attack.proximity?
+        damage_roll = cthulhu7th.eval("#{use_attack.damage}+#{attacker.damage_bonus}")
+      else
+        damage_roll = cthulhu7th.eval(use_attack.damage)
+      end
       @status = "成功"
       @result_text = "#{attacker.name}の攻撃成功(#{attack_result.text}) ── #{defender.name}は回避失敗(#{evasion_result.text}) ── ダメージ: #{damage_roll.text}"
       @success = true
