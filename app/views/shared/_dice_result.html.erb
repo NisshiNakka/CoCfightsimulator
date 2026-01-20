@@ -19,42 +19,48 @@
   <% if @ally_character %>
     <div class="mt-3 p-3 border rounded bg-light">
       <h5><%= @ally_character.name %> のクイックアクション</h5>
-      <%# 回避値を元にコマンドを生成し、button_toで送信する %>
       <%= button_to "回避ロールを実行 (値:#{@ally_character.evasion_rate})", 
             roll_path, 
             params: { command: "CC<=#{@ally_character.evasion_rate}" }, 
             method: :post, 
             class: "btn btn-outline-primary",
             data: { turbo_stream: true } %>
-      <% @ally_character.attacks.each do |attack| %>
-        <%= button_to "攻撃ロールを実行 (値:#{attack.success_probability})", 
-              roll_path, 
-              params: { command: "CC<=#{attack.success_probability}" }, 
-              method: :post, 
-              class: "btn btn-outline-primary",
-              data: { turbo_stream: true } %>
-      <% end %>
     </div>
   <% end %>
   <% if @enemy_character %>
     <div class="mt-3 p-3 border rounded bg-light">
       <h5><%= @enemy_character.name %> のクイックアクション</h5>
-      <%# 回避値を元にコマンドを生成し、button_toで送信する %>
       <%= button_to "回避ロールを実行 (値:#{@enemy_character.evasion_rate})", 
             roll_path, 
             params: { command: "CC<=#{@enemy_character.evasion_rate}" }, 
             method: :post, 
             class: "btn btn-outline-primary",
             data: { turbo_stream: true } %>
-      <% @enemy_character.attacks.each do |attack| %>
-        <%= button_to "攻撃ロールを実行 (値:#{attack.success_probability})", 
-              roll_path, 
-              params: { command: "CC<=#{attack.success_probability}" }, 
+    </div>
+  <% end %>
+  <% if @ally_character && @enemy_character %>
+    <div class="mt-3 p-3 border rounded bg-light">
+      <% @ally_character.attacks.each do |attack| %>
+        <%= button_to "#{attack.name}で攻撃 (値:#{attack.success_probability})", 
+              combat_roll_path,
+              params: { skill_value: attack.success_probability, attacker_side: "ally" }, 
               method: :post, 
-              class: "btn btn-outline-primary",
+              class: "btn btn-outline-danger",
               data: { turbo_stream: true } %>
       <% end %>
     </div>
+    <div class="mt-3 p-3 border rounded bg-light">
+      <% @enemy_character.attacks.each do |attack| %>
+        <%= button_to "#{attack.name}で攻撃 (値:#{attack.success_probability})", 
+              combat_roll_path,
+              params: { skill_value: attack.success_probability, attacker_side: "enemy" }, 
+              method: :post, 
+              class: "btn btn-outline-danger",
+              data: { turbo_stream: true } %>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="mb-0"><%= t('.select_character_instruction') %></p>
   <% end %>
 
   <div id="dice_result", class="result-area mt-4">
