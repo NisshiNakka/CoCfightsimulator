@@ -82,14 +82,27 @@ RSpec.describe Attack, type: :model do
       end
 
       context 'フォーマット確認' do
-        it '正しいダイスロール記法（数値のみ）の場合は有効であること' do
-          attack.damage = "10"
-          expect(attack).to be_valid
+        it '正しいダイスロール記法（数値のみ）の場合は無効であること' do
+          attack.damage = "1"
+          expect(attack).to be_invalid
+          expect(attack.errors[:damage]).to include("は正しいダイスロール記法で入力してください（例: 1d6, 1d6+3, 1d6+1d3, 1d6-1d3）")
         end
 
         it '正しいダイスロール記法（1d6）の場合は有効であること' do
           attack.damage = "1d6"
           expect(attack).to be_valid
+        end
+
+        it '正しいダイスロール記法（1d6(+/-)整数）の場合は有効であること' do
+          attack = Attack.new(damage: '1d6-3')
+          attack.valid?
+          expect(attack.errors[:damage]).to be_empty
+        end
+
+        it '正しいダイスロール記法(1d6(+/-)1dx）の場合は有効であること' do
+          attack = Attack.new(damage: '1d6+1d3')
+          attack.valid?
+          expect(attack.errors[:damage]).to be_empty
         end
 
         it '正しいダイスロール記法（複合）の場合は有効であること' do
@@ -100,13 +113,13 @@ RSpec.describe Attack, type: :model do
         it '不正な記法（文字が含まれる）の場合は無効であること' do
           attack.damage = "1d6+invalid"
           expect(attack).to be_invalid
-          expect(attack.errors[:damage]).to include("は正しいダイスロール記法で入力してください（例: 1, 1d6, 1d6+1d3, 1d6-1d3）")
+          expect(attack.errors[:damage]).to include("は正しいダイスロール記法で入力してください（例: 1d6, 1d6+3, 1d6+1d3, 1d6-1d3）")
         end
 
         it '負のダイスロールの場合は無効であること' do
           attack.damage = "-1d6"
           expect(attack).to be_invalid
-          expect(attack.errors[:damage]).to include("は正しいダイスロール記法で入力してください（例: 1, 1d6, 1d6+1d3, 1d6-1d3）")
+          expect(attack.errors[:damage]).to include("は正しいダイスロール記法で入力してください（例: 1d6, 1d6+3, 1d6+1d3, 1d6-1d3）")
         end
       end
     end
