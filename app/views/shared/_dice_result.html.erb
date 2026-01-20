@@ -43,7 +43,10 @@
       <% @ally_character.attacks.each do |attack| %>
         <%= button_to "#{attack.name}で攻撃 (値:#{attack.success_probability})", 
               combat_roll_path,
-              params: { skill_value: attack.success_probability, skill_correction: attack.dice_correction, attacker_side: "ally" }, 
+              params: 
+              { skill_value: attack.success_probability,
+              attack_id: attack.id,
+              attacker_side: "ally" }, 
               method: :post, 
               class: "btn btn-outline-danger",
               data: { turbo_stream: true } %>
@@ -53,7 +56,9 @@
       <% @enemy_character.attacks.each do |attack| %>
         <%= button_to "#{attack.name}で攻撃 (値:#{attack.success_probability})", 
               combat_roll_path,
-              params: { skill_value: attack.success_probability, skill_correction: attack.dice_correction, attacker_side: "enemy" }, 
+              params: { skill_value: attack.success_probability,
+              attack_id: attack.id,
+              attacker_side: "enemy" }, 
               method: :post, 
               class: "btn btn-outline-danger",
               data: { turbo_stream: true } %>

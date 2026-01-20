@@ -57,8 +57,9 @@ class SimulationsController < ApplicationController
       attacker = current_user.characters.find_by(id: session[:enemy_id])
       defender = current_user.characters.find_by(id: session[:ally_id])
     end
+    use_attack = attacker.attacks.find_by(id: params[:attack_id])
 
-    attack_judgment(attacker, defender, params[:skill_value], params[:skill_correction])
+    attack_judgment(attacker, defender, params[:skill_value], use_attack)
 
     respond_to do |format|
       format.turbo_stream { render :roll } # roll.turbo_stream.erbを再利用
@@ -67,9 +68,9 @@ class SimulationsController < ApplicationController
 
   private
 
-  def attack_judgment(attacker, defender, skill_value, skill_correction)
+  def attack_judgment(attacker, defender, skill_value, use_attack)
     cthulhu7th = BCDice.game_system_class("Cthulhu7th")
-    attack_result = cthulhu7th.eval("CC#{skill_correction}<=#{skill_value}")
+    attack_result = cthulhu7th.eval("CC#{use_attack.dice_correction}<=#{skill_value}")
 
     unless attack_result.success?
       @status = "失敗"
@@ -99,8 +100,8 @@ class SimulationsController < ApplicationController
       @result_text = "#{attacker.name}の攻撃成功(#{attack_result.text}) ── しかし#{defender.name}が回避(#{evasion_result.text})"
       @success = false
     else
-      @status = "成功"
-      @result_text = "#{attacker.name}の攻撃成功(#{attack_result.text}) ── #{defender.name}は回避失敗(#{evasion_result.text})"
+      damage_roll = cthulhu7th.eval(use_attack.damage)
+      @result_text = "#{attacker.name}の攻撃成功(#{attack_result.text}) ── #{defender.name}は回避失敗(#{evasion_result.text}) ── ダメージ: #{damage_roll.text}"
       @success = true
     end
   end
