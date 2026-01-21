@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   root "static_pages#top"
   resource :simulations
   post "roll", to: "simulations#roll"
+  post "combat_roll", to: "simulations#combat_roll"
   resources :characters
 
   # Defines the root path route ("/")

@@ -1,0 +1,3 @@
+<%= turbo_stream.update "enemy_display", partial: "shared/character_card", locals: { character: @enemy_character, show_edit: false } %>
+<%= turbo_stream.update "ally_display", partial: "shared/character_card", locals: { character: @ally_character, show_edit: false } %>
+<%= turbo_stream.update "dice_roll_area", partial: "shared/dice_result" %>
