@@ -87,7 +87,7 @@ RSpec.describe "Simulations", type: :system do
     end
 
     it "両方のキャラクターを選択すると攻撃ボタンが表示され、攻撃を実行できること", js: true do
-      expect(page).not_to have_button "パンチで攻撃"
+      expect(page).not_to have_button "同時シミュレート"
 
       within ".card.border-danger" do
         select "キャラクターB", from: "enemy_id"
@@ -96,8 +96,7 @@ RSpec.describe "Simulations", type: :system do
         select "キャラクターA", from: "ally_id"
       end
 
-      expect(page).to have_button "パンチで攻撃"
-      expect(page).to have_button "キックで攻撃"
+      expect(page).to have_button "同時シミュレート"
     end
 
     it "攻撃ボタンのパラメータが正しく送信されていること", js: true do
@@ -110,11 +109,11 @@ RSpec.describe "Simulations", type: :system do
     it "片方のキャラクターを解除すると、攻撃ボタンが消えること", js: true do
       within(".card.border-danger") { select "キャラクターB", from: "enemy_id" }
       within(".card.border-primary") { select "キャラクターA", from: "ally_id" }
-      expect(page).to have_button "#{attack_2.name}で攻撃"
+      expect(page).to have_button "同時シミュレート"
 
       within(".card.border-danger") { select I18n.t('simulations.new.not_select'), from: "enemy_id" }
 
-      expect(page).not_to have_button "キックで攻撃"
+      expect(page).not_to have_button "同時シミュレート"
       within "#dice_roll_area" do
         expect(page).to have_content "Select Character Instruction"
       end

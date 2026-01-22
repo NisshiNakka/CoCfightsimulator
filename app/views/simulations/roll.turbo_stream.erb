@@ -1,25 +1,19 @@
 <%= turbo_stream.update "dice_result" do %>
-  <div class="alert <%= @success ? 'alert-success' : 'alert-danger' %> result-box">
-    <h4>【<%= @status %>】</h4>
-    <p><%= @result_text %></p>
-
-    <!--
-    <h3>ロール結果</h3>
-    <p class="result-text"><%= @result_text %></p>
-    
-    <% if @critical %>
-      <span class="badge bg-warning">クリティカル！</span>
-    <% elsif @fumble %>
-      <span class="badge bg-danger">ファンブル！</span>
-    <% elsif @regular %>
-      <span class="badge bg-success">成功</span>
-    <% elsif @hard %>
-      <span class="badge bg-info">ハード成功</span>
-    <% elsif @extreme %>
-      <span class="badge bg-purple">イクストリーム</span>
-    <% else %>
-      <span class="badge bg-danger">失敗</span>
-    <% end %>
-    -->
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="alert <%= @ally_res[:success] ? 'alert-success' : 'alert-warning' %> border-start border-4">
+        <h5 class="fw-bold">味方の攻撃 → 敵</h5>
+        <p class="mb-1">【<%= @ally_res[:status] %>】</p>
+        <small><%= @ally_res[:text] %></small>
+      </div>
+    </div>
+      
+    <div class="col-md-6">
+      <div class="alert <%= @enemy_res[:success] ? 'alert-danger' : 'alert-info' %> border-start border-4">
+        <h5 class="fw-bold">敵の攻撃 → 味方</h5>
+        <p class="mb-1">【<%= @enemy_res[:status] %>】</p>
+        <small><%= @enemy_res[:text] %></small>
+      </div>
+    </div>
   </div>
 <% end %>

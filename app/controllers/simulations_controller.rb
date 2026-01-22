@@ -50,16 +50,13 @@ class SimulationsController < ApplicationController
   end
 
   def combat_roll
-    if params[:attacker_side] == "ally"
-      attacker = current_user.characters.find_by(id: session[:ally_id])
-      defender = current_user.characters.find_by(id: session[:enemy_id])
-    else
-      attacker = current_user.characters.find_by(id: session[:enemy_id])
-      defender = current_user.characters.find_by(id: session[:ally_id])
-    end
-    use_attack = attacker.attacks.find_by(id: params[:attack_id])
+    ally_character = current_user.characters.find_by(id: session[:ally_id])
+    enemy_character = current_user.characters.find_by(id: session[:enemy_id])
+    ally_attack = ally_character.attacks.first
+    enemy_attack = enemy_character.attacks.first
 
-    attack_judgment(attacker, defender, params[:skill_value], use_attack)
+    @ally_res = execute_attack(ally_character, enemy_character, ally_attack)
+    @enemy_res = execute_attack(enemy_character, ally_character, enemy_attack)
 
     respond_to do |format|
       format.turbo_stream { render :roll } # roll.turbo_stream.erbを再利用
@@ -68,15 +65,16 @@ class SimulationsController < ApplicationController
 
   private
 
-  def attack_judgment(attacker, defender, skill_value, use_attack)
+  def execute_attack(attacker, defender, use_attack)
     cthulhu7th = BCDice.game_system_class("Cthulhu7th")
-    attack_result = cthulhu7th.eval("CC#{use_attack.dice_correction}<=#{skill_value}")
+    attack_result = cthulhu7th.eval("CC#{use_attack.dice_correction}<=#{use_attack.success_probability}")
 
     unless attack_result.success?
-      @status = "失敗"
-      @result_text = "#{attacker.name}の攻撃失敗(#{attack_result.text})"
-      @success = false
-      return
+      return {
+        text: "#{attacker.name}の攻撃失敗(#{attack_result.text})",
+        success: false,
+        status: "失敗"
+      }
     end
 
     levels = {
@@ -92,22 +90,24 @@ class SimulationsController < ApplicationController
     # 3. [&.last] 2.で取り出された配列の最後の要素("r"などの単文字の方)を取り出す。
     # 4. nilガードとして、[&.](帰り値がnilだった場合、nil.last(エラー)にせずnilのままにする)と[|| "r"](式の値がnilの場合"r"を代入)を設定
 
-    evasion_command = "CC#{defender.evasion_correction}<=#{defender.evasion_rate}#{correction}"
-    evasion_result = cthulhu7th.eval(evasion_command)
+    evasion_result = cthulhu7th.eval("CC#{defender.evasion_correction}<=#{defender.evasion_rate}#{correction}")
 
     if evasion_result.success?
-      @status = "失敗"
-      @result_text = "#{attacker.name}の攻撃成功(#{attack_result.text}) ── しかし#{defender.name}が回避(#{evasion_result.text})"
-      @success = false
+      {
+        text: "#{attacker.name}の攻撃成功(#{attack_result.text}) ── しかし#{defender.name}が回避(#{evasion_result.text})",
+        status: "回避",
+        success: false
+    }
     else
-      if use_attack.proximity?
-        damage_roll = cthulhu7th.eval("#{use_attack.damage}+#{attacker.damage_bonus}")
-      else
-        damage_roll = cthulhu7th.eval(use_attack.damage)
-      end
-      @status = "成功"
-      @result_text = "#{attacker.name}の攻撃成功(#{attack_result.text}) ── #{defender.name}は回避失敗(#{evasion_result.text}) ── ダメージ: #{damage_roll.text}"
-      @success = true
+      damage_cmd = use_attack.damage
+      damage_cmd += "+#{attacker.damage_bonus}" if use_attack.proximity?
+      damage_roll = cthulhu7th.eval(damage_cmd)
+
+      {
+        text: "#{attacker.name}の攻撃成功(#{attack_result.text}) ── #{defender.name}は回避失敗(#{evasion_result.text}) ── #{defender.name}へのダメージ: #{damage_roll.text}",
+        status: "成功",
+        success: true
+    }
     end
   end
 end
