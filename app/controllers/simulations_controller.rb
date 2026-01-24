@@ -102,9 +102,11 @@ class SimulationsController < ApplicationController
       damage_cmd = use_attack.damage
       damage_cmd += "+#{attacker.damage_bonus}" if use_attack.proximity?
       damage_roll = cthulhu7th.eval(damage_cmd)
+      damage_value = damage_roll.text.split(" ＞ ").last.to_i
+      remaining_hp = defender.hitpoint - damage_value
 
       {
-        text: "#{attacker.name}の攻撃成功(#{attack_result.text}) ── #{defender.name}は回避失敗(#{evasion_result.text}) ── #{defender.name}へのダメージ: #{damage_roll.text}",
+        text: "#{attacker.name}の攻撃成功(#{attack_result.text}) ── #{defender.name}は回避失敗(#{evasion_result.text}) ── #{defender.name}へのダメージ: #{damage_roll.text}(残りHP: #{remaining_hp})",
         status: "成功",
         success: true
     }
