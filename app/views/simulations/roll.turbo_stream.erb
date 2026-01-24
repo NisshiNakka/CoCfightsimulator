@@ -1,18 +1,24 @@
 <%= turbo_stream.update "dice_result" do %>
-  <div class="row g-3">
-    <div class="col-md-6">
-      <div class="alert <%= @ally_res[:success] ? 'alert-success' : 'alert-warning' %> border-start border-4">
-        <h5 class="fw-bold">味方の攻撃 → 敵</h5>
-        <p class="mb-1">【<%= @ally_res[:status] %>】</p>
-        <small><%= @ally_res[:text] %></small>
-      </div>
+  <div class="card shadow-sm border-secondary mb-4">
+    <div class="card-header bg-secondary text-white fw-bold">
+      <i class="bi bi-clock-history me-2"></i>シミュレート結果（1回分）
     </div>
-      
-    <div class="col-md-6">
-      <div class="alert <%= @enemy_res[:success] ? 'alert-danger' : 'alert-info' %> border-start border-4">
-        <h5 class="fw-bold">敵の攻撃 → 味方</h5>
-        <p class="mb-1">【<%= @enemy_res[:status] %>】</p>
-        <small><%= @enemy_res[:text] %></small>
+
+    <div class="card-body bg-light-subtle">
+      <div class="row row-cols-1 g-3">
+        <% @sorted_results.each do |res| %>
+          <div class="col">
+            <% is_ally = res[:side] == :ally %>
+            <div class="alert <%= is_ally ? 'alert-success' : 'alert-danger' %> border-start border-4 mb-0 shadow-sm">
+              <h5 class="fw-bold h6">
+                <i class="bi <%= is_ally ? 'bi-shield-shaded' : 'bi-exclamation-triangle-fill' %> me-2"></i>
+                <%= is_ally ? "味方の攻撃 → 敵" : "敵の攻撃 → 味方" %>
+              </h5>
+              <p class="mb-1 small">【<%= res[:status] %>】</p>
+              <small class="d-block text-body-secondary"><%= simple_format res[:text] %></small>
+            </div>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>

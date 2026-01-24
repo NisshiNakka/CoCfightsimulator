@@ -55,8 +55,10 @@ class SimulationsController < ApplicationController
     ally_attack = ally_character.attacks.first
     enemy_attack = enemy_character.attacks.first
 
-    @ally_res = execute_attack(ally_character, enemy_character, ally_attack)
-    @enemy_res = execute_attack(enemy_character, ally_character, enemy_attack)
+    ally_result = execute_attack(ally_character, enemy_character, ally_attack).merge(side: :ally, order: ally_character.dexterity)
+    enemy_result = execute_attack(enemy_character, ally_character, enemy_attack).merge(side: :enemy, order: enemy_character.dexterity)
+
+    @sorted_results = [ ally_result, enemy_result ].sort_by { |r| -r[:order] }
 
     respond_to do |format|
       format.turbo_stream { render :roll } # roll.turbo_stream.erbを再利用
@@ -94,7 +96,7 @@ class SimulationsController < ApplicationController
 
     if evasion_result.success?
       {
-        text: "#{attacker.name}の攻撃成功(#{attack_result.text}) ── しかし#{defender.name}が回避(#{evasion_result.text})",
+        text: "#{attacker.name}の攻撃成功(#{attack_result.text}\n ── しかし#{defender.name}が回避(#{evasion_result.text})",
         status: "回避",
         success: false
     }
@@ -106,7 +108,7 @@ class SimulationsController < ApplicationController
       remaining_hp = defender.hitpoint - damage_value
 
       {
-        text: "#{attacker.name}の攻撃成功(#{attack_result.text}) ── #{defender.name}は回避失敗(#{evasion_result.text}) ── #{defender.name}へのダメージ: #{damage_roll.text}(残りHP: #{remaining_hp})",
+        text: "#{attacker.name}の攻撃成功(#{attack_result.text})\n ── #{defender.name}は回避失敗(#{evasion_result.text})\n ── #{defender.name}へのダメージ: #{damage_roll.text}(残りHP: #{remaining_hp})",
         status: "成功",
         success: true
     }
