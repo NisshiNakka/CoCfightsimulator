@@ -20,6 +20,19 @@ class Character < ApplicationRecord
 
   validate :attacks_count_range
 
+  def dice_system
+    @dice_system ||= BCDice.game_system_class("Cthulhu7th")
+  end
+
+  def evasion_roll(correction)
+    dice_system.eval("CC#{evasion_correction}<=#{evasion_rate}#{correction}")
+  end
+
+  def hp_calculation(damage_result)
+    damage_value = damage_result.text.split(" ＞ ").last.to_i
+    hitpoint - damage_value
+  end
+
   private
 
   def attacks_count_range

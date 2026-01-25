@@ -6,16 +6,27 @@
 
     <div class="card-body bg-light-subtle">
       <div class="row row-cols-1 g-3">
-        <% @sorted_results.each do |res| %>
+        <% @sorted_results.each do |result| %>
           <div class="col">
-            <% is_ally = res[:side] == :ally %>
+            <% is_ally = result[:side] == :ally %>
             <div class="alert <%= is_ally ? 'alert-success' : 'alert-danger' %> border-start border-4 mb-0 shadow-sm">
               <h5 class="fw-bold h6">
                 <i class="bi <%= is_ally ? 'bi-shield-shaded' : 'bi-exclamation-triangle-fill' %> me-2"></i>
-                <%= is_ally ? "味方の攻撃 → 敵" : "敵の攻撃 → 味方" %>
+                <%= result[:attacker_name] %>の攻撃
               </h5>
-              <p class="mb-1 small">【<%= res[:status] %>】</p>
-              <small class="d-block text-body-secondary"><%= simple_format res[:text] %></small>
+              <p class="mb-1 small">【<%= result[:status] %>】</p>
+              <small class="d-block text-body-secondary">
+              <% if result[:status] == "失敗" %>
+                <%= result[:attacker_name] %>の攻撃失敗(<%= result[:attack_text] %>)
+              <% elsif result[:status] == "回避" %>
+                <%= result[:attacker_name] %>の攻撃成功(<%= result[:attack_text] %>)<br>
+                ── しかし<%= result[:defender_name] %>が回避(<%= result[:evasion_text] %>)
+              <% else %>
+                <%= result[:attacker_name] %>の攻撃成功(<%= result[:attack_text] %>)<br>
+                ── <%= result[:defender_name] %>は回避失敗(<%= result[:evasion_text] %>)<br>
+                ── ダメージ: <%= result[:damage_text] %> (残りHP: <%= result[:remaining_hp] %>)
+              <% end %>
+              </small>
             </div>
           </div>
         <% end %>

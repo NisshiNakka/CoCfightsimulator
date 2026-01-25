@@ -50,13 +50,15 @@ class SimulationsController < ApplicationController
   end
 
   def combat_roll
-    ally_character = current_user.characters.find_by(id: session[:ally_id])
-    enemy_character = current_user.characters.find_by(id: session[:enemy_id])
+    ally_character = current_user.characters.includes(:attacks).find_by(id: session[:ally_id])
+    enemy_character = current_user.characters.includes(:attacks).find_by(id: session[:enemy_id])
+    return render_error("キャラクターが見つかりませんでした") if ally_character.nil? || enemy_character.nil?
     ally_attack = ally_character.attacks.first
     enemy_attack = enemy_character.attacks.first
+    return render_error("攻撃技能が見つかりませんでした") if ally_attack.nil? || enemy_attack.nil?
 
-    ally_result = execute_attack(ally_character, enemy_character, ally_attack).merge(side: :ally, order: ally_character.dexterity)
-    enemy_result = execute_attack(enemy_character, ally_character, enemy_attack).merge(side: :enemy, order: enemy_character.dexterity)
+    ally_result = execute_attack(ally_character, enemy_character, ally_attack).merge(side: :ally)
+    enemy_result = execute_attack(enemy_character, ally_character, enemy_attack).merge(side: :enemy)
 
     @sorted_results = [ ally_result, enemy_result ].sort_by { |r| -r[:order] }
 
@@ -68,50 +70,38 @@ class SimulationsController < ApplicationController
   private
 
   def execute_attack(attacker, defender, use_attack)
-    cthulhu7th = BCDice.game_system_class("Cthulhu7th")
-    attack_result = cthulhu7th.eval("CC#{use_attack.dice_correction}<=#{use_attack.success_probability}")
+    # 1 攻撃判定(attack)
+    attack_result = use_attack.attack_roll
 
-    unless attack_result.success?
-      return {
-        text: "#{attacker.name}の攻撃失敗(#{attack_result.text})",
-        success: false,
-        status: "失敗"
-      }
-    end
-
-    levels = {
-      "クリティカル" => "c",
-      "イクストリーム成功" => "e",
-      "ハード成功" => "h",
-      "レギュラー成功" => "r"
+    result_data = {
+      attacker_name: attacker.name,
+      defender_name: defender.name,
+      attack_text: attack_result.text,
+      success: attack_result.success?,
+      order: attacker.dexterity
     }
 
-    correction = levels.find { |key, _| attack_result.text.include?(key) }&.last || "r"
-    # 1. levels.findでlevelsから1組の配列を受け取るために、ハッシュの要素（キーと値のペア）を一つずつ取り出す
-    # 2. [{ |key, _| attack_result.text.include?(key) }] 1.にて取り出した[key]の中から値が一致するものを探し、その配列を取り出す("r"などの方は無視するために"_"にする)
-    # 3. [&.last] 2.で取り出された配列の最後の要素("r"などの単文字の方)を取り出す。
-    # 4. nilガードとして、[&.](帰り値がnilだった場合、nil.last(エラー)にせずnilのままにする)と[|| "r"](式の値がnilの場合"r"を代入)を設定
+    return result_data.merge(status: "失敗") unless attack_result.success?
+    # 2 回避難易度決定(character)
+    correction = use_attack.success_correction(attack_result)
 
-    evasion_result = cthulhu7th.eval("CC#{defender.evasion_correction}<=#{defender.evasion_rate}#{correction}")
+    # 3 回避判定(character)
+    evasion_result = defender.evasion_roll(correction)
 
+    # 6 ログ表示の決定
     if evasion_result.success?
-      {
-        text: "#{attacker.name}の攻撃成功(#{attack_result.text}\n ── しかし#{defender.name}が回避(#{evasion_result.text})",
-        status: "回避",
-        success: false
-    }
+      result_data.merge(status: "回避", evasion_text: evasion_result.text)
     else
-      damage_cmd = use_attack.damage
-      damage_cmd += "+#{attacker.damage_bonus}" if use_attack.proximity?
-      damage_roll = cthulhu7th.eval(damage_cmd)
-      damage_value = damage_roll.text.split(" ＞ ").last.to_i
-      remaining_hp = defender.hitpoint - damage_value
-
-      {
-        text: "#{attacker.name}の攻撃成功(#{attack_result.text})\n ── #{defender.name}は回避失敗(#{evasion_result.text})\n ── #{defender.name}へのダメージ: #{damage_roll.text}(残りHP: #{remaining_hp})",
+      # 4 ダメージの計算
+      damage_result = use_attack.damage_roll(attacker.damage_bonus)
+      # 5 HPの計算
+      remaining_hp = defender.hp_calculation(damage_result)
+      result_data.merge(
         status: "成功",
-        success: true
-    }
+        evasion_text: evasion_result.text,
+        damage_text: damage_result.text,
+        remaining_hp: remaining_hp
+      )
     end
   end
 end
