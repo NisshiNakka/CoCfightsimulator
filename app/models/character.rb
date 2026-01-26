@@ -1,4 +1,6 @@
 class Character < ApplicationRecord
+  include DiceRollable
+
   paginates_per 20
 
   validates :name, presence: true, length: { maximum: 50 }
@@ -20,17 +22,13 @@ class Character < ApplicationRecord
 
   validate :attacks_count_range
 
-  def dice_system
-    @dice_system ||= BCDice.game_system_class("Cthulhu7th")
-  end
-
   def evasion_roll(correction)
     dice_system.eval("CC#{evasion_correction}<=#{evasion_rate}#{correction}")
   end
 
   def hp_calculation(damage_result)
     damage_value = damage_result.text.split(" ＞ ").last.to_i
-    hitpoint - damage_value
+    hitpoint - (damage_value - armor)
   end
 
   private

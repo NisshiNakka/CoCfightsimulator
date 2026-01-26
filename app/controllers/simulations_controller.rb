@@ -53,55 +53,18 @@ class SimulationsController < ApplicationController
     ally_character = current_user.characters.includes(:attacks).find_by(id: session[:ally_id])
     enemy_character = current_user.characters.includes(:attacks).find_by(id: session[:enemy_id])
     return render_error("キャラクターが見つかりませんでした") if ally_character.nil? || enemy_character.nil?
+
     ally_attack = ally_character.attacks.first
     enemy_attack = enemy_character.attacks.first
     return render_error("攻撃技能が見つかりませんでした") if ally_attack.nil? || enemy_attack.nil?
 
-    ally_result = execute_attack(ally_character, enemy_character, ally_attack).merge(side: :ally)
-    enemy_result = execute_attack(enemy_character, ally_character, enemy_attack).merge(side: :enemy)
+    ally_result = BattleProcessor.call(ally_character, enemy_character, ally_attack).merge(side: :ally)
+    enemy_result = BattleProcessor.call(enemy_character, ally_character, enemy_attack).merge(side: :enemy)
 
-    @sorted_results = [ ally_result, enemy_result ].sort_by { |r| -r[:order] }
+    @sorted_results = [ ally_result, enemy_result ].sort_by { |r| -r[:dexterity] }
 
     respond_to do |format|
       format.turbo_stream { render :roll } # roll.turbo_stream.erbを再利用
-    end
-  end
-
-  private
-
-  def execute_attack(attacker, defender, use_attack)
-    # 1 攻撃判定(attack)
-    attack_result = use_attack.attack_roll
-
-    result_data = {
-      attacker_name: attacker.name,
-      defender_name: defender.name,
-      attack_text: attack_result.text,
-      success: attack_result.success?,
-      order: attacker.dexterity
-    }
-
-    return result_data.merge(status: "失敗") unless attack_result.success?
-    # 2 回避難易度決定(character)
-    correction = use_attack.success_correction(attack_result)
-
-    # 3 回避判定(character)
-    evasion_result = defender.evasion_roll(correction)
-
-    # 6 ログ表示の決定
-    if evasion_result.success?
-      result_data.merge(status: "回避", evasion_text: evasion_result.text)
-    else
-      # 4 ダメージの計算
-      damage_result = use_attack.damage_roll(attacker.damage_bonus)
-      # 5 HPの計算
-      remaining_hp = defender.hp_calculation(damage_result)
-      result_data.merge(
-        status: "成功",
-        evasion_text: evasion_result.text,
-        damage_text: damage_result.text,
-        remaining_hp: remaining_hp
-      )
     end
   end
 end

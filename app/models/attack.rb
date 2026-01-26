@@ -1,4 +1,6 @@
 class Attack < ApplicationRecord
+  include DiceRollable
+
   validates :name, presence: true, length: { maximum: 25 }
   validates :success_probability, presence: true, numericality: { only_integer: true, in: 1..100 }
   validates :dice_correction, presence: true, numericality: { only_integer: true, in: -10..10 }
@@ -11,10 +13,6 @@ class Attack < ApplicationRecord
   enum attack_range: { proximity: 1, ranged: 2 }
 
   belongs_to :character
-
-  def dice_system
-    @dice_system = BCDice.game_system_class("Cthulhu7th")
-  end
 
   def attack_roll
     dice_system.eval("CC#{dice_correction}<=#{success_probability}")
