@@ -28,7 +28,12 @@ class Character < ApplicationRecord
 
   def hp_calculation(damage_result)
     damage_value = damage_result.text.split(" ＞ ").last.to_i
-    hitpoint - (damage_value - armor)
+    effective_damage = [ 0, damage_value - armor ].max
+    remaining_hp = hitpoint - effective_damage
+    {
+      hp: remaining_hp,
+      damage: effective_damage
+    }
   end
 
   private

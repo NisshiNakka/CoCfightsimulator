@@ -51,7 +51,8 @@ class BattleProcessor
 
     {
       text: damage_result.text,
-      hp: remaining_hp
+      hp: remaining_hp[:hp],
+      damage: remaining_hp[:damage]
     }
   end
 
@@ -64,7 +65,9 @@ class BattleProcessor
         status: :hit,
         evasion_text: evasion_result.text,
         damage_text: damage_data[:text],
-        remaining_hp: damage_data[:hp]
+        remaining_hp: damage_data[:hp],
+        final_damage: damage_data[:damage],
+        armor: @defender.armor
       )
     end
   end

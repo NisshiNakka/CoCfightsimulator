@@ -62,7 +62,7 @@ ja_jp:
         hit: |
           %{attacker}の攻撃成功(%{attack_text})<br>
           ── %{defender}は回避失敗(%{evasion_text})<br>
-          ── ダメージ: %{damage_text} (残りHP: %{remaining_hp})
+          ── ダメージ: %{damage_text} | [装甲 %{armor}] | 最終ダメージ %{final_damage} (残りHP: %{remaining_hp})
       to_attack: の攻撃
   characters:
     index:
