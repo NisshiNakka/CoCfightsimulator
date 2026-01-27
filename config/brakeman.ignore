@@ -3,18 +3,18 @@
     {
       "warning_type": "Dangerous Eval",
       "warning_code": 13,
-      "fingerprint": "1ed2aa215ef71ce9c95ad6e04ed9900c9b4f2db8b842f1d5080c70c9968eac6d",
+      "fingerprint": "0532d03102d5933b788dc2014eb567bf7f3582d32bcf75241628470eb3e38904",
       "check_name": "Evaluation",
       "message": "Dynamic string evaluated as code",
-      "file": "app/controllers/simulations_controller.rb",
-      "line": 96,
+      "file": "app/models/character.rb",
+      "line": 26,
       "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": "BCDice.game_system_class(\"Cthulhu7th\").eval(\"CC#{defender.evasion_correction}<=#{defender.evasion_rate}#{({ \"\\u30AF\\u30EA\\u30C6\\u30A3\\u30AB\\u30EB\" => \"c\", \"\\u30A4\\u30AF\\u30B9\\u30C8\\u30EA\\u30FC\\u30E0\\u6210\\u529F\" => \"e\", \"\\u30CF\\u30FC\\u30C9\\u6210\\u529F\" => \"h\", \"\\u30EC\\u30AE\\u30E5\\u30E9\\u30FC\\u6210\\u529F\" => \"r\" }.find do\n BCDice.game_system_class(\"Cthulhu7th\").eval(\"CC#{use_attack.dice_correction}<=#{skill_value}\").text.include?(key)\n end.last or \"r\")}\")",
+      "code": "dice_system.eval(\"CC#{evasion_correction}<=#{evasion_rate}#{correction}\")",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "SimulationsController",
-        "method": "attack_judgment"
+        "class": "Character",
+        "method": "evasion_roll"
       },
       "user_input": null,
       "confidence": "Weak",
@@ -27,42 +27,18 @@
     {
       "warning_type": "Dangerous Eval",
       "warning_code": 13,
-      "fingerprint": "45298fa97f775465c372458ad82b8c5b4e65c13848b5bbebff9c011571796deb",
-      "check_name": "Evaluation",
-      "message": "Dynamic string evaluated as code",
-      "file": "app/controllers/simulations_controller.rb",
-      "line": 104,
-      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": "BCDice.game_system_class(\"Cthulhu7th\").eval(\"#{use_attack.damage}+#{attacker.damage_bonus}\")",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "SimulationsController",
-        "method": "attack_judgment"
-      },
-      "user_input": null,
-      "confidence": "Weak",
-      "cwe_id": [
-        913,
-        95
-      ],
-      "note": "BCDiceのコマンド処理のため問題なし"
-    },
-    {
-      "warning_type": "Dangerous Eval",
-      "warning_code": 13,
-      "fingerprint": "4575ed170ddfbcb9734a5328b2f5848f88d4bd6fb8c679b384ef969637ab5d1e",
+      "fingerprint": "309cd18c26a288beb0a4b108415df47b4e044004d271601a4f276a28bc4a1225",
       "check_name": "Evaluation",
       "message": "Dynamic code evaluation",
-      "file": "app/controllers/simulations_controller.rb",
-      "line": 106,
+      "file": "app/models/attack.rb",
+      "line": 39,
       "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": "BCDice.game_system_class(\"Cthulhu7th\").eval(use_attack.damage)",
+      "code": "dice_system.eval((damage + \"+#{damage_bonus}\"))",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "SimulationsController",
-        "method": "attack_judgment"
+        "class": "Attack",
+        "method": "damage_roll"
       },
       "user_input": null,
       "confidence": "Weak",
@@ -94,18 +70,18 @@
     {
       "warning_type": "Dangerous Eval",
       "warning_code": 13,
-      "fingerprint": "e0c47b48fcbf9b60e3daea72eecf7dc6fdb63d49323dd4fe4833bbfd36a7904a",
+      "fingerprint": "d9f3282ff00944fc79dbcab01f79a3cd3d97e7b36e8c844420b98dbcaf91e9e2",
       "check_name": "Evaluation",
       "message": "Dynamic string evaluated as code",
-      "file": "app/controllers/simulations_controller.rb",
-      "line": 73,
+      "file": "app/models/attack.rb",
+      "line": 18,
       "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": "BCDice.game_system_class(\"Cthulhu7th\").eval(\"CC#{use_attack.dice_correction}<=#{skill_value}\")",
+      "code": "dice_system.eval(\"CC#{dice_correction}<=#{success_probability}\")",
       "render_path": null,
       "location": {
         "type": "method",
-        "class": "SimulationsController",
-        "method": "attack_judgment"
+        "class": "Attack",
+        "method": "attack_roll"
       },
       "user_input": null,
       "confidence": "Weak",
