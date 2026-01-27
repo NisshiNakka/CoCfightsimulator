@@ -1,38 +1,70 @@
 # このサービスオブジェクトは、simulations_controller.rbで使用するものの、
 # コントローラーの本来の役割「viewとmodelの仲介」から外れてしまう処理を、コントローラーに負わせないために切り出したものです。
-# 単一責任の法則を守るために、コントローラーには「viewとmodelの仲介」という責任を、当サービスオブジェクトには「戦闘ルールの実行」という責任を任せます。
+# 単一責任の法則を守るために、コントローラーには「viewとmodelの仲介」という責任を、当サービスオブジェクトには「戦闘ルールの管理/実行」という責任を任せます。
 class BattleProcessor
   def self.call(attacker, defender, use_attack)
-    attack_result = use_attack.attack_roll
+    new(attacker, defender, use_attack).execute
+  end
 
-    result_data = {
-      attacker_name: attacker.name,
-      defender_name: defender.name,
+  def initialize(attacker, defender, use_attack) # 引数をインスタンス化し、すべてのメソッドで使用できるようにする
+    @attacker = attacker
+    @defender = defender
+    @use_attack = use_attack
+  end
+
+  def execute # １アクションのルールを担当
+    attack_result = attack
+
+    result_data = build_result_data(attack_result)
+
+    return result_data.merge(status: :failed) unless attack_result.success?
+
+    evasion_result = evasion(attack_result)
+
+    process_action(evasion_result, result_data)
+  end
+
+  private
+
+  def attack # 攻撃の実行
+    @use_attack.attack_roll
+  end
+
+  def build_result_data(attack_result) # リザルトデータ作成
+    {
+      attacker_name: @attacker.name,
+      defender_name: @defender.name,
       attack_text: attack_result.text,
       success: attack_result.success?,
-      dexterity: attacker.dexterity
+      dexterity: @attacker.dexterity
     }
+  end
 
-    return result_data.merge(status: "失敗") unless attack_result.success?
-    # 2 回避難易度決定(character)
-    correction = use_attack.success_correction(attack_result)
+  def evasion(attack_result) # 回避の実行
+    correction = @use_attack.success_correction(attack_result)
+    @defender.evasion_roll(correction)
+  end
 
-    # 3 回避判定(character)
-    evasion_result = defender.evasion_roll(correction)
+  def damage # ダメージの計算
+    damage_result = @use_attack.damage_roll(@attacker.damage_bonus)
+    remaining_hp = @defender.hp_calculation(damage_result)
 
-    # 6 ログ表示の決定
+    {
+      text: damage_result.text,
+      hp: remaining_hp
+    }
+  end
+
+  def process_action(evasion_result, result_data) # リザルトにどの内容を渡すか
     if evasion_result.success?
-      result_data.merge(status: "回避", evasion_text: evasion_result.text)
+      result_data.merge(status: :evaded, evasion_text: evasion_result.text)
     else
-      # 4 ダメージの計算
-      damage_result = use_attack.damage_roll(attacker.damage_bonus)
-      # 5 HPの計算
-      remaining_hp = defender.hp_calculation(damage_result)
+      damage_data = damage
       result_data.merge(
-        status: "成功",
+        status: :hit,
         evasion_text: evasion_result.text,
-        damage_text: damage_result.text,
-        remaining_hp: remaining_hp
+        damage_text: damage_data[:text],
+        remaining_hp: damage_data[:hp]
       )
     end
   end

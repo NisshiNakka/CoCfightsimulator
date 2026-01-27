@@ -1,7 +1,7 @@
 <%= turbo_stream.update "dice_result" do %>
   <div class="card shadow-sm border-secondary mb-4">
     <div class="card-header bg-secondary text-white fw-bold">
-      <i class="bi bi-clock-history me-2"></i>シミュレート結果（1回分）
+      <i class="bi bi-clock-history me-2"></i><%= t('.title') %>
     </div>
 
     <div class="card-body bg-light-subtle">
@@ -12,20 +12,18 @@
             <div class="alert <%= is_ally ? 'alert-success' : 'alert-danger' %> border-start border-4 mb-0 shadow-sm">
               <h5 class="fw-bold h6">
                 <i class="bi <%= is_ally ? 'bi-shield-shaded' : 'bi-exclamation-triangle-fill' %> me-2"></i>
-                <%= result[:attacker_name] %>の攻撃
+                <%= result[:attacker_name] %><%= t('.to_attack') %>
               </h5>
-              <p class="mb-1 small">【<%= result[:status] %>】</p>
+              <p class="mb-1 small">【<%= t(".status.#{result[:status]}") %>】</p>
               <small class="d-block text-body-secondary">
-              <% if result[:status] == "失敗" %>
-                <%= result[:attacker_name] %>の攻撃失敗(<%= result[:attack_text] %>)
-              <% elsif result[:status] == "回避" %>
-                <%= result[:attacker_name] %>の攻撃成功(<%= result[:attack_text] %>)<br>
-                ── しかし<%= result[:defender_name] %>が回避(<%= result[:evasion_text] %>)
-              <% else %>
-                <%= result[:attacker_name] %>の攻撃成功(<%= result[:attack_text] %>)<br>
-                ── <%= result[:defender_name] %>は回避失敗(<%= result[:evasion_text] %>)<br>
-                ── ダメージ: <%= result[:damage_text] %> (残りHP: <%= result[:remaining_hp] %>)
-              <% end %>
+              <%= t(".messages.#{result[:status]}", 
+                      attacker: result[:attacker_name],
+                      defender: result[:defender_name],
+                      attack_text: result[:attack_text],
+                      evasion_text: result[:evasion_text],
+                      damage_text: result[:damage_text],
+                      remaining_hp: result[:remaining_hp]
+                    ).html_safe %>
               </small>
             </div>
           </div>
