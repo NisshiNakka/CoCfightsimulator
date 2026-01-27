@@ -205,4 +205,48 @@ RSpec.describe Character, type: :model do
       end
     end
   end
+
+  describe 'ビジネスロジックのテスト' do
+    let(:character) { create(:character, hitpoint: 15, armor: 2, evasion_rate: 40, evasion_correction: 0) }
+
+    describe '#evasion_roll' do
+      it 'BCDiceの実行結果オブジェクト（DiceRollResult等）を返すこと' do
+        result = character.evasion_roll('r')
+
+        expect(result).to respond_to(:success?)
+        expect(result).to respond_to(:text)
+        expect(result.text).to include('ボーナス・ペナルティダイス[0]')
+      end
+    end
+
+    describe '#hp_calculation' do
+      context 'ダメージ結果が正しく渡された場合' do
+        it '装甲（armor）を差し引いたダメージ分、HPが減り、正しい計算結果ハッシュを返すこと' do
+          damage_result = double('DiceRollResult', text: '1d6+1d4 ＞ 6+2 ＞ 8')
+
+          # 計算式:
+          # damage_value = 8
+          # effective_damage = [0, 8 - 2].max = 6
+          # remaining_hp = 15 - 6 = 9
+          result = character.hp_calculation(damage_result)
+
+          expect(result[:hp]).to eq 9
+          expect(result[:damage]).to eq 6
+        end
+
+        it 'ダメージが装甲以下の場合はダメージ0として計算され、HPが減らないこと' do
+          damage_result = double('DiceRollResult', text: '1d4 ＞ 1')
+
+          # 計算式:
+          # damage_value = 1
+          # effective_damage = [0, 1 - 2].max = 0
+          # remaining_hp = 15 - 0 = 15
+          result = character.hp_calculation(damage_result)
+
+          expect(result[:hp]).to eq 15
+          expect(result[:damage]).to eq 0
+        end
+      end
+    end
+  end
 end

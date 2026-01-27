@@ -146,4 +146,66 @@ RSpec.describe Attack, type: :model do
       expect(association.macro).to eq :belongs_to
     end
   end
+
+  describe 'ビジネスロジックのテスト' do
+    let(:character) { create(:character, damage_bonus: '1d4') }
+    let(:attack) do
+      create(:attack,
+        character: character,
+        success_probability: 50,
+        dice_correction: 0,
+        damage: '1d6',
+        attack_range: :proximity
+      )
+    end
+
+    describe '#attack_roll' do
+      it 'BCDiceの実行結果オブジェクトを返し、攻撃判定が行われること' do
+        result = attack.attack_roll
+
+        expect(result).to respond_to(:success?)
+        expect(result.text).to include('ボーナス・ペナルティダイス[0]')
+        expect(result.text).to include('1D100<=50')
+      end
+    end
+
+    describe '#success_correction' do
+      it '判定結果のテキストから適切な成功度コード（c, e, h, r）を抽出すること' do
+        critical_result = double('DiceResult', text: '... ＞ クリティカル')
+        expect(attack.success_correction(critical_result)).to eq 'c'
+
+        hard_result = double('DiceResult', text: '... ＞ イクストリーム成功')
+        expect(attack.success_correction(hard_result)).to eq 'e'
+
+        hard_result = double('DiceResult', text: '... ＞ ハード成功')
+        expect(attack.success_correction(hard_result)).to eq 'h'
+
+        failure_result = double('DiceResult', text: '... ＞ レギュラー成功')
+        expect(attack.success_correction(failure_result)).to eq 'r'
+      end
+    end
+
+    describe '#damage_roll' do
+      context '近接攻撃の場合' do
+        it 'ダメージにキャラクターのダメージボーナスが合算されること' do
+          system_instance = attack.send(:dice_system)
+          expect(system_instance).to receive(:eval).with('1d6+1d4').and_call_original
+
+          result = attack.damage_roll(character.damage_bonus)
+          expect(result).to respond_to(:text)
+        end
+      end
+
+      context '遠距離攻撃の場合' do
+        before { attack.update(attack_range: :ranged) }
+
+        it 'ダメージボーナスを合算せず、武器のダメージのみでロールすること' do
+          system_instance = attack.send(:dice_system)
+          expect(system_instance).to receive(:eval).with('1d6').and_call_original
+
+          attack.damage_roll(character.damage_bonus)
+        end
+      end
+    end
+  end
 end

@@ -1,3 +1,5 @@
+require "bcdice"
+
 module DiceRollable
   extend ActiveSupport::Concern
 
