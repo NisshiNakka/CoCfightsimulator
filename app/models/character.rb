@@ -26,10 +26,10 @@ class Character < ApplicationRecord
     dice_system.eval("CC#{evasion_correction}<=#{evasion_rate}#{correction}")
   end
 
-  def hp_calculation(damage_result)
+  def hp_calculation(damage_result, progress_hp)
     damage_value = damage_result.text.split(" ＞ ").last.to_i
     effective_damage = [ 0, damage_value - armor ].max
-    remaining_hp = hitpoint - effective_damage
+    remaining_hp = progress_hp - effective_damage
     {
       hp: remaining_hp,
       damage: effective_damage
