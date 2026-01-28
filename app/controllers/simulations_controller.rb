@@ -74,7 +74,7 @@ class SimulationsController < ApplicationController
     combatants.each do |c|
       ally_hp = session[:ally_hp] || ally_character.hitpoint
       enemy_hp = session[:enemy_hp] || enemy_character.hitpoint
-    
+
       target_hp = (c[:side] == :ally) ? enemy_hp : ally_hp
 
       result = BattleProcessor.call(c[:attacker], c[:defender], c[:attack], target_hp).merge(side: c[:side])

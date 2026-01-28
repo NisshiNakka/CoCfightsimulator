@@ -228,7 +228,7 @@ RSpec.describe Character, type: :model do
           # damage_value = 8
           # effective_damage = [0, 8 - 2].max = 6
           # remaining_hp = 15 - 6 = 9
-          result = character.hp_calculation(damage_result)
+          result = character.hp_calculation(damage_result, character.hitpoint)
 
           expect(result[:hp]).to eq 9
           expect(result[:damage]).to eq 6
@@ -241,7 +241,7 @@ RSpec.describe Character, type: :model do
           # damage_value = 1
           # effective_damage = [0, 1 - 2].max = 0
           # remaining_hp = 15 - 0 = 15
-          result = character.hp_calculation(damage_result)
+          result = character.hp_calculation(damage_result, character.hitpoint)
 
           expect(result[:hp]).to eq 15
           expect(result[:damage]).to eq 0
