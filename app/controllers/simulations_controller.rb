@@ -50,64 +50,21 @@ class SimulationsController < ApplicationController
   end
 
   def combat_roll
-    if params[:attacker_side] == "ally"
-      attacker = current_user.characters.find_by(id: session[:ally_id])
-      defender = current_user.characters.find_by(id: session[:enemy_id])
-    else
-      attacker = current_user.characters.find_by(id: session[:enemy_id])
-      defender = current_user.characters.find_by(id: session[:ally_id])
-    end
-    use_attack = attacker.attacks.find_by(id: params[:attack_id])
+    ally_character = current_user.characters.includes(:attacks).find_by(id: session[:ally_id])
+    enemy_character = current_user.characters.includes(:attacks).find_by(id: session[:enemy_id])
+    return render_error("キャラクターが見つかりませんでした") if ally_character.nil? || enemy_character.nil?
 
-    attack_judgment(attacker, defender, params[:skill_value], use_attack)
+    ally_attack = ally_character.attacks.first
+    enemy_attack = enemy_character.attacks.first
+    return render_error("攻撃技能が見つかりませんでした") if ally_attack.nil? || enemy_attack.nil?
+
+    ally_result = BattleProcessor.call(ally_character, enemy_character, ally_attack).merge(side: :ally)
+    enemy_result = BattleProcessor.call(enemy_character, ally_character, enemy_attack).merge(side: :enemy)
+
+    @sorted_results = [ ally_result, enemy_result ].sort_by { |r| -r[:dexterity] }
 
     respond_to do |format|
       format.turbo_stream { render :roll } # roll.turbo_stream.erbを再利用
-    end
-  end
-
-  private
-
-  def attack_judgment(attacker, defender, skill_value, use_attack)
-    cthulhu7th = BCDice.game_system_class("Cthulhu7th")
-    attack_result = cthulhu7th.eval("CC#{use_attack.dice_correction}<=#{skill_value}")
-
-    unless attack_result.success?
-      @status = "失敗"
-      @result_text = "#{attacker.name}の攻撃失敗(#{attack_result.text})"
-      @success = false
-      return
-    end
-
-    levels = {
-      "クリティカル" => "c",
-      "イクストリーム成功" => "e",
-      "ハード成功" => "h",
-      "レギュラー成功" => "r"
-    }
-
-    correction = levels.find { |key, _| attack_result.text.include?(key) }&.last || "r"
-    # 1. levels.findでlevelsから1組の配列を受け取るために、ハッシュの要素（キーと値のペア）を一つずつ取り出す
-    # 2. [{ |key, _| attack_result.text.include?(key) }] 1.にて取り出した[key]の中から値が一致するものを探し、その配列を取り出す("r"などの方は無視するために"_"にする)
-    # 3. [&.last] 2.で取り出された配列の最後の要素("r"などの単文字の方)を取り出す。
-    # 4. nilガードとして、[&.](帰り値がnilだった場合、nil.last(エラー)にせずnilのままにする)と[|| "r"](式の値がnilの場合"r"を代入)を設定
-
-    evasion_command = "CC#{defender.evasion_correction}<=#{defender.evasion_rate}#{correction}"
-    evasion_result = cthulhu7th.eval(evasion_command)
-
-    if evasion_result.success?
-      @status = "失敗"
-      @result_text = "#{attacker.name}の攻撃成功(#{attack_result.text}) ── しかし#{defender.name}が回避(#{evasion_result.text})"
-      @success = false
-    else
-      if use_attack.proximity?
-        damage_roll = cthulhu7th.eval("#{use_attack.damage}+#{attacker.damage_bonus}")
-      else
-        damage_roll = cthulhu7th.eval(use_attack.damage)
-      end
-      @status = "成功"
-      @result_text = "#{attacker.name}の攻撃成功(#{attack_result.text}) ── #{defender.name}は回避失敗(#{evasion_result.text}) ── ダメージ: #{damage_roll.text}"
-      @success = true
     end
   end
 end

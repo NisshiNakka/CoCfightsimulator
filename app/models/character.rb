@@ -1,4 +1,6 @@
 class Character < ApplicationRecord
+  include DiceRollable
+
   paginates_per 20
 
   validates :name, presence: true, length: { maximum: 50 }
@@ -19,6 +21,20 @@ class Character < ApplicationRecord
                                 reject_if: :all_blank
 
   validate :attacks_count_range
+
+  def evasion_roll(correction)
+    dice_system.eval("CC#{evasion_correction}<=#{evasion_rate}#{correction}")
+  end
+
+  def hp_calculation(damage_result)
+    damage_value = damage_result.text.split(" ＞ ").last.to_i
+    effective_damage = [ 0, damage_value - armor ].max
+    remaining_hp = hitpoint - effective_damage
+    {
+      hp: remaining_hp,
+      damage: effective_damage
+    }
+  end
 
   private
 

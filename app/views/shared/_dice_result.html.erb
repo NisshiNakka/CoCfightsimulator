@@ -16,53 +16,13 @@
     <%= f.submit "ロール", class: "btn btn-primary" %>
   <% end %>
 
-  <% if @ally_character %>
-    <div class="mt-3 p-3 border rounded bg-light">
-      <h5><%= @ally_character.name %> のクイックアクション</h5>
-      <%= button_to "回避ロールを実行 (値:#{@ally_character.evasion_rate})", 
-            roll_path, 
-            params: { command: "CC<=#{@ally_character.evasion_rate}" }, 
-            method: :post, 
-            class: "btn btn-outline-primary",
-            data: { turbo_stream: true } %>
-    </div>
-  <% end %>
-  <% if @enemy_character %>
-    <div class="mt-3 p-3 border rounded bg-light">
-      <h5><%= @enemy_character.name %> のクイックアクション</h5>
-      <%= button_to "回避ロールを実行 (値:#{@enemy_character.evasion_rate})", 
-            roll_path, 
-            params: { command: "CC<=#{@enemy_character.evasion_rate}" }, 
-            method: :post, 
-            class: "btn btn-outline-primary",
-            data: { turbo_stream: true } %>
-    </div>
-  <% end %>
   <% if @ally_character && @enemy_character %>
     <div class="mt-3 p-3 border rounded bg-light">
-      <% @ally_character.attacks.each do |attack| %>
-        <%= button_to "#{attack.name}で攻撃 (値:#{attack.success_probability})", 
-              combat_roll_path,
-              params: 
-              { skill_value: attack.success_probability,
-              attack_id: attack.id,
-              attacker_side: "ally" }, 
-              method: :post, 
-              class: "btn btn-outline-danger",
-              data: { turbo_stream: true } %>
-      <% end %>
-    </div>
-    <div class="mt-3 p-3 border rounded bg-light">
-      <% @enemy_character.attacks.each do |attack| %>
-        <%= button_to "#{attack.name}で攻撃 (値:#{attack.success_probability})", 
-              combat_roll_path,
-              params: { skill_value: attack.success_probability,
-              attack_id: attack.id,
-              attacker_side: "enemy" }, 
-              method: :post, 
-              class: "btn btn-outline-danger",
-              data: { turbo_stream: true } %>
-      <% end %>
+      <%= button_to "同時シミュレート ", 
+            combat_roll_path, 
+            method: :post, 
+            class: "btn btn-primary btn-lg w-100 shadow",
+            data: { turbo_stream: true } %>
     </div>
   <% else %>
     <p class="mb-0"><%= t('.select_character_instruction') %></p>
