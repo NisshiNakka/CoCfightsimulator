@@ -53,7 +53,7 @@ class SimulationsController < ApplicationController
   end
 
   def combat_roll
-    # 1. 値の取得(controllerの役割)
+    # 1. 値の取得(controllerの役割 :各メソッドへの値の取得と受け渡し)
     ally_character = current_user.characters.includes(:attacks).find_by(id: session[:ally_id])
     enemy_character = current_user.characters.includes(:attacks).find_by(id: session[:enemy_id])
     return render_error("キャラクターが見つかりませんでした") if ally_character.nil? || enemy_character.nil?
@@ -62,38 +62,32 @@ class SimulationsController < ApplicationController
     enemy_attack = enemy_character.attacks.first
     return render_error("攻撃技能が見つかりませんでした") if ally_attack.nil? || enemy_attack.nil?
 
-    # 2. 戦闘順番の決定
+    # 2. 戦闘順番の決定(characterモデルまたはbattle_processorの役割？？ :データを元に配列の並び替えを行う)(コアな処理)
     combatants = [
-      { attacker: ally_character, defender: enemy_character, attack: ally_attack, side: :ally },
-      { attacker: enemy_character, defender: ally_character, attack: enemy_attack, side: :enemy }
+      { attacker: ally_character, defender: enemy_character, attack: ally_attack, side: :ally, target_hp_key: :enemy_hp },
+      { attacker: enemy_character, defender: ally_character, attack: enemy_attack, side: :enemy, target_hp_key: :ally_hp }
     ].sort_by { |c| -c[:attacker].dexterity }
 
-    # 3. 渡す結果の決定 ()
+    # 3. 渡す結果の決定 (controllerの役割 :viewへの仲介)
     @sorted_results = []
 
+    # 4. 戦闘の実行 (battle_processorに譲渡済み これ以上battle_processorへ移行させられる部分はない？)
     combatants.each do |c|
-      ally_hp = session[:ally_hp] || ally_character.hitpoint
-      enemy_hp = session[:enemy_hp] || enemy_character.hitpoint
-
-      target_hp = (c[:side] == :ally) ? enemy_hp : ally_hp
+      target_hp = session[c[:target_hp_key]] || c[:defender].hitpoint
 
       result = BattleProcessor.call(c[:attacker], c[:defender], c[:attack], target_hp).merge(side: c[:side])
       @sorted_results << result
 
+      # 状態の保存（役割不明 :sessionの管理はコントローラーにしか適した場所がない？）
       if result[:remaining_hp]
-        if c[:side] == :ally
-          session[:enemy_hp] = result[:remaining_hp]
-        else
-          session[:ally_hp] = result[:remaining_hp]
-        end
+        session[c[:target_hp_key]] = result[:remaining_hp]# (コアな処理?)
       end
 
-      if result[:remaining_hp]
-        break if result[:remaining_hp] <= 0
-      end
+      break if c[:defender].defeated?(result[:remaining_hp] || 1)
     end
 
-    if (session[:ally_hp] || 1) <= 0 || (session[:enemy_hp] || 1) <= 0
+    # リセット判定（役割不明 :sessionの管理はコントローラーにしか適した場所がない？）
+    if ally_character.defeated?(session[:ally_hp] || 1) || enemy_character.defeated?(session[:enemy_hp] || 1)
       session.delete(:ally_hp)
       session.delete(:enemy_hp)
     end

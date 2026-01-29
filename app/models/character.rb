@@ -36,6 +36,10 @@ class Character < ApplicationRecord
     }
   end
 
+  def defeated?(current_hp)
+    current_hp <= 0
+  end
+
   private
 
   def attacks_count_range
