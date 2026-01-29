@@ -36,7 +36,10 @@ class Character < ApplicationRecord
     }
   end
 
-  def defeated?(current_hp)
+  # セッションのHPの値と同一
+  attr_accessor :current_hp
+
+  def fall_down?
     current_hp <= 0
   end
 
