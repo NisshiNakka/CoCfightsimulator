@@ -137,18 +137,19 @@ RSpec.describe "Simulations", type: :system do
         end
       end
 
-      describe "ターンの上限（20ターン）の検証", js: true do
-        before do
-          ally.attacks.update_all(success_probability: 1)
-          enemy.attacks.update_all(success_probability: 1)
+      it "20ターン経過した際に引き分け結果が表示されること" do
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+          if attacker == ally
+            { status: :failed, attack_text: "失敗", remaining_hp: enemy.hitpoint }
+          else
+            { status: :failed, attack_text: "失敗", remaining_hp: ally.hitpoint }
+          end
         end
 
-        it "20ターン経過した際に引き分け結果が表示されること" do
-          click_button I18n.t('simulations.start_simulation.start')
+        click_button I18n.t('simulations.start_simulation.start')
 
-          expect(page).to have_content I18n.t('simulations.combat_roll.draw'), wait: 10
-          expect(page).to have_content I18n.t('simulations.combat_roll.finish_turn_suffix', finish_turn: 20)
-        end
+        expect(page).to have_content I18n.t('simulations.combat_roll.draw'), wait: 10
+        expect(page).to have_content I18n.t('simulations.combat_roll.finish_turn_suffix', finish_turn: 20)
       end
 
       it "戦闘結果のアコーディオンを開閉して詳細ログを確認できること" do
