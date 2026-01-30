@@ -52,7 +52,7 @@ class SimulationsController < ApplicationController
     end
 
     respond_to do |format|
-      format.turbo_stream { render :roll } # roll.turbo_stream.erbを再利用
+      format.turbo_stream
     end
   end
 end

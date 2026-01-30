@@ -49,7 +49,7 @@ ja_jp:
       ally_character: 味方キャラクター
     start_simulation:
       start: シミュレーションスタート
-    roll:
+    combat_roll:
       title: シミュレート結果
       turn: ターン目
       finish_turn_suffix: "[ 所用ターン : %{finish_turn}ターン ]"
