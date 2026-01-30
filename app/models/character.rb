@@ -43,7 +43,17 @@ class Character < ApplicationRecord
     current_hp <= 2
   end
 
+  def health_status
+    return :death if death?
+    return :fainting if fall_down?
+    :healthy
+  end
+
   private
+
+  def death?
+    current_hp <= 0
+  end
 
   def attacks_count_range
     valid_attacks = attacks.reject(&:marked_for_destruction?)

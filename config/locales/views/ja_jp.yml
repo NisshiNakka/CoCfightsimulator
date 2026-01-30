@@ -52,12 +52,15 @@ ja_jp:
     roll:
       title: シミュレート結果
       turn: ターン目
-      finish_turn_suffix: ターンで決着
+      finish_turn_suffix: "[ 所用ターン : %{finish_turn}ターン ]"
       winner: 勝者
       loser: 敗者
       victory: の勝利
       draw: 勝負がつきませんでした...
       final_hp: 最終HP
+      fainting: 気絶
+      death: 死亡
+      healthy: ""
       status:
         failed: 失敗
         evaded: 回避
@@ -70,7 +73,7 @@ ja_jp:
         hit: |
           %{attacker}の攻撃成功(%{attack_text})<br>
           ── %{defender}は回避失敗(%{evasion_text})<br>
-          ── ダメージ: %{damage_text} | [装甲 %{armor}] | 最終ダメージ %{final_damage} (残りHP: %{remaining_hp})
+          ── ダメージ計算: %{damage_text} | [装甲 %{armor}] | ダメージ %{final_damage} (残りHP: %{remaining_hp})
       to_attack: の攻撃
   characters:
     index:

@@ -13,7 +13,7 @@
       <% elsif @decision[:side].to_s == "draw" %>
         <%= t('.draw')%>
       <% end %>
-      （ <%= @finish_turn %> <%= t('.finish_turn_suffix') %> ）
+      <%= t(".finish_turn_suffix", finish_turn: @finish_turn) %>
     </div>
 
     <div class="card-body bg-light-subtle">
@@ -41,6 +41,7 @@
               <h4 class="card-title fw-bold text-danger mb-1"><%= @decision[:loser].name %></h4>
               <p class="card-text mb-0 fs-5 fw-semibold">
                 <small class="text-secondary fs-6"><%= t('.final_hp') %></small> <%= @decision[:loser].current_hp %>
+                <%= t(".#{@determination}") %>
               </p>
             </div>
           </div>

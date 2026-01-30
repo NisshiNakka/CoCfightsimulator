@@ -21,10 +21,10 @@ class BattleCoordinator
     until battle_ended?
       @turn += 1
       take_action(combatants)
-      break if @turn >= 20
     end
-    winner_data = decision
-    build_response_data(winner_data)
+    outcome = decision
+    status = outcome[:loser].health_status
+    build_response_data(outcome, status)
   end
 
   private
@@ -52,13 +52,14 @@ class BattleCoordinator
     end
   end
 
-  def build_response_data(winner_data) # コントローラーへ送るデータの作成
+  def build_response_data(outcome, status) # コントローラーへ送るデータの作成
     {
       results: @results,
       final_hp: { ally: @participants[:ally].current_hp, enemy: @participants[:enemy].current_hp },
       battle_ended: battle_ended?,
-      decision: winner_data,
-      finish_turn: @turn
+      decision: outcome,
+      finish_turn: @turn,
+      determination: status
     }
   end
 
@@ -68,7 +69,7 @@ class BattleCoordinator
   end
 
   def battle_ended? # 戦闘終了判定
-    @participants[:ally].fall_down? || @participants[:enemy].fall_down?
+    either_participant_defeated? || turn_limit_reached?
   end
 
   def decision # 勝者の判決
@@ -79,5 +80,13 @@ class BattleCoordinator
     else
       { winner: @participants[:ally], loser: @participants[:enemy], side: :draw }
     end
+  end
+
+  def either_participant_defeated? # HPが２以下になったかの確認
+    @participants[:ally].fall_down? || @participants[:enemy].fall_down?
+  end
+
+  def turn_limit_reached? # ターン数が20以上になっていないかの確認
+    @turn >= 20
   end
 end
