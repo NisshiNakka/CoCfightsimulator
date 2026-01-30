@@ -4,7 +4,7 @@ class Character < ApplicationRecord
   paginates_per 20
 
   validates :name, presence: true, length: { maximum: 50 }
-  validates :hitpoint, presence: true, numericality: { only_integer: true, in: 1..100 }
+  validates :hitpoint, presence: true, numericality: { only_integer: true, in: 3..100 }
   validates :dexterity, presence: true, numericality: { only_integer: true, in: 1..200 }
   validates :evasion_rate, presence: true, numericality: { only_integer: true, in: 1..100 }
   validates :evasion_correction, presence: true, numericality: { only_integer: true, in: -10..10 }
@@ -26,17 +26,34 @@ class Character < ApplicationRecord
     dice_system.eval("CC#{evasion_correction}<=#{evasion_rate}#{correction}")
   end
 
-  def hp_calculation(damage_result)
+  def hp_calculation(damage_result, progress_hp)
     damage_value = damage_result.text.split(" ＞ ").last.to_i
     effective_damage = [ 0, damage_value - armor ].max
-    remaining_hp = hitpoint - effective_damage
+    remaining_hp = progress_hp - effective_damage
     {
       hp: remaining_hp,
       damage: effective_damage
     }
   end
 
+  # セッションのHPの値と同一
+  attr_accessor :current_hp
+
+  def fall_down?
+    current_hp <= 2
+  end
+
+  def health_status
+    return :death if death?
+    return :fainting if fall_down?
+    :healthy
+  end
+
   private
+
+  def death?
+    current_hp <= 0
+  end
 
   def attacks_count_range
     valid_attacks = attacks.reject(&:marked_for_destruction?)

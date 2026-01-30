@@ -95,16 +95,16 @@ RSpec.describe Character, type: :model do
     end
 
     context '異常系: 数値バリデーション' do
-      it 'hitpointが範囲外(0)であれば無効であること' do
-        character.hitpoint = 0
+      it 'hitpointが範囲外(2)であれば無効であること' do
+        character.hitpoint = 2
         character.valid?
-        expect(character.errors[:hitpoint]).to include("は1..100の範囲に含めてください")
+        expect(character.errors[:hitpoint]).to include("は3..100の範囲に含めてください")
       end
 
       it 'hitpointが範囲外(101)であれば無効であること' do
         character.hitpoint = 101
         character.valid?
-        expect(character.errors[:hitpoint]).to include("は1..100の範囲に含めてください")
+        expect(character.errors[:hitpoint]).to include("は3..100の範囲に含めてください")
       end
 
       it 'dexterityが範囲外(0)であれば無効であること' do
@@ -228,7 +228,7 @@ RSpec.describe Character, type: :model do
           # damage_value = 8
           # effective_damage = [0, 8 - 2].max = 6
           # remaining_hp = 15 - 6 = 9
-          result = character.hp_calculation(damage_result)
+          result = character.hp_calculation(damage_result, character.hitpoint)
 
           expect(result[:hp]).to eq 9
           expect(result[:damage]).to eq 6
@@ -241,10 +241,57 @@ RSpec.describe Character, type: :model do
           # damage_value = 1
           # effective_damage = [0, 1 - 2].max = 0
           # remaining_hp = 15 - 0 = 15
-          result = character.hp_calculation(damage_result)
+          result = character.hp_calculation(damage_result, character.hitpoint)
 
           expect(result[:hp]).to eq 15
           expect(result[:damage]).to eq 0
+        end
+      end
+    end
+
+    describe '#fall_down?' do
+      context 'HPが2以下の場合' do
+        it 'trueを返すこと' do
+          character.current_hp = 2
+          expect(character.fall_down?).to be true
+        end
+      end
+
+      context 'HPが3以上の場合' do
+        it 'falseを返すこと' do
+          character.current_hp = 3
+          expect(character.fall_down?).to be false
+        end
+      end
+    end
+
+    describe '#health_status' do
+      context 'HPが0以下の場合' do
+        it ':death を返すこと' do
+          character.current_hp = 0
+          expect(character.health_status).to eq :death
+        end
+
+        it '負の値でも :death を返すこと' do
+          character.current_hp = -5
+          expect(character.health_status).to eq :death
+        end
+      end
+
+      context 'HPが1または2の場合' do
+        it ':fainting を返すこと' do
+          character.current_hp = 2
+          expect(character.health_status).to eq :fainting
+
+          character.current_hp = 1
+          expect(character.health_status).to eq :fainting
+        end
+      end
+
+      context 'HPが3以上の場合' do
+        it ':healthy を返すこと' do
+          character.current_hp = 3
+          expect(character.health_status).to eq :healthy
         end
       end
     end

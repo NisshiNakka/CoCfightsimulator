@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :character do
     name { Faker::Name.name.truncate(50) }
-    hitpoint { Faker::Number.between(from: 1, to: 100) }
+    hitpoint { Faker::Number.between(from: 3, to: 100) }
     dexterity { Faker::Number.between(from: 1, to: 200) }
     evasion_rate { Faker::Number.between(from: 1, to: 100) }
     evasion_correction { Faker::Number.between(from: -10, to: 10) }
@@ -21,6 +21,22 @@ FactoryBot.define do
       after(:create) do |character|
         character.attacks.destroy_all
       end
+    end
+
+    factory :quick_character do
+      hitpoint { 20 }
+      dexterity { 60 }
+      evasion_rate { 1 }
+      evasion_correction { -2 }
+      armor { 0 }
+    end
+
+    factory :slow_character do
+      hitpoint { 20 }
+      dexterity { 40 }
+      evasion_rate { 1 }
+      evasion_correction { -2 }
+      armor { 0 }
     end
   end
 end

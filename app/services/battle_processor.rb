@@ -1,15 +1,17 @@
 # このサービスオブジェクトは、simulations_controller.rbで使用するものの、
 # コントローラーの本来の役割「viewとmodelの仲介」から外れてしまう処理を、コントローラーに負わせないために切り出したものです。
-# 単一責任の法則を守るために、コントローラーには「viewとmodelの仲介」という責任を、当サービスオブジェクトには「戦闘ルールの管理/実行」という責任を任せます。
+# 単一責任の法則を守るために、コントローラーには「viewとmodelの仲介」という責任を、当サービスオブジェクトには「戦闘における、1アクションの管理/実行」という責任を任せます。（ ↓ の「アクション」の部分）
+# シミュレーション説明　[キャラクターは１ラウンドに１回攻撃（アクション）ができる。全キャラクターがアクションを終えると１ラウンドが終了し、戦闘が終わるまで１ラウンドをループする。]
 class BattleProcessor
-  def self.call(attacker, defender, use_attack)
-    new(attacker, defender, use_attack).execute
+  def self.call(attacker, defender, use_attack, defender_hp)
+    new(attacker, defender, use_attack, defender_hp).execute
   end
 
-  def initialize(attacker, defender, use_attack) # 引数をインスタンス化し、すべてのメソッドで使用できるようにする
+  def initialize(attacker, defender, use_attack, defender_hp) # 引数をインスタンス化し、すべてのメソッドで使用できるようにする
     @attacker = attacker
     @defender = defender
     @use_attack = use_attack
+    @defender_hp = defender_hp
   end
 
   def execute # １アクションのルールを担当
@@ -47,7 +49,7 @@ class BattleProcessor
 
   def damage # ダメージの計算
     damage_result = @use_attack.damage_roll(@attacker.damage_bonus)
-    remaining_hp = @defender.hp_calculation(damage_result)
+    remaining_hp = @defender.hp_calculation(damage_result, @defender_hp)
 
     {
       text: damage_result.text,
