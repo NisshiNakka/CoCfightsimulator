@@ -4,7 +4,7 @@ class Character < ApplicationRecord
   paginates_per 20
 
   validates :name, presence: true, length: { maximum: 50 }
-  validates :hitpoint, presence: true, numericality: { only_integer: true, in: 1..100 }
+  validates :hitpoint, presence: true, numericality: { only_integer: true, in: 3..100 }
   validates :dexterity, presence: true, numericality: { only_integer: true, in: 1..200 }
   validates :evasion_rate, presence: true, numericality: { only_integer: true, in: 1..100 }
   validates :evasion_correction, presence: true, numericality: { only_integer: true, in: -10..10 }

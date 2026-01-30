@@ -95,16 +95,16 @@ RSpec.describe Character, type: :model do
     end
 
     context '異常系: 数値バリデーション' do
-      it 'hitpointが範囲外(0)であれば無効であること' do
-        character.hitpoint = 0
+      it 'hitpointが範囲外(2)であれば無効であること' do
+        character.hitpoint = 2
         character.valid?
-        expect(character.errors[:hitpoint]).to include("は1..100の範囲に含めてください")
+        expect(character.errors[:hitpoint]).to include("は3..100の範囲に含めてください")
       end
 
       it 'hitpointが範囲外(101)であれば無効であること' do
         character.hitpoint = 101
         character.valid?
-        expect(character.errors[:hitpoint]).to include("は1..100の範囲に含めてください")
+        expect(character.errors[:hitpoint]).to include("は3..100の範囲に含めてください")
       end
 
       it 'dexterityが範囲外(0)であれば無効であること' do
