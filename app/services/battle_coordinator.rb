@@ -1,3 +1,7 @@
+# このサービスオブジェクトは、simulations_controller.rbで使用するものの、
+# コントローラーの本来の役割「viewとmodelの仲介」から外れてしまう処理を、コントローラーに負わせないために切り出したものです。
+# 単一責任の法則を守るために、コントローラーには「viewとmodelの仲介」という責任を、当サービスオブジェクトには「戦闘における、1ラウンドの管理/実行」という責任を任せます。（ ↓ の「ラウンド」の部分）
+# シミュレーション説明　[キャラクターは１ラウンドに１回攻撃（アクション）ができる。全キャラクターがアクションを終えると１ラウンドが終了し、戦闘が終わるまで１ラウンドをループする。]
 class BattleCoordinator
   def self.call(ally_character, enemy_character, ally_attack, enemy_attack, ally_hp, enemy_hp)
     new(ally_character, enemy_character, ally_attack, enemy_attack, ally_hp, enemy_hp).execute
@@ -13,7 +17,9 @@ class BattleCoordinator
 
   def execute
     combatants = turn_decide
-    take_action(combatants)
+    until battle_ended?
+      take_action(combatants)
+    end
     build_response_data
   end
 
@@ -43,7 +49,7 @@ class BattleCoordinator
     end
   end
 
-  def build_response_data
+  def build_response_data # コントローラーへ送るデータの作成
     {
       results: @results,
       final_hp: { ally: @participants[:ally].current_hp, enemy: @participants[:enemy].current_hp },
