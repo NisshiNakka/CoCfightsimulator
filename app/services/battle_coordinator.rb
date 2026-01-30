@@ -13,11 +13,13 @@ class BattleCoordinator
     @participants[:ally].current_hp = ally_hp || ally_character.hitpoint
     @participants[:enemy].current_hp = enemy_hp || enemy_character.hitpoint
     @results = []
+    @turn = 0
   end
 
   def execute
     combatants = turn_decide
     until battle_ended?
+      @turn += 1
       take_action(combatants)
     end
     build_response_data
@@ -39,9 +41,8 @@ class BattleCoordinator
       attack = @attacks[c[:side]]
       target_hp = defender.current_hp
 
-
       res = BattleProcessor.call(attacker, defender, attack, target_hp)
-      @results << res.merge(side: c[:side])
+      @results << res.merge(side: c[:side], turn: @turn)
 
       update_target_hp(defender, res)
 

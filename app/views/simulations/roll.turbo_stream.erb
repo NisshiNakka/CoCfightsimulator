@@ -5,32 +5,42 @@
     </div>
 
     <div class="card-body bg-light-subtle">
-      <div class="row row-cols-1 g-3">
-        <% @sorted_results.each do |result| %>
-          <div class="col">
-            <% is_ally = result[:side] == :ally %>
-            <div class="alert <%= is_ally ? 'alert-success' : 'alert-danger' %> border-start border-4 mb-0 shadow-sm">
-              <h5 class="fw-bold h6">
-                <i class="bi <%= is_ally ? 'bi-shield-shaded' : 'bi-exclamation-triangle-fill' %> me-2"></i>
-                <%= result[:attacker_name] %><%= t('.to_attack') %>
-              </h5>
-              <p class="mb-1 small">【<%= t(".status.#{result[:status]}") %>】</p>
-              <small class="d-block text-body-secondary">
-              <%= t(".messages.#{result[:status]}", 
-                      attacker: result[:attacker_name],
-                      defender: result[:defender_name],
-                      attack_text: result[:attack_text],
-                      evasion_text: result[:evasion_text],
-                      damage_text: result[:damage_text],
-                      remaining_hp: result[:remaining_hp],
-                      armor: result[:armor],
-                      final_damage: result[:final_damage],
-                    ).html_safe %>
-              </small>
+      <% @sorted_results.group_by { |r| r[:turn] }.each do |turn, results| %>
+        <div class="card mb-4 border rounded shadow-sm">
+          <div class="card-header bg-white py-2">
+            <h5 class="mb-0 fw-bold h6 text-dark">第 <%= turn %> ターン</h5>
+          </div>
+
+          <div class="card-body bg-white p-3">
+            <div class="row row-cols-1 g-3">
+              <% results.each do |result| %>
+                <div class="col">
+                  <% is_ally = result[:side] == :ally %>
+                  <div class="alert <%= is_ally ? 'alert-success' : 'alert-danger' %> border-start border-4 mb-0 shadow-sm">
+                    <h5 class="fw-bold h6">
+                      <i class="bi <%= is_ally ? 'bi-shield-shaded' : 'bi-exclamation-triangle-fill' %> me-2"></i>
+                      <%= result[:attacker_name] %><%= t('.to_attack') %>
+                    </h5>
+                    <p class="mb-1 small">【<%= t(".status.#{result[:status]}") %>】</p>
+                    <small class="d-block text-body-secondary">
+                    <%= t(".messages.#{result[:status]}", 
+                        attacker: result[:attacker_name],
+                        defender: result[:defender_name],
+                        attack_text: result[:attack_text],
+                        evasion_text: result[:evasion_text],
+                        damage_text: result[:damage_text],
+                        remaining_hp: result[:remaining_hp],
+                        armor: result[:armor],
+                        final_damage: result[:final_damage],
+                      ).html_safe %>
+                    </small>
+                  </div>
+                </div>
+              <% end %>
             </div>
           </div>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
     </div>
   </div>
 <% end %>
