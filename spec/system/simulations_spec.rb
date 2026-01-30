@@ -92,7 +92,7 @@ RSpec.describe "Simulations", type: :system do
           select "味方戦士", from: "ally_id"
         end
 
-        expect(page).to have_button "同時シミュレート", wait: 5
+        expect(page).to have_button I18n.t('simulations.start_simulation.start'), wait: 5
 
         within ".card.border-danger" do
           select I18n.t('simulations.new.not_select'), from: "enemy_id"

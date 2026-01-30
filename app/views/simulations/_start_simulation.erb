@@ -1,0 +1,17 @@
+<div class="container">
+  <% if @ally_character && @enemy_character %>
+    <div class="d-flex justify-content-center mt-5 mb-5">
+      <%= button_to t('.start'),
+            combat_roll_path, 
+            method: :post, 
+            class: 'btn btn-success btn-lg px-5 shadow fw-bold',
+            data: { turbo_stream: true } %>
+    </div>
+  <% else %>
+    <p class="mb-0"><%= t('simulations.new.select_character_instruction') %></p>
+  <% end %>
+
+  <div id="dice_result", class="result-area mt-4">
+    <!-- ここに結果が表示されます -->
+  </div>
+</div>
