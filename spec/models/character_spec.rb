@@ -248,5 +248,52 @@ RSpec.describe Character, type: :model do
         end
       end
     end
+
+    describe '#fall_down?' do
+      context 'HPが2以下の場合' do
+        it 'trueを返すこと' do
+          character.current_hp = 2
+          expect(character.fall_down?).to be true
+        end
+      end
+
+      context 'HPが3以上の場合' do
+        it 'falseを返すこと' do
+          character.current_hp = 3
+          expect(character.fall_down?).to be false
+        end
+      end
+    end
+
+    describe '#health_status' do
+      context 'HPが0以下の場合' do
+        it ':death を返すこと' do
+          character.current_hp = 0
+          expect(character.health_status).to eq :death
+        end
+
+        it '負の値でも :death を返すこと' do
+          character.current_hp = -5
+          expect(character.health_status).to eq :death
+        end
+      end
+
+      context 'HPが1または2の場合' do
+        it ':fainting を返すこと' do
+          character.current_hp = 2
+          expect(character.health_status).to eq :fainting
+
+          character.current_hp = 1
+          expect(character.health_status).to eq :fainting
+        end
+      end
+
+      context 'HPが3以上の場合' do
+        it ':healthy を返すこと' do
+          character.current_hp = 3
+          expect(character.health_status).to eq :healthy
+        end
+      end
+    end
   end
 end
