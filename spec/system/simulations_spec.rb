@@ -4,10 +4,10 @@ RSpec.describe "Simulations", type: :system do
   include DiceRollable
   let(:user) { create(:user) }
   # DEX差をつけてソートを確認（味方: 60, 敵: 40）
-  let!(:ally) { create(:character, user: user, name: "味方戦士", dexterity: 60, hitpoint: 20) }
-  let!(:enemy) { create(:character, user: user, name: "敵モンスター", dexterity: 40, hitpoint: 20) }
-  let!(:ally_attack) { create(:attack, character: ally, name: "剣攻撃", success_probability: 100) }
-  let!(:enemy_attack) { create(:attack, character: enemy, name: "噛みつき", success_probability: 100) }
+  let!(:ally) { create(:quick_character, user: user, name: "味方戦士") }
+  let!(:enemy) { create(:slow_character, user: user, name: "敵モンスター") }
+  let!(:enemy_attack) { create(:attack, character: enemy, name: "噛みつき") }
+  let!(:ally_attack) { create(:attack, character: ally, name: "剣攻撃") }
 
   before do
     sign_in user
@@ -103,7 +103,7 @@ RSpec.describe "Simulations", type: :system do
       end
     end
 
-    xcontext "同時シミュレートの実行" do
+    context "戦闘結果の表示" do
       before do
         within ".card.border-danger" do
           select "敵モンスター", from: "enemy_id"
@@ -112,34 +112,59 @@ RSpec.describe "Simulations", type: :system do
           select "味方戦士", from: "ally_id"
         end
 
-        expect(page).to have_button "同時シミュレート", wait: 5
+        expect(page).to have_button I18n.t('simulations.start_simulation.start'), wait: 5
       end
 
-      it "ボタンを押すと、DEX順に攻撃結果が表示されること" do
-        click_button "同時シミュレート"
-        expect(page).to have_selector ".alert", minimum: 2, wait: 10
+      it "シミュレートボタンを押すと戦闘結果がTurbo Streamで表示されること" do
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+          if attacker == ally
+            { status: :hit, remaining_hp: 0, final_damage: 20, attack_text: "成功" }
+          else
+            { status: :failed, attack_text: "失敗", remaining_hp: ally.hitpoint }
+          end
+        end
+
+        click_button I18n.t('simulations.start_simulation.start')
+        expect(page).to have_selector "#dice_result .card", wait: 10
 
         within "#dice_result" do
-          aggregate_failures "結果の表示順と内容の検証" do
-            results = all(".alert")
-            expect(results[0].text).to include "味方戦士"
-            expect(results[1].text).to include "敵モンスター"
-
-            expect(page).to have_content "味方戦士の攻撃"
-            expect(page).to have_content "敵モンスターの攻撃"
+          aggregate_failures "表示内容の検証" do
+            expect(page).to have_content "勝利"
+            expect(page).to have_content I18n.t('simulations.combat_roll.final_hp')
+            expect(page).to have_content I18n.t('simulations.combat_roll.title')
+            expect(page).to have_content "1 #{I18n.t('simulations.combat_roll.turn')}"
           end
         end
       end
 
-      it "攻撃が命中した場合、ダメージと残りHPが表示されること" do
-        click_button "同時シミュレート"
-
-        expect(page).to have_selector ".alert", wait: 10
-        aggregate_failures do
-          expect(page).to have_content "味方戦士"
-          expect(page).to have_content "HP"
-          expect(page).to have_content "ダメージ"
+      describe "ターンの上限（20ターン）の検証", js: true do
+        before do
+          ally.attacks.update_all(success_probability: 1)
+          enemy.attacks.update_all(success_probability: 1)
         end
+
+        it "20ターン経過した際に引き分け結果が表示されること" do
+          click_button I18n.t('simulations.start_simulation.start')
+
+          expect(page).to have_content I18n.t('simulations.combat_roll.draw'), wait: 10
+          expect(page).to have_content I18n.t('simulations.combat_roll.finish_turn_suffix', finish_turn: 20)
+        end
+      end
+
+      it "戦闘結果のアコーディオンを開閉して詳細ログを確認できること" do
+        click_button I18n.t('simulations.start_simulation.start')
+
+        expect(page).to have_selector "button", text: "1 #{I18n.t('simulations.combat_roll.turn')}"
+
+        within "#dice_result" do
+          expect(page).to have_selector ".alert"
+          expect(page).to have_content "攻撃"
+        end
+      end
+
+      it "一度シミュレートした後にHPがセッションに保存され、継続して戦えること" do
+        click_button I18n.t('simulations.start_simulation.start'), wait: 10
+        expect(page).to have_selector "#dice_result", wait: 10
       end
     end
   end

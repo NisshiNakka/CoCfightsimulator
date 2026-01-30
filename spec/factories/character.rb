@@ -22,5 +22,21 @@ FactoryBot.define do
         character.attacks.destroy_all
       end
     end
+
+    factory :quick_character do
+      hitpoint { 20 }
+      dexterity { 60 }
+      evasion_rate { 1 }
+      evasion_correction { -2 }
+      armor { 0 }
+    end
+
+    factory :slow_character do
+      hitpoint { 20 }
+      dexterity { 40 }
+      evasion_rate { 1 }
+      evasion_correction { -2 }
+      armor { 0 }
+    end
   end
 end
