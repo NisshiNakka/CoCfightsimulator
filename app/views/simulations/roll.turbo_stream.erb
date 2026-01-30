@@ -1,4 +1,10 @@
 <%= turbo_stream.update "dice_result" do %>
+  <%= t('.winner') %>
+  <%= @judgement[:winner].name %>
+  <%= @judgement[:winner].current_hp %>
+  <%= @finish_turn %>
+  <%= @judgement[:loser].name %>
+  <%= @judgement[:loser].current_hp %>
   <div class="card shadow-sm border-secondary mb-4">
     <div class="card-header bg-secondary text-white fw-bold">
       <%= t('.title') %>

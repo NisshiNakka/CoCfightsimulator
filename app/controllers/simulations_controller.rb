@@ -12,16 +12,12 @@ class SimulationsController < ApplicationController
     @enemy_character = @all_characters.includes(:attacks).find_by(id: session[:enemy_id])
     @ally_character = @all_characters.includes(:attacks).find_by(id: session[:ally_id])
 
-    session[:ally_hp] = @ally_character.hitpoint if @ally_character
-    session[:enemy_hp] = @enemy_character.hitpoint if @enemy_character
 
     respond_to do |format|
       format.html
       format.turbo_stream
     end
   end
-
-  def show; end
 
   def combat_roll
     # 1. 値の取得(controllerの役割 :各メソッドへの値の取得と受け渡し)
@@ -43,6 +39,9 @@ class SimulationsController < ApplicationController
     )
 
     @sorted_results = outcome[:results]
+    @judgement = outcome[:judgement]
+    @finish_turn = outcome[:finish_turn]
+
     session[:ally_hp] = outcome.dig(:final_hp, :ally)
     session[:enemy_hp] = outcome.dig(:final_hp, :enemy)
 

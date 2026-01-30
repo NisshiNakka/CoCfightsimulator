@@ -22,7 +22,8 @@ class BattleCoordinator
       @turn += 1
       take_action(combatants)
     end
-    build_response_data
+    winner_data = judgement
+    build_response_data(winner_data)
   end
 
   private
@@ -50,11 +51,13 @@ class BattleCoordinator
     end
   end
 
-  def build_response_data # コントローラーへ送るデータの作成
+  def build_response_data(winner_data) # コントローラーへ送るデータの作成
     {
       results: @results,
       final_hp: { ally: @participants[:ally].current_hp, enemy: @participants[:enemy].current_hp },
-      battle_ended: battle_ended?
+      battle_ended: battle_ended?,
+      judgement: winner_data,
+      finish_turn: @turn
     }
   end
 
@@ -65,5 +68,13 @@ class BattleCoordinator
 
   def battle_ended? # 戦闘終了判定
     @participants[:ally].fall_down? || @participants[:enemy].fall_down?
+  end
+
+  def judgement # 勝者の判決
+    if @participants[:ally].fall_down?
+      { winner: @participants[:enemy], loser: @participants[:ally], side: :enemy }
+    else
+      { winner: @participants[:ally], loser: @participants[:enemy], side: :ally }
+    end
   end
 end
