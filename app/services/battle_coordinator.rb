@@ -22,7 +22,7 @@ class BattleCoordinator
       @turn += 1
       take_action(combatants)
     end
-    winner_data = judgement
+    winner_data = decision
     build_response_data(winner_data)
   end
 
@@ -56,7 +56,7 @@ class BattleCoordinator
       results: @results,
       final_hp: { ally: @participants[:ally].current_hp, enemy: @participants[:enemy].current_hp },
       battle_ended: battle_ended?,
-      judgement: winner_data,
+      decision: winner_data,
       finish_turn: @turn
     }
   end
@@ -70,7 +70,7 @@ class BattleCoordinator
     @participants[:ally].fall_down? || @participants[:enemy].fall_down?
   end
 
-  def judgement # 勝者の判決
+  def decision # 勝者の判決
     if @participants[:ally].fall_down?
       { winner: @participants[:enemy], loser: @participants[:ally], side: :enemy }
     else

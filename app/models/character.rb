@@ -40,7 +40,7 @@ class Character < ApplicationRecord
   attr_accessor :current_hp
 
   def fall_down?
-    current_hp <= 0
+    current_hp <= 2
   end
 
   private

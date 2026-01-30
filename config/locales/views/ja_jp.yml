@@ -52,6 +52,10 @@ ja_jp:
     roll:
       title: シミュレート結果
       turn: ターン目
+      finish_turn_suffix: ターンで決着
+      winner: 勝者
+      loser: 敗者
+      final_hp: 最終HP
       status:
         failed: 失敗
         evaded: 回避

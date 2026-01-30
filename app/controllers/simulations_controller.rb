@@ -39,7 +39,7 @@ class SimulationsController < ApplicationController
     )
 
     @sorted_results = outcome[:results]
-    @judgement = outcome[:judgement]
+    @decision = outcome[:decision]
     @finish_turn = outcome[:finish_turn]
 
     session[:ally_hp] = outcome.dig(:final_hp, :ally)
