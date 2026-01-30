@@ -16,11 +16,12 @@ class BattleCoordinator
     @turn = 0
   end
 
-  def execute
+  def execute # 戦闘の進行管理
     combatants = turn_decide
     until battle_ended?
       @turn += 1
       take_action(combatants)
+      break if @turn >= 20
     end
     winner_data = decision
     build_response_data(winner_data)
@@ -73,8 +74,10 @@ class BattleCoordinator
   def decision # 勝者の判決
     if @participants[:ally].fall_down?
       { winner: @participants[:enemy], loser: @participants[:ally], side: :enemy }
-    else
+    elsif @participants[:enemy].fall_down?
       { winner: @participants[:ally], loser: @participants[:enemy], side: :ally }
+    else
+      { winner: @participants[:ally], loser: @participants[:enemy], side: :draw }
     end
   end
 end
