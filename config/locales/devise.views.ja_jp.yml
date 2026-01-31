@@ -37,7 +37,7 @@ ja_jp:
             name:
               too_long: は50文字以内で入力してください
             email:
-              taken: はすでに存在します
+              taken: "このメールアドレスは登録できません"
               invalid: は不正な値です
             password:
               too_short: は6文字以上で入力してください
@@ -153,7 +153,7 @@ ja_jp:
       unlocked: アカウントをロック解除しました。
   errors:
     messages:
-      already_confirmed: は既に登録済みです。ログインしてください。
+      already_confirmed: "は登録できません"
       confirmation_period_expired: "の期限が切れました。%{period} までに確認する必要があります。 新しくリクエストしてください。"
       expired: の有効期限が切れました。新しくリクエストしてください。
       not_found: は見つかりませんでした。

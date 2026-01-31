@@ -29,7 +29,7 @@ RSpec.describe User, type: :model do
           user1 = create(:user)
           user2 = build(:user, email: user1.email)
           expect(user2).to be_invalid
-          expect(user2.errors[:email]).to include('はすでに存在します')
+          expect(user2.errors[:email]).to include('このメールアドレスは登録できません')
         end
       end
 

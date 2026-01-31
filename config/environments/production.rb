@@ -102,4 +102,26 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # 本番環境でのメール送信の設定
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+
+  # devise/メール送信用設定
+  config.action_mailer.default_url_options = {
+    host: ENV["APP_HOST"] || "cocfightsimulator.onrender.com",
+    protocol: "https"
+  }
+
+  # SMTP設定（メール送信に必要）
+  config.action_mailer.smtp_settings = {
+    address: ENV["SMTP_ADDRESS"],          # 例: 'smtp.gmail.com'
+    port: ENV["SMTP_PORT"] || 587,         # 通常は587
+    domain: ENV["SMTP_DOMAIN"],            # 例: 'your-app-name.onrender.com'
+    user_name: ENV["SMTP_USER_NAME"],      # SMTPのユーザー名
+    password: ENV["SMTP_PASSWORD"],        # SMTPのパスワード
+    authentication: "plain",
+    enable_starttls_auto: true
+  }
 end
