@@ -25,7 +25,7 @@ Devise.setup do |config|
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
   # 本番環境でメールを送信するために必要な設定
-  config.mailer_sender = ENV["MAILER_SENDER"] || "noreply@cocfightsimulator.onrender.com"
+  config.mailer_sender = ENV["MAILER_SENDER"] || "noreply@cocfightsimulator.com"
   config.mailer = "Devise::Mailer"
 
   # Configure the class responsible to send e-mails.
