@@ -117,7 +117,7 @@ Rails.application.configure do
   # SMTP設定（メール送信に必要）
   config.action_mailer.smtp_settings = {
     address: ENV["SMTP_ADDRESS"],          # 例: 'smtp.gmail.com'
-    port: ENV["SMTP_PORT"] || 587,         # 通常は587
+    port: ENV["SMTP_PORT"] || 2525,         # render仕様回避設定
     domain: ENV["SMTP_DOMAIN"],            # 例: 'your-app-name.onrender.com'
     user_name: ENV["SMTP_USER_NAME"],      # SMTPのユーザー名
     password: ENV["SMTP_PASSWORD"],        # SMTPのパスワード
