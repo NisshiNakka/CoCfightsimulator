@@ -19,12 +19,24 @@
         </div>
 
         <% if user_signed_in? %>
-          <div class="text-center">
-            <%= link_to t('.start'), new_simulations_path, class: "btn btn-lg btn-success" %>
+          <div class="text-center d-flex justify-content-center gap-3", id="top_navigation_buttons">
+            <%= link_to t('characters.new.title'), new_character_path, class: "btn btn-lg btn-primary" %>
+            <%= link_to t('defaults.go_simulation'), new_simulations_path, class: "btn btn-lg btn-success" %>
           </div>
         <% else %>
-          <div class="text-center">
-            <%= link_to t('.start'), new_user_session_path, class: "btn btn-lg btn-success" %>
+          <div class="d-flex justify-content-center align-items-end gap-4" id="top_navigation_buttons">
+            <div class="text-center">
+              <p class="mb-2 text-muted small fw-bold">
+                <i class="bi bi-person-plus-fill me-1"></i><%= t('.first_time') %>
+              </p>
+              <%= link_to t('header.registration'), new_user_registration_path, 
+                          class: "btn btn-lg btn-primary px-5 shadow-sm" %>
+            </div>
+
+            <div class="text-center">
+              <%= link_to t('header.login'), new_user_session_path, 
+                          class: "btn btn-lg btn-outline-success px-5" %>
+            </div>
           </div>
         <% end %>
       </div>

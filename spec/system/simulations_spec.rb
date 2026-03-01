@@ -14,6 +14,24 @@ RSpec.describe "Simulations", type: :system do
     visit new_simulations_path
   end
 
+  describe "画面遷移" do
+    it '「キャラクター登録」ボタンからキャラクター登録画面へ遷移できること' do
+      within "#navigation_buttons" do
+        click_on I18n.t('characters.new.title')
+      end
+      expect(page).to have_current_path(new_character_path, ignore_query: true),
+      '[キャラクター登録]ボタンからキャラクター登録画面へ遷移できませんでした'
+    end
+
+    it '「キャラクター一覧」ボタンからキャラクター一覧画面へ遷移できること' do
+      within "#navigation_buttons" do
+        click_on I18n.t('characters.index.title')
+      end
+      expect(page).to have_current_path(characters_path, ignore_query: true),
+      '[キャラクター一覧]ボタンからキャラクター一覧画面へ遷移できませんでした'
+    end
+  end
+
   describe "キャラクター読み込み機能" do
     it "初期表示では敵・味方の両方にキャラクター選択を促すメッセージが表示されていること" do
       within "#enemy_display" do

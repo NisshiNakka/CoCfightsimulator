@@ -8,7 +8,11 @@
             data: { turbo_stream: true } %>
     </div>
   <% else %>
-    <p class="mb-0"><%= t('simulations.new.select_character_instruction') %></p>
+    <div class="col-11 col-md-8 col-lg-6 mx-auto">
+      <div class="text-center border border-secondary-subtle bg-light p-3 text-secondary rounded mt-4 mb-0">
+        <%= t('simulations.new.select_character_instruction') %>
+      </div>
+    </div>
   <% end %>
 
   <div id="dice_result", class="result-area mt-4">

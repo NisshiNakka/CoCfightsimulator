@@ -102,6 +102,19 @@ RSpec.describe "Characters", type: :system do
         expect(page).to have_current_path(new_simulations_path, ignore_query: true),
         '[シミュレーションする]ボタンからシミュレーション画面へ遷移できませんでした'
       end
+
+      it '「閲覧」ボタンが各キャラクターの欄に表示されていること' do
+        visit characters_path
+        expect(page).to have_link I18n.t('defaults.show'), href: character_path(character_by_me)
+      end
+
+      it '「閲覧」ボタンからキャラクター詳細ページへ遷移できること' do
+        visit characters_path
+        click_link "button-show-#{character_by_me.id}"
+        expect(page).to have_current_path(character_path(character_by_me), ignore_query: true),
+        '[閲覧]ボタンからキャラクター詳細ページへ遷移できませんでした'
+        expect(page).to have_content I18n.t('characters.show.title')
+      end
     end
   end
 
@@ -210,6 +223,21 @@ RSpec.describe "Characters", type: :system do
 
     let(:path) { edit_character_path(character_by_me) }
     it_behaves_like 'require login'
+
+    describe "画面遷移" do
+      it '「閲覧」ボタンが表示されていること' do
+        visit edit_character_path(character_by_me)
+        expect(page).to have_link I18n.t('defaults.show'), href: character_path(character_by_me)
+      end
+
+      it '「閲覧」ボタンからキャラクター詳細ページへ遷移できること' do
+        visit edit_character_path(character_by_me)
+        click_link "button-show-#{character_by_me.id}"
+        expect(page).to have_current_path(character_path(character_by_me), ignore_query: true),
+        '[閲覧]ボタンからキャラクター詳細ページへ遷移できませんでした'
+        expect(page).to have_content I18n.t('characters.show.title')
+      end
+    end
 
     context "入力値が正常な場合" do
       it "キャラクター情報を更新でき、詳細画面にリダイレクトされること" do
