@@ -2,7 +2,7 @@ ja_jp:
   defaults:
     create: 作成
     edit: 編集
-    show: 詳細
+    show: 閲覧
     delete: 削除
     delete_confirm: 削除しますか？
     go_simulation: シミュレーションする
@@ -21,7 +21,7 @@ ja_jp:
   header:
     login: ログイン
     logout: ログアウト
-    registration: ユーザー登録
+    registration: 新規登録
     character_page: キャラクターページ
     character_index: キャラクター一覧
     character_create: キャラクター登録
@@ -38,7 +38,7 @@ ja_jp:
       how_to_use_2: シミュレーションページで敵味方に振り分けます。
       how_to_use_3: 戦闘条件を設定し、シミュレーション開始ボタンを押します。
       how_to_use_4: 結果が自動で表示されます
-      start: さっそく始める
+      first_time: 初めての方はこちら
   simulations:
     new:
       title: シミュレーションページ

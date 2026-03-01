@@ -8,10 +8,32 @@ RSpec.describe 'トップ画面', type: :system do
 
   describe '遷移確認' do
     context 'ログインしていない場合' do
-      it '[さっそく始める]ボタンをクリックした場合ログインページへ遷移すること' do
-        click_on('さっそく始める')
+      it '「初めての方はこちら」という案内テキストが表示されること' do
+        expect(page).to have_content I18n.t('static_pages.top.first_time')
+      end
+
+      it '「新規登録」ボタンをクリックした場合ユーザー登録ページへ遷移すること' do
+        within('#top_navigation_buttons') do
+          click_on I18n.t('header.registration')
+        end
+        expect(page).to have_current_path(new_user_registration_path, ignore_query: true),
+        '[新規登録]ボタンからユーザー登録画面へ遷移できませんでした'
+      end
+
+      it '「ログイン」ボタンをクリックした場合ログインページへ遷移すること' do
+        within('#top_navigation_buttons') do
+          click_on I18n.t('header.login')
+        end
         expect(page).to have_current_path(new_user_session_path, ignore_query: true),
-        '[さっそく始める]ボタンからログイン画面へ遷移できませんでした'
+        '[ログイン]ボタンからログイン画面へ遷移できませんでした'
+      end
+
+      it 'ヘッダーの「ログイン」ボタンをクリックした場合ログインページへ遷移すること' do
+        within('#navbarSupportedContent') do
+          click_on I18n.t('header.login')
+        end
+        expect(page).to have_current_path(new_user_session_path, ignore_query: true),
+        '[ログイン]ボタンからログイン画面へ遷移できませんでした'
       end
 
       it 'タイトルロゴをクリックするとトップページへ遷移すること' do
@@ -20,10 +42,12 @@ RSpec.describe 'トップ画面', type: :system do
         'タイトルロゴからトップページへ遷移できませんでした'
       end
 
-      it 'ユーザー登録ボタンをクリックした場合ユーザー登録ページへ遷移すること' do
-        click_on('ユーザー登録')
+      it 'ヘッダーの新規登録ボタンをクリックした場合ユーザー登録ページへ遷移すること' do
+        within('#navbarSupportedContent') do
+          click_on(I18n.t('header.registration'))
+        end
         expect(page).to have_current_path(new_user_registration_path, ignore_query: true),
-        '[ユーザー登録]ボタンからユーザー登録画面へ遷移できませんでした'
+        '[新規登録]ボタンから新規登録画面へ遷移できませんでした'
       end
 
       xit '利用規約をクリックした場合利用規約ページへ遷移すること' do
@@ -44,10 +68,19 @@ RSpec.describe 'トップ画面', type: :system do
         sign_in user
         visit root_path
       end
-      it '[さっそく始める]ボタンをクリックした場合シミュレーションページへ遷移すること' do
-        click_on('さっそく始める')
+
+      it '「キャラクター登録」ボタンをクリックした場合キャラクター登録ページへ遷移すること' do
+        within('#top_navigation_buttons') do
+          click_on I18n.t('characters.new.title')
+        end
+        expect(page).to have_current_path(new_character_path, ignore_query: true),
+        '[キャラクター登録]ボタンからキャラクター登録画面へ遷移できませんでした'
+      end
+
+      it '「シミュレーションする」ボタンをクリックした場合シミュレーションページへ遷移すること' do
+        click_on I18n.t('defaults.go_simulation')
         expect(page).to have_current_path(new_simulations_path, ignore_query: true),
-        '[さっそく始める]ボタンからシミュレーションページへ遷移できませんでした'
+        '[シミュレーションする]ボタンからシミュレーションページへ遷移できませんでした'
       end
 
       it '[キャラクター一覧]ボタンをクリックした場合キャラクター一覧ページへ遷移すること' do

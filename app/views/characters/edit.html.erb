@@ -5,6 +5,7 @@
       <%= render 'form', character: @character %>
     </div>
     <div class="d-flex justify-content-center gap-3 mt-4 mb-4">
+      <%= link_to t('defaults.show'), character_path(@character), id: "button-show-#{@character.id}", class: 'btn btn-outline-success btn-lg px-4' %>
       <%= link_to t('defaults.go_simulation'), new_simulations_path, class: 'btn btn-success btn-lg px-5 shadow-sm' %>
       <%= link_to t('defaults.back_index'), characters_path, class: 'btn btn-outline-secondary btn-lg px-4' %>
     </div>
