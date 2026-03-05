@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   root "static_pages#top"
+  get "how_to_use", to: "static_pages#how_to_use"
   resource :simulations, only: %i[new]
   post "combat_roll", to: "simulations#combat_roll"
   resources :characters

@@ -1,7 +1,7 @@
 require "bcdice"
 
 class ApplicationController < ActionController::Base
-  before_action :authenticate_user!, except: [ :top ]
+  before_action :authenticate_user!, except: [ :top, :how_to_use ]
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   def configure_permitted_parameters

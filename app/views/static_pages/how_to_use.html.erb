@@ -1,0 +1,36 @@
+<% content_for(:title) { t('.title') } %>
+
+<div class="container my-5">
+  <h1 class="text-center mb-5"><%= t('.title') %></h1>
+
+  <% [
+    { step: 1, image: "how_to_use/how_to_use1.png", title: t('.step_1_title'), body: t('.step_1_body') },
+    { step: 2, image: "how_to_use/how_to_use2.png", title: t('.step_2_title'), body: t('.step_2_body') },
+    { step: 3, image: "how_to_use/how_to_use3.png", title: t('.step_3_title'), body: t('.step_3_body') },
+    { step: 4, image: "how_to_use/how_to_use4.png", title: t('.step_4_title'), body: t('.step_4_body') }
+  ].each_with_index do |s, i| %>
+    <div class="card shadow-sm mb-4" id="how-to-use-step-<%= s[:step] %>">
+      <div class="card-body p-4">
+        <h4 class="card-title mb-3"><%= s[:title] %></h4>
+        <div class="row align-items-center g-4 <%= i.odd? ? 'flex-row-reverse' : '' %>">
+          <div class="col-md-7">
+            <%= image_tag s[:image], class: "img-fluid rounded border", alt: s[:title] %>
+          </div>
+          <div class="col-md-5">
+            <p class="mb-0"><%= s[:body] %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="text-center mt-5", id="how-to-use-next-step">
+    <% if user_signed_in? %>
+      <%= link_to t('defaults.go_simulation'), new_simulations_path, class: "btn btn-lg btn-success me-3" %>
+      <%= link_to t('characters.new.title'), new_character_path, class: "btn btn-lg btn-primary" %>
+    <% else %>
+      <%= link_to t('header.registration'), new_user_registration_path, class: "btn btn-lg btn-primary me-3" %>
+      <%= link_to t('header.login'), new_user_session_path, class: "btn btn-lg btn-outline-success" %>
+    <% end %>
+  </div>
+</div>
