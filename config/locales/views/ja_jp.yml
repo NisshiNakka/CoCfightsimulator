@@ -22,6 +22,7 @@ ja_jp:
     login: ログイン
     logout: ログアウト
     registration: 新規登録
+    how_to_use: 使い方
     character_page: キャラクターページ
     character_index: キャラクター一覧
     character_create: キャラクター登録
@@ -33,12 +34,18 @@ ja_jp:
     top:
       overview_1: このアプリは、CoCにおける戦闘のシミュレーションを行うことができるアプリです。
       overview_2: シナリオ制作をしたり、GMとしてシナリオの調整を行う際の戦闘バランスのシミュレーションを行うことができます。
-      how_to_use_title: このアプリの使い方
-      how_to_use_1: キャラクターを登録し、ステータスや技能を決定します。
-      how_to_use_2: シミュレーションページで敵味方に振り分けます。
-      how_to_use_3: 戦闘条件を設定し、シミュレーション開始ボタンを押します。
-      how_to_use_4: 結果が自動で表示されます
       first_time: 初めての方はこちら
+      how_to_use_link: 詳しい使い方はこちら
+    how_to_use:
+      title: 使い方
+      step_1_title: "ステップ1：キャラクターを登録する"
+      step_1_body: キャラクターを登録し、HP・DEX・装甲などのステータスと攻撃技能を設定します。
+      step_2_title: "ステップ2：シミュレーションページへ"
+      step_2_body: シミュレーションページで敵と味方にキャラクターを振り分けます。
+      step_3_title: "ステップ3：戦闘条件を設定する"
+      step_3_body: 戦闘条件を設定し、「シミュレーションスタート」ボタンを押します。
+      step_4_title: "ステップ4：結果を確認する"
+      step_4_body: 自動で戦闘がシミュレートされ、勝敗と戦闘ログが表示されます。
   simulations:
     new:
       title: シミュレーションページ
@@ -88,6 +95,9 @@ ja_jp:
     form:
       damage_bonus_note: "例: 1,1d6,-1D3,1d6+2,1d6+1d3"
       damage_note: ダイスロール記法で入力してください。
+      attack_range_note: |
+        近接:  ダメージロールにDBが加算されます。<br>
+        遠距離: ダメージロールにDBが加算されません。
       character_create: キャラクターを登録する
       character_update: キャラクターを更新する
       attack_title: 攻撃技能

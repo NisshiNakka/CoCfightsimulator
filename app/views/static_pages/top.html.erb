@@ -9,13 +9,7 @@
           <%= t('.overview_2')%>
           </p>
           
-          <h3 class="mt-4"><%= t('.how_to_use_title')%></h3>
-          <ol class="text-start d-inline-block">
-            <li><%= t('.how_to_use_1')%></li>
-            <li><%= t('.how_to_use_2')%></li>
-            <li><%= t('.how_to_use_3')%></li>
-            <li><%= t('.how_to_use_4')%></li>
-          </ol>
+          <%= link_to t('.how_to_use_link'), how_to_use_path, class: "btn btn-outline-primary mt-3" %>
         </div>
 
         <% if user_signed_in? %>

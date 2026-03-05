@@ -63,18 +63,19 @@
               <%= attack_form.number_field :dice_correction, class: 'form-control', placeholder: "-10〜10", min: -10, max: 10 %>
             </div>
 
-            <div class="col-md-7">
+            <div class="col-md-6">
               <%= attack_form.label :damage, class: 'form-label fw-semibold' %>
               <%= attack_form.text_field :damage, class: 'form-control', placeholder: t('.placeholder.damage') %>
               <div class="form-text small"><%= t('.damage_note') %></div>
             </div>
 
-            <div class="col-md-5">
+            <div class="col-md-6">
               <%= attack_form.label :attack_range, class: "form-label fw-semibold" %>
               <%= attack_form.select :attack_range, 
               Attack.attack_ranges_i18n.invert, 
                 { include_blank: false }, 
                 { class: "form-select" } %>
+              <div class="form-text small" style="font-size: 0.75rem;"><%= t('.attack_range_note').html_safe %></div>
             </div>
           </div>
         </div>
