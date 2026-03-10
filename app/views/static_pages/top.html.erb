@@ -1,38 +1,57 @@
-<div class="d-flex align-items-center justify-content-center min-vh-100">
+<div class="d-flex align-items-center justify-content-center min-vh-100 py-5">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-10 top-content-offset">
-        
-        <div class="p-4 bg-success-subtle border border-primary text-center shadow mb-4">
-          <h1>CoC fight simulator</h1>
-          <p><%= t('.overview_1')%><br>
-          <%= t('.overview_2')%>
+      <div class="col-md-10 col-lg-8">
+
+        <div class="p-4 p-md-5 bg-white border border-primary-subtle text-center shadow-lg rounded-4 mb-5">
+
+          <h1 class="display-4 fw-bold text-success mb-3 text-uppercase tracking-tight">
+            CoC Fight Simulator
+          </h1>
+
+          <p class="lead fw-semibold text-body-secondary mb-4 border-bottom pb-4 mx-auto w-75">
+            <%= t('.sub_title') %>
           </p>
-          
-          <%= link_to t('.how_to_use_link'), how_to_use_path, class: "btn btn-outline-primary mt-3" %>
+
+          <h2 class="h4 fw-bold text-dark mb-3">
+            <i class="bi bi-info-circle-fill text-success me-2"></i><%= t('.what_is_this?') %>
+          </h2>
+
+          <div class="description-area mb-4">
+            <p class="text-secondary mb-1"><%= t('.overview_1') %></p>
+            <p class="text-secondary mb-1"><%= t('.overview_2') %></p>
+            <p class="text-secondary mb-1"><%= t('.overview_3') %></p>
+          </div>
+
+          <%= link_to how_to_use_path, class: "btn btn-outline-primary rounded-pill px-4 shadow-sm" do %>
+            <i class="bi bi-question-circle me-1"></i><%= t('.how_to_use_link') %>
+          <% end %>
         </div>
 
-        <% if user_signed_in? %>
-          <div class="text-center d-flex justify-content-center gap-3", id="top_navigation_buttons">
-            <%= link_to t('characters.new.title'), new_character_path, class: "btn btn-lg btn-primary" %>
-            <%= link_to t('defaults.go_simulation'), new_simulations_path, class: "btn btn-lg btn-success" %>
-          </div>
-        <% else %>
-          <div class="d-flex justify-content-center align-items-end gap-4" id="top_navigation_buttons">
-            <div class="text-center">
-              <p class="mb-2 text-muted small fw-bold">
-                <i class="bi bi-person-plus-fill me-1"></i><%= t('.first_time') %>
-              </p>
-              <%= link_to t('header.registration'), new_user_registration_path, 
-                          class: "btn btn-lg btn-primary px-5 shadow-sm" %>
+        <div id="top_navigation_buttons">
+          <% if user_signed_in? %>
+            <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+              <%= link_to t('characters.new.title'), new_character_path, class: "btn btn-lg btn-primary px-5 shadow fw-bold" %>
+              <%= link_to t('defaults.go_simulation'), new_simulations_path, class: "btn btn-lg btn-success px-5 shadow fw-bold" %>
             </div>
+          <% else %>
+            <div class="d-grid gap-4 d-md-flex justify-content-md-center align-items-md-end">
+              <div class="text-center">
+                <p class="mb-2 text-muted small fw-bold">
+                  <i class="bi bi-person-plus-fill me-1"></i><%= t('.first_time') %>
+                </p>
+                <%= link_to t('header.registration'), new_user_registration_path,
+                            class: "btn btn-lg btn-primary px-5 shadow-sm fw-bold w-100" %>
+              </div>
 
-            <div class="text-center">
-              <%= link_to t('header.login'), new_user_session_path, 
-                          class: "btn btn-lg btn-outline-success px-5" %>
+              <div class="text-center">
+                <%= link_to t('header.login'), new_user_session_path,
+                            class: "btn btn-lg btn-outline-success px-5 fw-bold w-100" %>
+              </div>
             </div>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
+
       </div>
     </div>
   </div>

@@ -1,0 +1,35 @@
+// ヘッダーナビリンクのhover効果
+.navbar .nav-link {
+  transition: color 0.2s ease, background-color 0.2s ease;
+  border-radius: 0.375rem;
+
+  &:hover {
+    background-color: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary-text-emphasis);
+  }
+}
+
+// ロゴ画像のサイズ固定
+.header-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+// ドロップダウン: PC（hover対応デバイス + lg以上）のみhoverで開く
+@media (hover: hover) and (min-width: 992px) {
+  .navbar .dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0;
+  }
+}
+
+// フッターリンクのhover効果
+footer .list-inline-item a {
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.75;
+    text-decoration: underline !important;
+  }
+}

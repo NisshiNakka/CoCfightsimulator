@@ -1,6 +1,6 @@
 <div class="container my-5">
   <h1 class="text-center mb-4 fw-bold"><%= t('.title') %></h1>
-    <div class="border p-3 bg-light mb-0 rounded-top">
+    <div class="border p-3 bg-light mb-0 rounded-top bg-white" id=index-buttons>
       <div class="col-auto d-flex gap-2">
         <%= link_to t('defaults.go_simulation'), new_simulations_path, class: 'btn btn-success text-nowrap' %>
         <%= link_to t('characters.new.title'), new_character_path, class: 'btn btn-primary text-nowrap'  %>

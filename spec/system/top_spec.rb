@@ -6,6 +6,88 @@ RSpec.describe 'トップ画面', type: :system do
     visit root_path
   end
 
+  describe 'ヘッダーUI確認' do
+    context 'ロゴ表示' do
+      it 'ロゴ画像が表示されること' do
+        within('#logo-link') do
+          expect(page).to have_css('img.header-logo'),
+          'ヘッダーロゴ画像が表示されていません'
+        end
+      end
+
+      it 'ロゴ画像にaltテキストが設定されていること' do
+        within('#logo-link') do
+          expect(page).to have_css('img[alt="CoC Fight Simulator ロゴ"]'),
+          'ロゴ画像のaltテキストが設定されていません'
+        end
+      end
+
+      it 'ロゴ画像のsrcにWebP画像が設定されていること' do
+        within('#logo-link') do
+          expect(page).to have_css('img[src*="logo_sumple"]'),
+          'ロゴ画像にlogo_sumpleが使用されていません'
+        end
+      end
+
+      it 'サイト名テキストがヘッダーロゴリンク内に含まれること' do
+        within('#logo-link') do
+          expect(page).to have_content('CoC Fight Simulator'),
+          'サイト名テキストがヘッダーロゴリンク内に表示されていません'
+        end
+      end
+    end
+
+    context 'ナビリンク表示' do
+      it '「使い方」リンクが表示されること' do
+        within('#navbarSupportedContent') do
+          expect(page).to have_link(I18n.t('header.how_to_use')),
+          '使い方リンクが表示されていません'
+        end
+      end
+
+      it 'ログインしていない場合「ログイン」リンクが表示されること' do
+        within('#navbarSupportedContent') do
+          expect(page).to have_link(I18n.t('header.login')),
+          'ログインリンクが表示されていません'
+        end
+      end
+
+      it 'ログインしていない場合「新規登録」リンクが表示されること' do
+        within('#navbarSupportedContent') do
+          expect(page).to have_link(I18n.t('header.registration')),
+          '新規登録リンクが表示されていません'
+        end
+      end
+    end
+
+    context 'ログインしている場合のナビリンク表示' do
+      before do
+        sign_in user
+        visit root_path
+      end
+
+      it '「キャラクターページ」ドロップダウントグルが表示されること' do
+        within('#navbarSupportedContent') do
+          expect(page).to have_css('#header-character-menu'),
+          'キャラクターページドロップダウンが表示されていません'
+        end
+      end
+
+      it '「ログアウト」リンクが表示されること' do
+        within('#navbarSupportedContent') do
+          expect(page).to have_link(I18n.t('header.logout')),
+          'ログアウトリンクが表示されていません'
+        end
+      end
+
+      it 'キャラクターページをクリックするとドロップダウンが表示されること' do
+        find('#header-character-menu').click
+        expect(page).to have_css('.dropdown-menu', visible: true),
+        'ドロップダウンメニューが表示されませんでした'
+      end
+    end
+  end
+
   describe '遷移確認' do
     context 'ログインしていない場合' do
       it '「初めての方はこちら」という案内テキストが表示されること' do
