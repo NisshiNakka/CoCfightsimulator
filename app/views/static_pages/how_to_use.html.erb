@@ -1,7 +1,9 @@
 <% content_for(:title) { t('.title') } %>
 
 <div class="container my-5">
-  <h1 class="text-center mb-5"><%= t('.title') %></h1>
+  <h1 class="text-center mb-5 fw-bold"><%= t('.title') %></h1>
+
+  <% step_colors = ['primary', 'success', 'warning', 'info'] %>
 
   <% [
     { step: 1, image: "how_to_use/how_to_use1.png", title: t('.step_1_title'), body: t('.step_1_body') },
@@ -9,15 +11,22 @@
     { step: 3, image: "how_to_use/how_to_use3.png", title: t('.step_3_title'), body: t('.step_3_body') },
     { step: 4, image: "how_to_use/how_to_use4.png", title: t('.step_4_title'), body: t('.step_4_body') }
   ].each_with_index do |s, i| %>
-    <div class="card shadow-sm mb-4" id="how-to-use-step-<%= s[:step] %>">
+    <% color = step_colors[i] %>
+
+    <div class="card shadow-sm mb-4 border-<%= color %>-subtle bg-<%= color %>-subtle bg-opacity-10">
       <div class="card-body p-4">
-        <h4 class="card-title mb-3"><%= s[:title] %></h4>
+
+        <h4 class="card-title mb-4 fw-bold text-<%= color %>-emphasis">
+          <span class="badge bg-<%= color %> me-2">STEP <%= s[:step] %></span>
+          <%= s[:title] %>
+        </h4>
+        
         <div class="row align-items-center g-4 <%= i.odd? ? 'flex-row-reverse' : '' %>">
           <div class="col-md-7">
-            <%= image_tag s[:image], class: "img-fluid rounded border", alt: s[:title] %>
+            <%= image_tag s[:image], class: "img-fluid rounded border shadow-sm bg-white", alt: s[:title] %>
           </div>
           <div class="col-md-5">
-            <p class="mb-0"><%= s[:body] %></p>
+            <p class="mb-0 fs-5 lh-base text-secondary"><%= s[:body] %></p>
           </div>
         </div>
       </div>
@@ -25,12 +34,26 @@
   <% end %>
 
   <div class="text-center mt-5", id="how-to-use-next-step">
-    <% if user_signed_in? %>
-      <%= link_to t('defaults.go_simulation'), new_simulations_path, class: "btn btn-lg btn-success me-3" %>
-      <%= link_to t('characters.new.title'), new_character_path, class: "btn btn-lg btn-primary" %>
-    <% else %>
-      <%= link_to t('header.registration'), new_user_registration_path, class: "btn btn-lg btn-primary me-3" %>
-      <%= link_to t('header.login'), new_user_session_path, class: "btn btn-lg btn-outline-success" %>
-    <% end %>
+    <div class="d-flex justify-content-center gap-3">
+      <% if user_signed_in? %>
+        <%= link_to t('defaults.go_simulation'), new_simulations_path, class: "btn btn-lg btn-success px-4 shadow-sm fw-bold" %>
+        <%= link_to t('characters.new.title'), new_character_path, class: "btn btn-lg btn-primary px-4 shadow-sm fw-bold" %>
+      <% else %>
+        <div class="d-flex justify-content-center align-items-end gap-4" id="top_navigation_buttons">
+          <div class="text-center">
+            <p class="mb-2 text-muted small fw-bold">
+              <i class="bi bi-person-plus-fill me-1"></i><%= t('static_pages.top.first_time') %>
+            </p>
+            <%= link_to t('header.registration'), new_user_registration_path, 
+                        class: "btn btn-lg btn-primary px-5 shadow-sm" %>
+          </div>
+
+          <div class="text-center">
+            <%= link_to t('header.login'), new_user_session_path, 
+                        class: "btn btn-lg btn-outline-success px-5" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>

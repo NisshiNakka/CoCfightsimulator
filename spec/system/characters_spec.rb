@@ -87,7 +87,7 @@ RSpec.describe "Characters", type: :system do
     describe "画面遷移" do
       it 'キャラクター登録ボタンからキャラクター登録画面へ遷移できること' do
         visit characters_path
-        within ".gap-2" do
+        within "#index-buttons" do
           click_on I18n.t('characters.new.title')
         end
         expect(page).to have_current_path(new_character_path, ignore_query: true),
@@ -96,7 +96,7 @@ RSpec.describe "Characters", type: :system do
 
       it '「シミュレーションする」ボタンからシミュレーション画面へ遷移できること' do
         visit characters_path
-        within ".gap-2" do
+        within "#index-buttons" do
           click_on I18n.t('defaults.go_simulation')
         end
         expect(page).to have_current_path(new_simulations_path, ignore_query: true),

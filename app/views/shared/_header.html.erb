@@ -1,44 +1,53 @@
 <header>
-  <nav class='navbar navbar-expand-lg navigation bg-info py-0' data-bs-theme="light">
-    <%= link_to root_path, class: 'navbar-brand py-0', id: 'logo-link' do %>
-      <%= image_tag 'title_logo1.jpg', width: '245', height: '70' %>
-    <% end %>
-    <button class='navbar-toggler' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent'
-      aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
-      <span class='navbar-toggler-icon'></span>
-    </button>
+  <nav class='navbar navbar-expand-lg navigation bg-white py-2 border-bottom' data-bs-theme="light">
+    <div class="container-fluid">
+      <%= link_to root_path, class: 'navbar-brand d-flex align-items-center gap-2 py-1', id: 'logo-link' do %>
+        <%= image_tag 'all_dice/logo_sumple.webp', class: 'header-logo', alt: 'CoC Fight Simulator ロゴ' %>
+        <span class="fw-bold text-dark fs-4">CoC Fight Simulator</span>
+      <% end %>
+      
+      <button class='navbar-toggler' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent'
+        aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
+        <span class='navbar-toggler-icon'></span>
+      </button>
 
-    <div class='collapse navbar-collapse' id='navbarSupportedContent'>
-      <ul class='navbar-nav ms-auto main-nav align-items-center'>
-        <li class='nav-item'>
-          <%= link_to t('header.how_to_use'), how_to_use_path, class: 'nav-link' %>
-        </li>
-        <% if user_signed_in? %>
-          <li class='nav-item dropdown dropdown-slide'>
-            <%= link_to t('header.character_page'), '#', class: 'nav-link dropdown-toggle', data: { bs_toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' }, role: 'button', id: 'header-character-menu' %>
-            <div class='dropdown-menu dropdown-menu-end'>
-              <%= link_to t('header.character_index'), characters_path, class: 'dropdown-item' %>
-              <%= link_to t('header.character_create'), new_character_path, class: 'dropdown-item' %>
-            </div>
+      <div class='collapse navbar-collapse' id='navbarSupportedContent'>
+        <ul class='navbar-nav ms-auto main-nav align-items-center gap-2'>
+          <li class='nav-item'>
+            <%= link_to t('header.how_to_use'), how_to_use_path, class: 'nav-link' %>
           </li>
 
-          <li class='nav-item'>
-            <%= link_to t('header.logout'), destroy_user_session_path, class: 'nav-link', data: { turbo_method: :delete } %>
-          </li>
+          <% if user_signed_in? %>
+            <li class='nav-item dropdown'>
+              <%= link_to t('header.character_page'), '#', class: 'nav-link dropdown-toggle', data: { bs_toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' }, role: 'button', id: 'header-character-menu' %>
+              <div class='dropdown-menu dropdown-menu-end'>
+                <%= link_to t('header.character_index'), characters_path, class: 'dropdown-item' %>
+                <%= link_to t('header.character_create'), new_character_path, class: 'dropdown-item' %>
+              </div>
+            </li>
 
-          <li class='nav-item'>
-            <%= link_to t('header.user_page', name: current_user.name), edit_user_registration_path, class: 'nav-link text-truncate', style: 'max-width: 150px;' %>
-          </li>
-        <% else %>
-          <li class='nav-item'>
-            <%= link_to t('header.login'), new_user_session_path, class: 'nav-link' %>
-          </li>
+            <li class='nav-item'>
+              <%= link_to t('header.user_page', name: current_user.name), edit_user_registration_path, class: 'nav-link text-truncate', style: 'max-width: 150px;' %>
+            </li>
 
-          <li class='nav-item'>
-            <%= link_to t('header.registration'), new_user_registration_path, class: 'nav-link' %>
-          </li>
-        <% end %>
-      </ul>
+            <li class='nav-item border-start border-dark-subtle ps-3 ms-2'>
+              <%= link_to t('header.logout'), destroy_user_session_path, 
+                          class: 'btn btn-sm btn-outline-danger px-3 fw-bold', 
+                          data: { turbo_method: :delete } %>
+            </li>
+
+          <% else %>
+            <li class='nav-item'>
+              <%= link_to t('header.login'), new_user_session_path, class: 'nav-link' %>
+            </li>
+
+            <li class='nav-item border-start border-dark-subtle ps-3 ms-2'>
+              <%= link_to t('header.registration'), new_user_registration_path, 
+                          class: 'btn btn-sm btn-primary px-3 shadow-sm fw-bold' %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     </div>
   </nav>
 </header>

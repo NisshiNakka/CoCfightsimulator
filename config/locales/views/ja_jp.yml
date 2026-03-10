@@ -32,8 +32,11 @@ ja_jp:
     privacy_policy: プライバシーポリシー
   static_pages:
     top:
-      overview_1: このアプリは、CoCにおける戦闘のシミュレーションを行うことができるアプリです。
-      overview_2: シナリオ制作をしたり、GMとしてシナリオの調整を行う際の戦闘バランスのシミュレーションを行うことができます。
+      sub_title: クトゥルフ神話TRPG7版  戦闘シミュレーター
+      what_is_this?: CoC Fight Simulatorとは
+      overview_1: このサイトは、CoC7版の戦闘を簡単にシミュレートして、ボス戦の難易度を事前確認できるツールです。
+      overview_2: キャラクターを登録するだけで何度も戦闘をテストでき、シナリオ作成 / 調整の時間短縮を行うことで、
+      overview_3: CoC7版のシナリオを作る / 回す方をサポートします。
       first_time: 初めての方はこちら
       how_to_use_link: 詳しい使い方はこちら
     how_to_use:

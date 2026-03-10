@@ -16,13 +16,6 @@ RSpec.describe '使い方ページ', type: :system do
         expect(page).to have_content I18n.t('static_pages.how_to_use.title')
       end
 
-      it '4つのステップが表示されること' do
-        expect(page).to have_css('#how-to-use-step-1')
-        expect(page).to have_css('#how-to-use-step-2')
-        expect(page).to have_css('#how-to-use-step-3')
-        expect(page).to have_css('#how-to-use-step-4')
-      end
-
       it '各ステップのタイトルが表示されること' do
         expect(page).to have_content I18n.t('static_pages.how_to_use.step_1_title')
         expect(page).to have_content I18n.t('static_pages.how_to_use.step_2_title')
