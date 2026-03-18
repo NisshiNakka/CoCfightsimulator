@@ -85,6 +85,51 @@ ja_jp:
           ── %{defender}は回避失敗(%{evasion_text})<br>
           ── ダメージ計算: %{damage_text} | [装甲 %{armor}] | ダメージ %{final_damage} (残りHP: %{remaining_hp})
       to_attack: の攻撃
+  tutorial:
+    next: 次へ
+    back: 戻る
+    skip: スキップ
+    done: 完了
+    go_to_create: キャラクター登録へ
+    go_to_simulation: シミュレーションへ
+    step1:
+      welcome_title: CoC Fight Simulatorへようこそ！
+      welcome_text: CoC Fight Simulatorへようこそ！このチュートリアルでは、サイトの基本的な使い方を説明します。まずはキャラクターを登録してみましょう！
+      characters_title: キャラクター情報を設定しましょう
+      characters_text: キャラクターの情報を設定します。HP・DEX・装甲などのステータスと攻撃技能を入力してください。
+      attacks_title: 攻撃技能を設定しましょう
+      attacks_text: 攻撃技能を設定します。攻撃名・成功確率・ダメージ・射程を入力してください。
+      submit_title: 登録しましょう
+      submit_text: すべて入力したら「登録」ボタンを押してキャラクターを作成してください。
+    step2:
+      list_title: キャラクター一覧
+      list_text: 作成したキャラクターがここに表示されます。
+      show_title: 閲覧ボタン
+      show_text: このボタンでキャラクターの詳細を確認できます。
+      edit_title: 編集ボタン
+      edit_text: このボタンでキャラクターを編集できます。
+      create_opponent_title: 対戦相手を作成しましょう
+      create_opponent_text: 次は対戦相手のキャラクターを作成してみましょう！「キャラクター登録」ボタンを押してください。
+    step3:
+      form_title: 対戦相手を作成しましょう
+      form_text: 対戦相手のキャラクターを作成します。1体目と同じように名前・ステータス・攻撃技能を入力してください。
+      submit_title: 登録しましょう
+      submit_text: 入力が完了したら「登録」ボタンを押してください。
+    step4:
+      list_title: キャラクターが揃いました！
+      list_text: 2体のキャラクターが揃いました。これでシミュレーションの準備が整いました。
+      simulation_title: シミュレーションを行いましょう
+      simulation_text: 「シミュレーションする」ボタンを押してシミュレーションページへ進みましょう！
+    step5:
+      enemy_title: 敵キャラクターを選択
+      enemy_text: ドロップダウンから敵キャラクターを選択してください。
+      ally_title: 味方キャラクターを選択
+      ally_text: ドロップダウンから味方キャラクターを選択してください。
+      start_title: シミュレーション開始
+      start_text: 敵と味方を両方選択すると「シミュレーションスタート」ボタンが表示されます。ボタンを押して戦闘を開始してください！
+    step6:
+      result_title: シミュレーション完了！
+      result_text: ここに戦闘結果が表示されます。勝敗・ターン数・攻撃ログを確認できます。これでチュートリアルは完了です！色々な条件でシミュレーションしてみましょう！
   characters:
     index:
       title: キャラクター一覧
