@@ -81,4 +81,6 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   # システムスペック用設定2
   config.include Devise::Test::IntegrationHelpers, type: :system
+  # リクエストスペック用設定
+  config.include Devise::Test::IntegrationHelpers, type: :request
 end

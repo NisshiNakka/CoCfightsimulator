@@ -10,9 +10,12 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+    <% if user_signed_in? && current_user.tutorial_active? %>
+      <meta name="tutorial-step" content="<%= current_user.tutorial_step %>">
+    <% end %>
   </head>
 
-  <body>
+  <body data-controller="tutorial" data-tutorial-i18n-value="<%= t('tutorial').to_json %>">
     <%= render 'shared/header' %>
     <%= render 'shared/flash_message'%>
     <body class="bg-body-tertiary">

@@ -80,4 +80,62 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe 'チュートリアル' do
+    let(:user) { create(:user) }
+
+    describe '#tutorial_active?' do
+      context 'tutorial_step が 0 の場合' do
+        it 'false を返すこと' do
+          user.update!(tutorial_step: 0)
+          expect(user.tutorial_active?).to be false
+        end
+      end
+
+      context 'tutorial_step が 1 以上の場合' do
+        it 'tutorial_step=1 のとき true を返すこと' do
+          user.update!(tutorial_step: 1)
+          expect(user.tutorial_active?).to be true
+        end
+
+        it 'tutorial_step=6 のとき true を返すこと' do
+          user.update!(tutorial_step: 6)
+          expect(user.tutorial_active?).to be true
+        end
+      end
+    end
+
+    describe '#advance_tutorial!' do
+      it 'tutorial_step を 1 インクリメントすること' do
+        user.update!(tutorial_step: 1)
+        expect { user.advance_tutorial! }.to change { user.reload.tutorial_step }.from(1).to(2)
+      end
+
+      it 'tutorial_step=5 のとき 6 に進むこと' do
+        user.update!(tutorial_step: 5)
+        user.advance_tutorial!
+        expect(user.reload.tutorial_step).to eq 6
+      end
+
+      it 'tutorial_step=6（最終ステップ）のとき 0 にリセットすること' do
+        user.update!(tutorial_step: 6)
+        user.advance_tutorial!
+        expect(user.reload.tutorial_step).to eq 0
+      end
+    end
+
+    describe '#dismiss_tutorial!' do
+      it 'tutorial_step を 0 にすること' do
+        user.update!(tutorial_step: 3)
+        user.dismiss_tutorial!
+        expect(user.reload.tutorial_step).to eq 0
+      end
+
+      it 'tutorial_step がすでに 0 のとき 0 のままであること' do
+        user.update!(tutorial_step: 0)
+        user.dismiss_tutorial!
+        expect(user.reload.tutorial_step).to eq 0
+      end
+    end
+  end
 end
