@@ -10,16 +10,16 @@ FactoryBot.define do
     association :user
 
     after(:build) do |character|
-      character.attacks << build(:attack, character: character) if character.attacks.empty?
+      character.attack = build(:attack, character: character) if character.attack.nil?
     end
 
     after(:create) do |character|
-      create(:attack, character: character) if character.attacks.empty?
+      create(:attack, character: character) if character.attack.nil?
     end
 
     trait :without_attacks do
       after(:create) do |character|
-        character.attacks.destroy_all
+        character.attack&.destroy
       end
     end
 

@@ -135,17 +135,17 @@ RSpec.describe "Characters", type: :system do
         fill_in "character_evasion_correction", with: 1
         fill_in "character_armor", with: 1
         fill_in "character_damage_bonus", with: "1d6+1"
-        fill_in "character_attacks_attributes_0_name", with: "新規技能"
-        fill_in "character_attacks_attributes_0_success_probability", with: 50
-        fill_in "character_attacks_attributes_0_dice_correction", with: 0
-        fill_in "character_attacks_attributes_0_damage", with: "1d6"
+        fill_in "character_attack_attributes_name", with: "新規技能"
+        fill_in "character_attack_attributes_success_probability", with: 50
+        fill_in "character_attack_attributes_dice_correction", with: 0
+        fill_in "character_attack_attributes_damage", with: "1d6"
         click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.created", item: Character.model_name.human)
         expect(page).to have_content "新規キャラクター"
         expect(current_path).to eq characters_path
         new_character = Character.last
-        expect(new_character.attacks.count).to eq 1
-        expect(new_character.attacks.first.name).to eq "新規技能"
+        expect(new_character.attack).to be_present
+        expect(new_character.attack.name).to eq "新規技能"
       end
     end
 
@@ -159,7 +159,7 @@ RSpec.describe "Characters", type: :system do
       end
 
       it "攻撃技能の名前が空の場合、登録に失敗しエラーメッセージが表示されること" do
-        fill_in "character_attacks_attributes_0_name", with: ""
+        fill_in "character_attack_attributes_name", with: ""
         click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
         expect(page).to have_selector '#error_explanation'
@@ -173,7 +173,7 @@ RSpec.describe "Characters", type: :system do
       end
 
       it "攻撃技能のダメージ形式が不正な場合、登録に失敗すること" do
-        fill_in "character_attacks_attributes_0_damage", with: "不適切な形式"
+        fill_in "character_attack_attributes_damage", with: "不適切な形式"
         click_button I18n.t('characters.form.character_create')
         expect(page).to have_content I18n.t("defaults.flash_message.not_created", item: Character.model_name.human)
         expect(page).to have_selector '#error_explanation'
@@ -182,6 +182,7 @@ RSpec.describe "Characters", type: :system do
   end
 
   describe "詳細表示機能" do
+    let!(:character_by_me) { create(:character, :without_attacks, user: user, name: "自分のキャラ") }
     let!(:attack) { create(:attack, character: character_by_me, name: "パンチ", success_probability: 50, damage: "1d3") }
 
     let(:path) { character_path(character_by_me) }
@@ -219,6 +220,7 @@ RSpec.describe "Characters", type: :system do
   end
 
   describe "編集機能" do
+    let!(:character_by_me) { create(:character, :without_attacks, user: user, name: "自分のキャラ") }
     let!(:attack) { create(:attack, character: character_by_me, name: "パンチ", success_probability: 50) }
 
     let(:path) { edit_character_path(character_by_me) }
@@ -245,8 +247,8 @@ RSpec.describe "Characters", type: :system do
         click_link I18n.t('defaults.edit')
         fill_in "character_name", with: "更新後のキャラ名"
         fill_in "character_hitpoint", with: 15
-        fill_in "character_attacks_attributes_0_name", with: "強烈なパンチ"
-        fill_in "character_attacks_attributes_0_success_probability", with: 60
+        fill_in "character_attack_attributes_name", with: "強烈なパンチ"
+        fill_in "character_attack_attributes_success_probability", with: 60
         click_button I18n.t('characters.form.character_update')
         expect(page).to have_content I18n.t("defaults.flash_message.updated", item: Character.model_name.human)
         expect(page).to have_content "更新後のキャラ名"
@@ -269,7 +271,7 @@ RSpec.describe "Characters", type: :system do
 
       it "技能名を空にすると更新に失敗し、エラーメッセージが表示されること" do
         visit edit_character_path(character_by_me)
-        fill_in "character_attacks_attributes_0_name", with: ""
+        fill_in "character_attack_attributes_name", with: ""
         click_button I18n.t('characters.form.character_update')
         expect(page).to have_content I18n.t("defaults.flash_message.not_updated", item: Character.model_name.human)
         expect(page).to have_selector '#error_explanation'
