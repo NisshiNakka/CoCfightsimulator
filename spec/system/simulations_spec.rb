@@ -6,8 +6,8 @@ RSpec.describe "Simulations", type: :system do
   # DEX差をつけてソートを確認（味方: 60, 敵: 40）
   let!(:ally) { create(:quick_character, user: user, name: "味方戦士") }
   let!(:enemy) { create(:slow_character, user: user, name: "敵モンスター") }
-  let!(:enemy_attack) { create(:attack, character: enemy, name: "噛みつき") }
-  let!(:ally_attack) { create(:attack, character: ally, name: "剣攻撃") }
+  let!(:enemy_attack) { enemy.attack }
+  let!(:ally_attack) { ally.attack }
 
   before do
     sign_in user
@@ -48,7 +48,7 @@ RSpec.describe "Simulations", type: :system do
       end
       within "#enemy_display" do
         expect(page).to have_content "敵モンスター"
-        expect(page).to have_content "噛みつき"
+        expect(page).to have_content enemy_attack.name
       end
 
       within "#ally_display" do
@@ -63,7 +63,7 @@ RSpec.describe "Simulations", type: :system do
       end
       within "#ally_display" do
         expect(page).to have_content "味方戦士"
-        expect(page).to have_content "剣攻撃"
+        expect(page).to have_content ally_attack.name
       end
 
       within "#enemy_display" do

@@ -15,12 +15,12 @@ class Character < ApplicationRecord
   }
 
   belongs_to :user
-  has_many :attacks, dependent: :destroy
-  accepts_nested_attributes_for :attacks,
+  has_one :attack, dependent: :destroy
+  accepts_nested_attributes_for :attack,
                                 allow_destroy: true,
                                 reject_if: :all_blank
 
-  validate :attacks_count_range
+  validates :attack, presence: true
 
   def evasion_roll(correction)
     dice_system.eval("CC#{evasion_correction}<=#{evasion_rate}#{correction}")
@@ -53,15 +53,5 @@ class Character < ApplicationRecord
 
   def death?
     current_hp <= 0
-  end
-
-  def attacks_count_range
-    valid_attacks = attacks.reject(&:marked_for_destruction?)
-
-    if valid_attacks.empty?
-      errors.add(:base, "攻撃技能を最低1つ登録してください")
-    elsif valid_attacks.size > 3
-      errors.add(:base, "攻撃技能は3つまでしか登録できません")
-    end
   end
 end

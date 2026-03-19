@@ -203,6 +203,23 @@ RSpec.describe Character, type: :model do
       it 'userに属していること' do
         expect(Character.reflect_on_association(:user).macro).to eq :belongs_to
       end
+
+      it 'attackを1つ持つこと（has_one）' do
+        expect(Character.reflect_on_association(:attack).macro).to eq :has_one
+      end
+    end
+
+    context 'attack の presence バリデーション' do
+      it 'attackがない場合は無効であること' do
+        character = build(:character)
+        character.attack = nil
+        character.valid?
+        expect(character.errors[:attack]).to be_present
+      end
+
+      it 'attackが存在する場合は有効であること' do
+        expect(character).to be_valid
+      end
     end
   end
 

@@ -5,7 +5,7 @@ class CharactersController < ApplicationController
 
   def new
     @character = Character.new
-    @character.attacks.build
+    @character.build_attack
   end
 
   def create
@@ -24,7 +24,7 @@ class CharactersController < ApplicationController
 
   def edit
     @character = current_user.characters.find(params[:id])
-    @character.attacks.build if @character.attacks.blank?
+    @character.build_attack if @character.attack.nil?
   end
 
   def update
@@ -51,7 +51,7 @@ class CharactersController < ApplicationController
 
   def character_params
     params.require(:character).permit(:name, :hitpoint, :dexterity, :evasion_rate, :evasion_correction, :armor, :damage_bonus,
-    attacks_attributes: [
+    attack_attributes: [
         :id,
         :name,
         :success_probability,

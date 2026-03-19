@@ -9,8 +9,8 @@ class SimulationsController < ApplicationController
       session[:ally_id] = params[:ally_id].presence
     end
 
-    @enemy_character = @all_characters.includes(:attacks).find_by(id: session[:enemy_id])
-    @ally_character = @all_characters.includes(:attacks).find_by(id: session[:ally_id])
+    @enemy_character = @all_characters.includes(:attack).find_by(id: session[:enemy_id])
+    @ally_character = @all_characters.includes(:attack).find_by(id: session[:ally_id])
 
 
     respond_to do |format|
@@ -21,12 +21,12 @@ class SimulationsController < ApplicationController
 
   def combat_roll
     # 1. 値の取得(controllerの役割 :各メソッドへの値の取得と受け渡し)
-    ally_character = current_user.characters.includes(:attacks).find_by(id: session[:ally_id])
-    enemy_character = current_user.characters.includes(:attacks).find_by(id: session[:enemy_id])
+    ally_character = current_user.characters.includes(:attack).find_by(id: session[:ally_id])
+    enemy_character = current_user.characters.includes(:attack).find_by(id: session[:enemy_id])
     return render_error("キャラクターが見つかりませんでした") if ally_character.nil? || enemy_character.nil?
 
-    ally_attack = ally_character.attacks.first
-    enemy_attack = enemy_character.attacks.first
+    ally_attack = ally_character.attack
+    enemy_attack = enemy_character.attack
     return render_error("攻撃技能が見つかりませんでした") if ally_attack.nil? || enemy_attack.nil?
 
     outcome = BattleCoordinator.call(
