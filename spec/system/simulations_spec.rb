@@ -100,8 +100,9 @@ RSpec.describe "Simulations", type: :system do
 
   describe "同時シミュレート機能", js: true do
     context "キャラクター選択とボタン表示" do
-      it "両方のキャラクターを選択すると同時シミュレートボタンが表示され、解除すると消えること" do
-        expect(page).not_to have_button "同時シミュレート"
+      it "両方のキャラクターを選択するとシミュレートボタンが表示され、解除すると消えること" do
+        # 初回は「シミュレーションする」テキスト
+        expect(page).not_to have_button I18n.t('simulations.start_simulation.start')
 
         within ".card.border-danger" do
           select "敵モンスター", from: "enemy_id"
@@ -116,8 +117,21 @@ RSpec.describe "Simulations", type: :system do
           select I18n.t('simulations.new.not_select'), from: "enemy_id"
         end
 
-        expect(page).not_to have_button "同時シミュレート"
+        expect(page).not_to have_button I18n.t('simulations.start_simulation.start')
         expect(page).to have_content I18n.t('simulations.new.select_character_instruction')
+      end
+
+      # [#103] 初回ボタンテキストの確認
+      it "初回表示時のシミュレーションボタンのテキストが「シミュレーションする」であること" do
+        within ".card.border-danger" do
+          select "敵モンスター", from: "enemy_id"
+        end
+        within ".card.border-primary" do
+          select "味方戦士", from: "ally_id"
+        end
+
+        expect(page).to have_button I18n.t('simulations.start_simulation.start'), wait: 5
+        expect(page).not_to have_button I18n.t('simulations.start_simulation.retry')
       end
     end
 
@@ -184,6 +198,131 @@ RSpec.describe "Simulations", type: :system do
       it "一度シミュレートした後にHPがセッションに保存され、継続して戦えること" do
         click_button I18n.t('simulations.start_simulation.start'), wait: 10
         expect(page).to have_selector "#dice_result", wait: 10
+      end
+
+      # [#103] 2回目以降のボタンテキスト変更
+      it "シミュレーション実行後のボタンが「もう一度シミュレーション」に変わること" do
+        click_button I18n.t('simulations.start_simulation.start')
+        expect(page).to have_selector "#dice_result .card", wait: 10
+
+        # dice_roll_area が更新され「もう一度シミュレーション」ボタンが表示される
+        expect(page).to have_button I18n.t('simulations.start_simulation.retry'), wait: 5
+        expect(page).not_to have_button I18n.t('simulations.start_simulation.start')
+      end
+
+      # [#103] 敵=左 / 味方=右 の固定レイアウト確認
+      it "シミュレーション結果で敵が左カード、味方が右カードに表示されること" do
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+          if attacker == ally
+            { status: :hit, remaining_hp: 0, final_damage: 20, attack_text: "成功" }
+          else
+            { status: :failed, attack_text: "失敗", remaining_hp: ally.hitpoint }
+          end
+        end
+
+        click_button I18n.t('simulations.start_simulation.start')
+        expect(page).to have_selector "#dice_result .card", wait: 10
+
+        within "#dice_result" do
+          # 左カード（col-md-6 最初のもの）に敵キャラ名が表示されること
+          result_cards = all(".result-card-container .col-md-6")
+          expect(result_cards[0]).to have_content enemy.name
+          expect(result_cards[1]).to have_content ally.name
+        end
+      end
+
+      # [#103] 味方勝利時: 敵カードに敗者の暗転クラスが付与されること
+      it "味方が勝利した場合、敵カードに result-loser クラスが付与されること" do
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+          if attacker == ally
+            { status: :hit, remaining_hp: 0, final_damage: 20, attack_text: "成功" }
+          else
+            { status: :failed, attack_text: "失敗", remaining_hp: ally.hitpoint }
+          end
+        end
+
+        click_button I18n.t('simulations.start_simulation.start')
+        expect(page).to have_selector "#dice_result .card", wait: 10
+
+        within "#dice_result" do
+          result_cards = all(".result-card-container .col-md-6")
+          # 敵カード（左）に result-loser クラスがあること
+          expect(result_cards[0]).to have_selector ".result-loser"
+          # 味方カード（右）には result-loser クラスがないこと
+          expect(result_cards[1]).not_to have_selector ".result-loser"
+        end
+      end
+
+      # [#103] 引き分け時: 両カードに result-loser クラスが付与されること
+      it "引き分けの場合、両方のカードに result-loser クラスが付与されること" do
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+          { status: :failed, attack_text: "失敗", remaining_hp: target_hp }
+        end
+
+        click_button I18n.t('simulations.start_simulation.start')
+        expect(page).to have_content I18n.t('simulations.combat_roll.draw'), wait: 10
+
+        within "#dice_result" do
+          result_cards = all(".result-card-container .col-md-6")
+          expect(result_cards[0]).to have_selector ".result-loser"
+          expect(result_cards[1]).to have_selector ".result-loser"
+        end
+      end
+
+      # [#103] 敗者ステータスバッジの表示確認（気絶）
+      it "敗者のステータスが気絶の場合、黄色枠の「気絶」バッジが表示されること" do
+        # 敵が先攻して味方を気絶（HP <= 2）させるシナリオ
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+          if attacker == enemy
+            { status: :hit, remaining_hp: 1, final_damage: ally.hitpoint - 1, attack_text: "成功",
+              damage_text: "3d6", armor: 0 }
+          else
+            { status: :failed, attack_text: "失敗", remaining_hp: enemy.hitpoint }
+          end
+        end
+
+        click_button I18n.t('simulations.start_simulation.start')
+        expect(page).to have_selector "#dice_result .card", wait: 10
+
+        within "#dice_result" do
+          # 気絶バッジが表示されること
+          expect(page).to have_selector ".status-badge--fainting"
+          expect(page).to have_css(".status-badge--fainting", text: I18n.t('simulations.combat_roll.fainting'))
+        end
+      end
+
+      # [#103] 敗者ステータスバッジの表示確認（死亡）
+      it "敗者のステータスが死亡の場合、赤枠の「死亡」バッジが表示されること" do
+        # 敵が先攻して味方を死亡（HP <= 0）させるシナリオ
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+          if attacker == enemy
+            { status: :hit, remaining_hp: 0, final_damage: ally.hitpoint, attack_text: "成功",
+              damage_text: "3d6", armor: 0 }
+          else
+            { status: :failed, attack_text: "失敗", remaining_hp: enemy.hitpoint }
+          end
+        end
+
+        click_button I18n.t('simulations.start_simulation.start')
+        expect(page).to have_selector "#dice_result .card", wait: 10
+
+        within "#dice_result" do
+          # 死亡バッジが表示されること
+          expect(page).to have_selector ".status-badge--death"
+          expect(page).to have_css(".status-badge--death", text: I18n.t('simulations.combat_roll.death'))
+        end
+      end
+
+      # [#103] フェードインアニメーション用クラスの付与確認
+      it "シミュレーション結果の各セクションにフェードイン用クラスが付与されること" do
+        click_button I18n.t('simulations.start_simulation.start')
+        expect(page).to have_selector "#dice_result .card", wait: 10
+
+        within "#dice_result" do
+          # Stimulus が connect() 後にアニメーションを適用するため、
+          # fade-in-active クラスが付与されていること（fade-in-ready から遷移済み）
+          expect(page).to have_selector "[data-simulation-result-target='section'].fade-in-active", wait: 5
+        end
       end
     end
   end

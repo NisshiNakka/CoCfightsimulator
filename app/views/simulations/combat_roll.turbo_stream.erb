@@ -1,114 +1,178 @@
+<%# ボタンエリアを先に更新（dice_result は dice_roll_area 内にあるため） 1回目以降は「もう一度シミュレーション」テキストに変更する %>
+<%= turbo_stream.update "dice_roll_area" do %>
+  <div class="container">
+    <div class="d-flex justify-content-center mt-5 mb-5">
+      <%= button_to t('simulations.start_simulation.retry'),
+            combat_roll_path,
+            method: :post,
+            class: 'btn btn-success btn-lg px-5 shadow fw-bold simulation-button',
+            data: { turbo_stream: true, simulation_result_target: "button" } %>
+    </div>
+
+    <div id="dice_result" class="result-area mt-4">
+    </div>
+  </div>
+<% end %>
+
 <%= turbo_stream.update "dice_result" do %>
+  <%# @decision[:side] = :ally(味方勝利) / :enemy(敵勝利) / :draw %>
+  <% is_draw = @decision[:side].to_s == "draw" %>
+
+  <% if is_draw %>
+    <%# 引き分け: winner/loser の割り当ては維持しつつ、両方を敗者扱い %>
+    <% enemy_char      = @decision[:winner] %>
+    <% ally_char       = @decision[:loser] %>
+    <% enemy_is_loser  = true %>
+    <% ally_is_loser   = true %>
+    <% loser_char      = nil %>
+  <% elsif @decision[:side].to_s == "ally" %>
+    <%# 味方勝利: 敵が敗者 %>
+    <% ally_char      = @decision[:winner] %>
+    <% enemy_char     = @decision[:loser] %>
+    <% ally_is_loser  = false %>
+    <% enemy_is_loser = true %>
+    <% loser_char     = enemy_char %>
+  <% else %>
+    <%# 敵勝利: 味方が敗者 %>
+    <% enemy_char     = @decision[:winner] %>
+    <% ally_char      = @decision[:loser] %>
+    <% enemy_is_loser = false %>
+    <% ally_is_loser  = true %>
+    <% loser_char     = ally_char %>
+  <% end %>
+
+  <%# ----- ヘッダーカラーの決定 ----- %>
   <% theme_color = case @decision[:side].to_s
                   when 'ally'  then 'primary'
                   when 'enemy' then 'danger'
                   when 'draw'  then 'secondary'
                   end %>
 
-  <div class="card shadow mb-4 border-<%= theme_color %>">
-    <div class="card-header bg-<%= theme_color %> text-white text-center fw-bold fs-5">
-      <i class="bi bi-flag-fill me-2"></i>
-      <% if @decision[:side].to_s != "draw" %>
-        <%= @decision[:winner].name %> <%= t('.victory')%>
-      <% elsif @decision[:side].to_s == "draw" %>
-        <%= t('.draw')%>
-      <% end %>
-      <%= t(".finish_turn_suffix", finish_turn: @finish_turn) %>
+  <div data-controller="simulation-result">
+    <%# ----- ① 勝敗ヘッダーカード ----- %>
+    <div class="card shadow mb-4 border-<%= theme_color %> fade-in-ready result-header"
+         data-simulation-result-target="section">
+      <div class="card-header bg-<%= theme_color %> text-white text-center fw-bold fs-5">
+        <i class="bi bi-flag-fill me-2"></i>
+        <% if is_draw %>
+          <%= t('.draw') %>
+        <% else %>
+          <%= @decision[:winner].name %><%= t('.victory') %>
+        <% end %>
+        <%= t(".finish_turn_suffix", finish_turn: @finish_turn) %>
+      </div>
     </div>
 
-    <div class="card-body bg-light-subtle">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <div class="card border-success h-100 shadow-sm">
-            <div class="card-body text-center p-3">
-              <% unless @decision[:side].to_s == "draw" %>
-                <div class="badge bg-success mb-2 px-3 text-uppercase"><%= t('.winner') %></div>
+    <%# ----- ② キャラクター結果カード（敵:左 / 味方:右 で固定） ----- %>
+    <div class="row g-3 mb-4 result-card-container fade-in-ready"
+         data-simulation-result-target="section">
+      <%# === 敵カード（左） === %>
+      <div class="col-md-6">
+        <div class="card border-danger h-100 shadow-sm <%= enemy_is_loser ? "result-loser #{"result-draw" if is_draw}" : "" %>">
+          <div class="card-body text-center p-3">
+            <% unless is_draw %>
+              <div class="badge <%= enemy_is_loser ? "bg-danger" : "bg-success" %> mb-2 px-3 text-uppercase">
+                <%= enemy_is_loser ? t('.loser') : t('.winner') %>
+              </div>
+            <% end %>
+            <h4 class="card-title fw-bold text-danger mb-1"><%= enemy_char.name %></h4>
+            <p class="card-text mb-0 fs-5 fw-semibold">
+              <small class="text-secondary fs-6"><%= t('.final_hp') %></small> <%= enemy_char.current_hp %>
+              <% if enemy_is_loser && @determination.to_s != "healthy" %>
+                <span class="badge status-badge status-badge--<%= @determination %> ms-2 position-relative" style="z-index: 2;">
+                  <%= t(".#{@determination}") %>
+                </span>
               <% end %>
-              <h4 class="card-title fw-bold text-success mb-1"><%= @decision[:winner].name %></h4>
-              <p class="card-text mb-0 fs-5 fw-semibold">
-                <small class="text-secondary fs-6"><%= t('.final_hp') %></small> <%= @decision[:winner].current_hp %>
-              </p>
-            </div>
+            </p>
           </div>
         </div>
+      </div>
 
-        <div class="col-md-6">
-          <div class="card border-danger h-100 shadow-sm">
-            <div class="card-body text-center p-3 opacity-75">
-              <% unless @decision[:side].to_s == "draw" %>
-                <div class="badge bg-danger mb-2 px-3 text-uppercase"><%= t('.loser') %></div>
+      <%# === 味方カード（右） === %>
+      <div class="col-md-6">
+        <div class="card border-primary h-100 shadow-sm <%= ally_is_loser ? "result-loser #{"result-draw" if is_draw}" : "" %>">
+          <div class="card-body text-center p-3">
+            <% unless is_draw %>
+              <div class="badge <%= ally_is_loser ? "bg-danger" : "bg-success" %> mb-2 px-3 text-uppercase">
+                <%= ally_is_loser ? t('.loser') : t('.winner') %>
+              </div>
+            <% end %>
+            <h4 class="card-title fw-bold text-primary mb-1"><%= ally_char.name %></h4>
+            <p class="card-text mb-0 fs-5 fw-semibold">
+              <small class="text-secondary fs-6"><%= t('.final_hp') %></small> <%= ally_char.current_hp %>
+              <% if ally_is_loser && @determination.to_s != "healthy" %>
+                <span class="badge status-badge status-badge--<%= @determination %> ms-2 position-relative" style="z-index: 2;">
+                  <%= t(".#{@determination}") %>
+                </span>
               <% end %>
-              <h4 class="card-title fw-bold text-danger mb-1"><%= @decision[:loser].name %></h4>
-              <p class="card-text mb-0 fs-5 fw-semibold">
-                <small class="text-secondary fs-6"><%= t('.final_hp') %></small> <%= @decision[:loser].current_hp %>
-                <%= t(".#{@determination}") %>
-              </p>
-            </div>
+            </p>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="accordion shadow-sm mb-4" id="simulationMainAccordion">
-    <div class="accordion-item border-secondary">
-      <h2 class="accordion-header">
-        <button class="accordion-button fw-bold bg-secondary text-white" type="button" 
-                data-bs-toggle="collapse" data-bs-target="#collapseMain" 
-                aria-expanded="true" aria-controls="collapseMain">
-          <%= t('.title') %>
-        </button>
-      </h2>
-      
-      <div id="collapseMain" class="accordion-collapse collapse show" data-bs-parent="#simulationMainAccordion">
-        <div class="accordion-body bg-light-subtle p-3">
+    <%# ----- ③ ターン詳細アコーディオン ----- %>
+    <div class="accordion shadow-sm mb-4 fade-in-ready"
+         id="simulationMainAccordion"
+         data-simulation-result-target="section">
+      <div class="accordion-item border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button fw-bold bg-secondary text-white" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#collapseMain"
+                  aria-expanded="true" aria-controls="collapseMain">
+            <%= t('.title') %>
+          </button>
+        </h2>
 
-          <%# 2. ターンごとの個別アコーディオン群 %>
-          <div class="accordion accordion-flush" id="turnAccordionGroup">
-            <% @sorted_results.group_by { |r| r[:turn] }.each do |turn, results| %>
-              <div class="accordion-item mb-2 border rounded overflow-hidden shadow-sm">
-                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed py-2 fw-bold" type="button" 
-                          data-bs-toggle="collapse" data-bs-target="#collapseTurn<%= turn %>" 
-                          aria-expanded="false" aria-controls="collapseTurn<%= turn %>">
-                    <%= turn %> <%= t('.turn') %>
-                  </button>
-                </h2>
-                
-                <div id="collapseTurn<%= turn %>" class="accordion-collapse collapse" data-bs-parent="#turnAccordionGroup">
-                  <div class="accordion-body bg-white">
-                    <div class="row row-cols-1 g-3">
-                      <% results.each do |result| %>
-                        <div class="col">
-                          <% is_ally = result[:side] == :ally %>
-                          <div class="alert <%= is_ally ? 'alert-success' : 'alert-danger' %> border-start border-4 mb-0 shadow-sm">
-                            <h5 class="fw-bold h6">
-                              <%= result[:attacker_name] %><%= t('.to_attack') %>
-                            </h5>
-                            <p class="mb-1 small">【<%= t(".status.#{result[:status]}") %>】</p>
-                            <small class="d-block text-body-secondary">
-                              <%= t(".messages.#{result[:status]}", 
-                                      attacker: result[:attacker_name],
-                                      defender: result[:defender_name],
-                                      attack_text: result[:attack_text],
-                                      evasion_text: result[:evasion_text],
-                                      damage_text: result[:damage_text],
-                                      remaining_hp: result[:remaining_hp],
-                                      armor: result[:armor],
-                                      final_damage: result[:final_damage],
-                                    ).html_safe %>
-                            </small>
+        <div id="collapseMain" class="accordion-collapse collapse show" data-bs-parent="#simulationMainAccordion">
+          <div class="accordion-body bg-light-subtle p-3">
+            <div class="accordion accordion-flush" id="turnAccordionGroup">
+              <% @sorted_results.group_by { |r| r[:turn] }.each do |turn, results| %>
+                <div class="accordion-item mb-2 border rounded overflow-hidden shadow-sm">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed py-2 fw-bold" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#collapseTurn<%= turn %>"
+                            aria-expanded="false" aria-controls="collapseTurn<%= turn %>">
+                      <%= turn %> <%= t('.turn') %>
+                    </button>
+                  </h2>
+
+                  <div id="collapseTurn<%= turn %>" class="accordion-collapse collapse" data-bs-parent="#turnAccordionGroup">
+                    <div class="accordion-body bg-white">
+                      <div class="row row-cols-1 g-3">
+                        <% results.each do |result| %>
+                          <div class="col">
+                            <% is_ally = result[:side] == :ally %>
+                            <div class="alert <%= is_ally ? 'alert-success' : 'alert-danger' %> border-start border-4 mb-0 shadow-sm">
+                              <h5 class="fw-bold h6">
+                                <%= result[:attacker_name] %><%= t('.to_attack') %>
+                              </h5>
+                              <p class="mb-1 small">【<%= t(".status.#{result[:status]}") %>】</p>
+                              <small class="d-block text-body-secondary">
+                                <%= t(".messages.#{result[:status]}",
+                                        attacker: result[:attacker_name],
+                                        defender: result[:defender_name],
+                                        attack_text: result[:attack_text],
+                                        evasion_text: result[:evasion_text],
+                                        damage_text: result[:damage_text],
+                                        remaining_hp: result[:remaining_hp],
+                                        armor: result[:armor],
+                                        final_damage: result[:final_damage],
+                                      ).html_safe %>
+                              </small>
+                            </div>
                           </div>
-                        </div>
-                      <% end %>
+                        <% end %>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            <% end %>
+              <% end %>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+
+  </div><%# / data-controller="simulation-result" %>
 <% end %>

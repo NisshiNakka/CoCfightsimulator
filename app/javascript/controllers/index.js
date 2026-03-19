@@ -9,3 +9,6 @@ application.register("hello", HelloController)
 
 import TutorialController from "./tutorial_controller"
 application.register("tutorial", TutorialController)
+
+import SimulationResultController from "./simulation_result_controller"
+application.register("simulation-result", SimulationResultController)
