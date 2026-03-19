@@ -1,0 +1,103 @@
+// =============================================================
+// シミュレーション結果ページ用スタイル
+// =============================================================
+
+// -------------------------------------------------------------
+// 敗者カードの暗転表示（::after 擬似要素オーバーレイ）
+// -------------------------------------------------------------
+.result-loser {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: inherit;
+    pointer-events: none; // カード内クリックを妨げない
+    z-index: 1;
+  }
+
+  .badge,
+  .card-title,
+  .card-text,
+  .status-icon {
+    position: relative;
+    z-index: 2; // テキスト・アイコンをオーバーレイの前面に
+    color: #fff !important;
+  }
+}
+
+// 引き分け時は暗転を弱める（両者暗いと見づらいため）
+.result-draw.result-loser {
+  &::after {
+    background: rgba(0, 0, 0, 0.30);
+  }
+}
+
+// -------------------------------------------------------------
+// 敗者ステータスバッジ（気絶 / 死亡）
+// -------------------------------------------------------------
+.status-badge {
+  font-size: 0.85rem;
+  font-weight: bold;
+  padding: 0.3em 0.7em;
+  border-radius: 0.4em;
+  border: 2px solid transparent;
+
+  &--fainting {
+    background-color: #ffc107;   // 黄色系背景
+    border-color: #fff3cd;        // 黄色枠
+  }
+
+  &--death {
+    background-color: #dc3545;  // 赤系背景
+    border-color: #f8d7da;        // 赤枠
+  }
+}
+
+// -------------------------------------------------------------
+// フェードインアニメーション
+// -------------------------------------------------------------
+.fade-in-ready {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.fade-in-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+// -------------------------------------------------------------
+// レスポンシブ対応
+// -------------------------------------------------------------
+
+// md未満（スマホ / タブレット縦向き）: 1カラム折り返し時の調整
+@media (max-width: 767.98px) {
+  // 結果カード間の余白
+  .result-card-container .col-md-6 + .col-md-6 {
+    margin-top: 0.75rem;
+  }
+
+  // ステータスアイコンのサイズを抑制
+  .status-icon i {
+    font-size: 1.5rem !important;
+  }
+
+  // 結果ヘッダーのフォントサイズ調整
+  .result-header .fs-5 {
+    font-size: 1rem !important;
+  }
+}
+
+// sm未満（極小画面）: シミュレーションボタンを全幅に
+@media (max-width: 575.98px) {
+  .simulation-button {
+    width: 100%;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
