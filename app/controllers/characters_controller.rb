@@ -4,6 +4,7 @@ class CharactersController < ApplicationController
   end
 
   def new
+    current_user.advance_tutorial! if current_user.tutorial_step == 2
     @character = Character.new
     @character.build_attack
   end
@@ -11,6 +12,8 @@ class CharactersController < ApplicationController
   def create
     @character = current_user.characters.build(character_params)
     if @character.save
+      current_user.advance_tutorial! if current_user.tutorial_step == 1
+      current_user.advance_tutorial! if current_user.tutorial_step == 3
       redirect_to characters_path, success: t("defaults.flash_message.created", item: Character.model_name.human)
     else
       flash.now[:danger] = t("defaults.flash_message.not_created", item: Character.model_name.human)

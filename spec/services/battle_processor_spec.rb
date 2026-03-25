@@ -11,7 +11,7 @@ RSpec.describe BattleProcessor, type: :service do
         fail_result = double('DiceResult', success?: false, text: '判定結果: 失敗')
         allow(use_attack).to receive(:attack_roll).and_return(fail_result)
 
-        result = BattleProcessor.call(attacker, defender, use_attack, defender.hitpoint)
+        result = BattleProcessor.call(attacker, defender, use_attack)
 
         expect(result[:status]).to eq :failed
         expect(result[:success]).to be false
@@ -30,7 +30,7 @@ RSpec.describe BattleProcessor, type: :service do
 
         expect(defender).not_to receive(:evasion_roll)
 
-        BattleProcessor.call(attacker, defender, use_attack, defender.hitpoint)
+        BattleProcessor.call(attacker, defender, use_attack)
       end
     end
 
@@ -43,7 +43,7 @@ RSpec.describe BattleProcessor, type: :service do
         evade_result = double('EvasionResult', success?: true, text: '回避成功')
         allow(defender).to receive(:evasion_roll).and_return(evade_result)
 
-        result = BattleProcessor.call(attacker, defender, use_attack, defender.hitpoint)
+        result = BattleProcessor.call(attacker, defender, use_attack)
 
         expect(result[:status]).to eq :evaded
         expect(result[:success]).to be true
@@ -70,6 +70,7 @@ RSpec.describe BattleProcessor, type: :service do
       let(:damage_result) { double('DamageResult', text: '6') }
 
       before do
+        defender.current_hp = defender.hitpoint
         allow(use_attack).to receive(:attack_roll).and_return(success_result)
         allow(use_attack).to receive(:success_correction).and_return('r')
         allow(defender).to receive(:evasion_roll).and_return(evade_fail)
@@ -78,7 +79,7 @@ RSpec.describe BattleProcessor, type: :service do
       end
 
       it 'ステータス hit を返し、ダメージと残りHPが計算されること' do
-        result = BattleProcessor.call(attacker, defender, use_attack, defender.hitpoint)
+        result = BattleProcessor.call(attacker, defender, use_attack)
 
         expect(result[:status]).to eq :hit
         expect(result[:remaining_hp]).to eq 11
@@ -90,27 +91,27 @@ RSpec.describe BattleProcessor, type: :service do
 
       it '攻撃ロールが呼ばれること' do
         expect(use_attack).to receive(:attack_roll).and_return(success_result)
-        BattleProcessor.call(attacker, defender, use_attack, defender.hitpoint)
+        BattleProcessor.call(attacker, defender, use_attack)
       end
 
       it '成功補正が正しく計算されること' do
         expect(use_attack).to receive(:success_correction).with(success_result).and_return('r')
-        BattleProcessor.call(attacker, defender, use_attack, defender.hitpoint)
+        BattleProcessor.call(attacker, defender, use_attack)
       end
 
       it '回避ロールが正しい補正値で呼ばれること' do
         expect(defender).to receive(:evasion_roll).with('r').and_return(evade_fail)
-        BattleProcessor.call(attacker, defender, use_attack, defender.hitpoint)
+        BattleProcessor.call(attacker, defender, use_attack)
       end
 
       it 'ダメージロールが攻撃者のダメージボーナスで呼ばれること' do
         expect(use_attack).to receive(:damage_roll).with("1d4").and_return(damage_result)
-        BattleProcessor.call(attacker, defender, use_attack, defender.hitpoint)
+        BattleProcessor.call(attacker, defender, use_attack)
       end
 
       it 'HP計算が正しく呼ばれること' do
-        expect(defender).to receive(:hp_calculation).with(damage_result, defender.hitpoint).and_return({ hp: 11, damage: 6 })
-        BattleProcessor.call(attacker, defender, use_attack, defender.hitpoint)
+        expect(defender).to receive(:hp_calculation).with(damage_result, defender.current_hp).and_return({ hp: 11, damage: 6 })
+        BattleProcessor.call(attacker, defender, use_attack)
       end
     end
   end

@@ -10,7 +10,7 @@ RSpec.describe BattleCoordinator, type: :service do
 
   describe '.call' do
     subject(:result) do
-      BattleCoordinator.call(ally, enemy, ally_attack, enemy_attack, ally_hp, enemy_hp)
+      BattleCoordinator.call(ally, enemy, ally_hp, enemy_hp)
     end
 
     context '味方のDEXが敵より高い場合' do
@@ -27,13 +27,13 @@ RSpec.describe BattleCoordinator, type: :service do
       it '戦闘が終了し、味方が勝利すること' do
         # 敵のHPを2にする
         allow(BattleProcessor).to receive(:call)
-          .with(ally, enemy, ally_attack, 20)
+          .with(ally, enemy, ally_attack)
           .and_return(
             { status: :hit, remaining_hp: 2, final_damage: 18, attack_text: "成功" }
           )
 
         allow(BattleProcessor).to receive(:call)
-          .with(enemy, ally, enemy_attack, 20)
+          .with(enemy, ally, enemy_attack)
           .and_return(
             { status: :failed, attack_text: "失敗", remaining_hp: 20 }
           )
@@ -75,10 +75,10 @@ RSpec.describe BattleCoordinator, type: :service do
       it '渡されたHPから戦闘が開始されること' do
         # BattleProcessor が呼ばれる際の引数をチェックする
         # 第4引数が target_hp として渡されているはず
-        allow(BattleProcessor).to receive(:call).with(ally, enemy, ally_attack, 5).and_return(
+        allow(BattleProcessor).to receive(:call).with(ally, enemy, ally_attack).and_return(
           { status: :failed, attack_text: "失敗", remaining_hp: 5 }
         )
-        allow(BattleProcessor).to receive(:call).with(enemy, ally, enemy_attack, 10).and_return(
+        allow(BattleProcessor).to receive(:call).with(enemy, ally, enemy_attack).and_return(
           { status: :failed, attack_text: "失敗", remaining_hp: 10 }
         )
 

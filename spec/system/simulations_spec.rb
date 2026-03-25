@@ -148,7 +148,7 @@ RSpec.describe "Simulations", type: :system do
       end
 
       it "シミュレートボタンを押すと戦闘結果がTurbo Streamで表示されること" do
-        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack|
           if attacker == ally
             { status: :hit, remaining_hp: 0, final_damage: 20, attack_text: "成功" }
           else
@@ -170,7 +170,7 @@ RSpec.describe "Simulations", type: :system do
       end
 
       it "20ターン経過した際に引き分け結果が表示されること" do
-        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack|
           if attacker == ally
             { status: :failed, attack_text: "失敗", remaining_hp: enemy.hitpoint }
           else
@@ -212,7 +212,7 @@ RSpec.describe "Simulations", type: :system do
 
       # [#103] 敵=左 / 味方=右 の固定レイアウト確認
       it "シミュレーション結果で敵が左カード、味方が右カードに表示されること" do
-        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack|
           if attacker == ally
             { status: :hit, remaining_hp: 0, final_damage: 20, attack_text: "成功" }
           else
@@ -233,7 +233,7 @@ RSpec.describe "Simulations", type: :system do
 
       # [#103] 味方勝利時: 敵カードに敗者の暗転クラスが付与されること
       it "味方が勝利した場合、敵カードに result-loser クラスが付与されること" do
-        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack|
           if attacker == ally
             { status: :hit, remaining_hp: 0, final_damage: 20, attack_text: "成功" }
           else
@@ -255,8 +255,8 @@ RSpec.describe "Simulations", type: :system do
 
       # [#103] 引き分け時: 両カードに result-loser クラスが付与されること
       it "引き分けの場合、両方のカードに result-loser クラスが付与されること" do
-        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
-          { status: :failed, attack_text: "失敗", remaining_hp: target_hp }
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack|
+          { status: :failed, attack_text: "失敗", remaining_hp: defender.hitpoint }
         end
 
         click_button I18n.t('simulations.start_simulation.start')
@@ -272,7 +272,7 @@ RSpec.describe "Simulations", type: :system do
       # [#103] 敗者ステータスバッジの表示確認（気絶）
       it "敗者のステータスが気絶の場合、黄色枠の「気絶」バッジが表示されること" do
         # 敵が先攻して味方を気絶（HP <= 2）させるシナリオ
-        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack|
           if attacker == enemy
             { status: :hit, remaining_hp: 1, final_damage: ally.hitpoint - 1, attack_text: "成功",
               damage_text: "3d6", armor: 0 }
@@ -294,7 +294,7 @@ RSpec.describe "Simulations", type: :system do
       # [#103] 敗者ステータスバッジの表示確認（死亡）
       it "敗者のステータスが死亡の場合、赤枠の「死亡」バッジが表示されること" do
         # 敵が先攻して味方を死亡（HP <= 0）させるシナリオ
-        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack, target_hp|
+        allow(BattleProcessor).to receive(:call).and_wrap_original do |method, attacker, defender, attack|
           if attacker == enemy
             { status: :hit, remaining_hp: 0, final_damage: ally.hitpoint, attack_text: "成功",
               damage_text: "3d6", armor: 0 }

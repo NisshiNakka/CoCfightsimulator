@@ -9,9 +9,23 @@ export default class extends Controller {
     if (!meta) return
 
     const step = parseInt(meta.content, 10)
+
+    // step=5 でキャラクター選択パラメータがある場合:
+    // キャラクター選択による body 再描画なので Step 5 ツアーは再起動せず、
+    // Step 6 の待機のみ設定する
+    if (step === 5 && this.#hasCharacterSelectionParams()) {
+      this.setupStep6Tour()
+      return
+    }
+
     if (!this.shouldShowTour(step)) return
 
     this.startTour(step)
+  }
+
+  #hasCharacterSelectionParams() {
+    const params = new URLSearchParams(window.location.search)
+    return params.has('enemy_id') || params.has('ally_id')
   }
 
   disconnect() {
@@ -72,26 +86,52 @@ export default class extends Controller {
   }
 
   // #dice_result の内容が描画されたらツアーを開始する
+  // simulation_result_controller のフェードインアニメーションと競合しないよう、
+  // "simulation-result:ready" イベントを受け取ってからツアーを開始する
+  //
+  // 【注意】combat_roll.turbo_stream.erb は2段階でDOMを更新する: (詳しくはviews/conmbat_roll.turbo_stream.erbを参照)
+  //   1. turbo_stream.update "dice_roll_area" → 中に空の #dice_result を新規生成
+  //   2. turbo_stream.update "dice_result"    → 新 #dice_result に内容を挿入
+  // このため #dice_result 自体を observe すると、1回目の更新で要素が差し替わり
+  // 2回目の更新を検知できない。代わりに常にDOMに残る #dice_roll_area を observe する。
   waitForDiceResultAndStart() {
     const diceResult = document.getElementById("dice_result")
     if (!diceResult) return
 
-    // Turboキャッシュ等で既にコンテンツがある場合はすぐに開始
     if (diceResult.children.length > 0) {
-      this.tour.start()
+      // 既にコンテンツがある場合もアニメーション完了を待つ
+      this.waitForAnimationThenStart()
       return
     }
 
+    // #dice_result ではなく、常にDOMに残る安定した祖先要素を監視する
+    const stableContainer = document.getElementById("dice_roll_area") || document.body
     this.diceResultObserver = new MutationObserver(() => {
       const el = document.getElementById("dice_result")
       if (el && el.children.length > 0) {
         this.diceResultObserver.disconnect()
         this.diceResultObserver = null
-        this.tour.start()
+        this.waitForAnimationThenStart()
       }
     })
 
-    this.diceResultObserver.observe(diceResult, { childList: true, subtree: true })
+    this.diceResultObserver.observe(stableContainer, { childList: true, subtree: true })
+  }
+
+  // simulation_result_controller から "simulation-result:ready" イベントが届くまで待機してからツアーを開始する
+  // フォールバックとして 1200ms 後に強制開始（イベントが届かない場合の保険）
+  waitForAnimationThenStart() {
+    const fallbackTimer = setTimeout(() => {
+      document.removeEventListener("simulation-result:ready", onReady)
+      this.tour.start()
+    }, 1200)
+
+    const onReady = () => {
+      clearTimeout(fallbackTimer)
+      this.tour.start()
+    }
+
+    document.addEventListener("simulation-result:ready", onReady, { once: true })
   }
 
   // ステップ5→6は同一ページ上の遷移のため、connect()を経由せず直接ステップ6をセットアップ
@@ -163,7 +203,7 @@ export default class extends Controller {
           { text: s.back, action: () => this.tour.back(), classes: "shepherd-button-secondary" },
           {
             text: s.done,
-            action: () => { this.advanceTutorial(); this.tour.complete() },
+            action: () => this.tour.complete(),
             classes: "shepherd-button-primary"
           }
         ]
@@ -214,7 +254,7 @@ export default class extends Controller {
           { text: s.back, action: () => this.tour.back(), classes: "shepherd-button-secondary" },
           {
             text: s.go_to_create,
-            action: () => { this.advanceTutorial(); this.tour.complete() },
+            action: () => this.tour.complete(),
             classes: "shepherd-button-primary"
           }
         ]
@@ -245,7 +285,7 @@ export default class extends Controller {
           { text: s.back, action: () => this.tour.back(), classes: "shepherd-button-secondary" },
           {
             text: s.done,
-            action: () => { this.advanceTutorial(); this.tour.complete() },
+            action: () => this.tour.complete(),
             classes: "shepherd-button-primary"
           }
         ]
@@ -276,7 +316,7 @@ export default class extends Controller {
           { text: s.back, action: () => this.tour.back(), classes: "shepherd-button-secondary" },
           {
             text: s.go_to_simulation,
-            action: () => { this.advanceTutorial(); this.tour.complete() },
+            action: () => this.tour.complete(),
             classes: "shepherd-button-primary"
           }
         ]
@@ -317,10 +357,10 @@ export default class extends Controller {
           { text: s.back, action: () => this.tour.back(), classes: "shepherd-button-secondary" },
           {
             text: s.done,
-            action: async () => {
-              await this.advanceTutorial()
+            action: () => {
               this.tour.complete()
               // ステップ5→6は同一ページ上の遷移のため、connect()を経由せず直接セットアップ
+              // ステップ進行はcombat_roll実行時にサーバーサイドで行う
               this.setupStep6Tour()
             },
             classes: "shepherd-button-primary"
@@ -348,18 +388,6 @@ export default class extends Controller {
         ]
       }
     ]
-  }
-
-  async advanceTutorial() {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content
-    await fetch("/tutorial", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-Token": csrfToken
-      },
-      body: JSON.stringify({ action_type: "advance" })
-    })
   }
 
   async dismissTutorial() {
