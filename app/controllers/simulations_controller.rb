@@ -1,5 +1,7 @@
 class SimulationsController < ApplicationController
   def new
+    current_user.advance_tutorial! if current_user.tutorial_step == 4
+
     @all_characters = current_user.characters.order(created_at: :desc)
 
     if params.has_key?(:enemy_id)
@@ -20,20 +22,18 @@ class SimulationsController < ApplicationController
   end
 
   def combat_roll
+    current_user.advance_tutorial! if current_user.tutorial_step == 5
+
     # 1. 値の取得(controllerの役割 :各メソッドへの値の取得と受け渡し)
     ally_character = current_user.characters.includes(:attack).find_by(id: session[:ally_id])
     enemy_character = current_user.characters.includes(:attack).find_by(id: session[:enemy_id])
     return render_error("キャラクターが見つかりませんでした") if ally_character.nil? || enemy_character.nil?
 
-    ally_attack = ally_character.attack
-    enemy_attack = enemy_character.attack
-    return render_error("攻撃技能が見つかりませんでした") if ally_attack.nil? || enemy_attack.nil?
+    return render_error("攻撃技能が見つかりませんでした") if ally_character.attack.nil? || enemy_character.attack.nil?
 
     outcome = BattleCoordinator.call(
       ally_character,
       enemy_character,
-      ally_attack,
-      enemy_attack,
       session[:ally_hp],
       session[:enemy_hp]
     )

@@ -77,11 +77,11 @@ ja_jp:
         evaded: 回避
         hit: 成功
       messages:
-        failed: "%{attacker}の攻撃失敗(%{attack_text})"
-        evaded: |
+        failed_html: "%{attacker}の攻撃失敗(%{attack_text})"
+        evaded_html: |
           %{attacker}の攻撃成功(%{attack_text})<br>
           ── しかし%{defender}が回避(%{evasion_text})
-        hit: |
+        hit_html: |
           %{attacker}の攻撃成功(%{attack_text})<br>
           ── %{defender}は回避失敗(%{evasion_text})<br>
           ── ダメージ計算: %{damage_text} | [装甲 %{armor}] | ダメージ %{final_damage} (残りHP: %{remaining_hp})

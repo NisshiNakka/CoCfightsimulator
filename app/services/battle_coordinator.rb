@@ -3,13 +3,12 @@
 # 単一責任の法則を守るために、コントローラーには「viewとmodelの仲介」という責任を、当サービスオブジェクトには「戦闘における、1ラウンドの管理/実行」という責任を任せます。（ ↓ の「ラウンド」の部分）
 # シミュレーション説明　[キャラクターは１ラウンドに１回攻撃（アクション）ができる。全キャラクターがアクションを終えると１ラウンドが終了し、戦闘が終わるまで１ラウンドをループする。]
 class BattleCoordinator
-  def self.call(ally_character, enemy_character, ally_attack, enemy_attack, ally_hp, enemy_hp)
-    new(ally_character, enemy_character, ally_attack, enemy_attack, ally_hp, enemy_hp).execute
+  def self.call(ally_character, enemy_character, ally_hp, enemy_hp)
+    new(ally_character, enemy_character, ally_hp, enemy_hp).execute
   end
 
-  def initialize(ally_character, enemy_character, ally_attack, enemy_attack, ally_hp, enemy_hp) # 引数をインスタンス化し、すべてのメソッドで使用できるようにする
+  def initialize(ally_character, enemy_character, ally_hp, enemy_hp) # 引数をインスタンス化し、すべてのメソッドで使用できるようにする
     @participants = { ally: ally_character, enemy: enemy_character }
-    @attacks = { ally: ally_attack, enemy: enemy_attack }
     @participants[:ally].current_hp = ally_hp || ally_character.hitpoint
     @participants[:enemy].current_hp = enemy_hp || enemy_character.hitpoint
     @results = []
@@ -40,10 +39,9 @@ class BattleCoordinator
     combatants.each do |c|
       attacker = @participants[c[:side]]
       defender = @participants[c[:target]]
-      attack = @attacks[c[:side]]
-      target_hp = defender.current_hp
+      attack = attacker.attack
 
-      res = BattleProcessor.call(attacker, defender, attack, target_hp)
+      res = BattleProcessor.call(attacker, defender, attack)
       @results << res.merge(side: c[:side], turn: @turn)
 
       update_target_hp(defender, res)

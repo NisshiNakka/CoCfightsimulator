@@ -16,36 +16,34 @@
 
 <%= turbo_stream.update "dice_result" do %>
   <%# @decision[:side] = :ally(味方勝利) / :enemy(敵勝利) / :draw %>
-  <% is_draw = @decision[:side].to_s == "draw" %>
+  <% side    = @decision[:side] %>
+  <% is_draw = side == :draw %>
 
   <% if is_draw %>
-    <%# 引き分け: winner/loser の割り当ては維持しつつ、両方を敗者扱い %>
-    <% enemy_char      = @decision[:winner] %>
-    <% ally_char       = @decision[:loser] %>
+    <%# 引き分け: 双方を敗者扱い、左=敵・右=味方の固定レイアウトを維持 %>
+    <% enemy_char      = @decision[:loser] %>
+    <% ally_char       = @decision[:winner] %>
     <% enemy_is_loser  = true %>
     <% ally_is_loser   = true %>
-    <% loser_char      = nil %>
-  <% elsif @decision[:side].to_s == "ally" %>
+  <% elsif side == :ally %>
     <%# 味方勝利: 敵が敗者 %>
     <% ally_char      = @decision[:winner] %>
     <% enemy_char     = @decision[:loser] %>
     <% ally_is_loser  = false %>
     <% enemy_is_loser = true %>
-    <% loser_char     = enemy_char %>
   <% else %>
     <%# 敵勝利: 味方が敗者 %>
     <% enemy_char     = @decision[:winner] %>
     <% ally_char      = @decision[:loser] %>
     <% enemy_is_loser = false %>
     <% ally_is_loser  = true %>
-    <% loser_char     = ally_char %>
   <% end %>
 
   <%# ----- ヘッダーカラーの決定 ----- %>
-  <% theme_color = case @decision[:side].to_s
-                  when 'ally'  then 'primary'
-                  when 'enemy' then 'danger'
-                  when 'draw'  then 'secondary'
+  <% theme_color = case side
+                  when :ally  then 'primary'
+                  when :enemy then 'danger'
+                  when :draw  then 'secondary'
                   end %>
 
   <div data-controller="simulation-result">
@@ -149,7 +147,7 @@
                               </h5>
                               <p class="mb-1 small">【<%= t(".status.#{result[:status]}") %>】</p>
                               <small class="d-block text-body-secondary">
-                                <%= t(".messages.#{result[:status]}",
+                                <%= t(".messages.#{result[:status]}_html",
                                         attacker: result[:attacker_name],
                                         defender: result[:defender_name],
                                         attack_text: result[:attack_text],
@@ -158,7 +156,7 @@
                                         remaining_hp: result[:remaining_hp],
                                         armor: result[:armor],
                                         final_damage: result[:final_damage],
-                                      ).html_safe %>
+                                      ) %>
                               </small>
                             </div>
                           </div>
