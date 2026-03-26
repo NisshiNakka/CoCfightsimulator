@@ -6,6 +6,10 @@ RSpec.describe 'トップ画面', type: :system do
     visit root_path
   end
 
+  it '正しいタイトルが表示されていること' do
+    expect(page).to have_title("神話TRPG7版 戦闘シミュレーター | CoC Fight Simulator"), 'トップページのタイトルが正しくありません。'
+  end
+
   describe 'ヘッダーUI確認' do
     context 'ロゴ表示' do
       it 'ロゴ画像が表示されること' do

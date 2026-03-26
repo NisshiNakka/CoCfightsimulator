@@ -13,6 +13,11 @@ RSpec.describe "Characters", type: :system do
     let(:path) { characters_path }
     it_behaves_like 'require login'
 
+    it '正しいタイトルが表示されていること' do
+      visit characters_path
+      expect(page).to have_title("#{I18n.t('characters.index.title')} | CoC Fight Simulator"), 'キャラクター一覧ページのタイトルが正しくありません。'
+    end
+
     it "ログインユーザーが作成したキャラクターのみが表示されること" do
       visit characters_path
       expect(page).to have_content "自分のキャラ"
@@ -126,6 +131,10 @@ RSpec.describe "Characters", type: :system do
     let(:path) { new_character_path }
     it_behaves_like 'require login'
 
+    it '正しいタイトルが表示されていること' do
+      expect(page).to have_title("#{I18n.t('characters.new.title')} | CoC Fight Simulator"), 'キャラクター登録ページのタイトルが正しくありません。'
+    end
+
     context "入力値が正常な場合" do
       it "キャラクターの新規作成が成功し、一覧画面にリダイレクトされること" do
         fill_in "character_name", with: "新規キャラクター"
@@ -188,6 +197,11 @@ RSpec.describe "Characters", type: :system do
     let(:path) { character_path(character_by_me) }
     it_behaves_like 'require login'
 
+    it '正しいタイトルが表示されていること' do
+      visit character_path(character_by_me)
+      expect(page).to have_title("#{character_by_me.name} | CoC Fight Simulator"), 'キャラクター詳細ページのタイトルが正しくありません。'
+    end
+
     it "キャラクターの詳細情報と攻撃技能が表示されること" do
       visit characters_path
       click_link character_by_me.name
@@ -225,6 +239,11 @@ RSpec.describe "Characters", type: :system do
 
     let(:path) { edit_character_path(character_by_me) }
     it_behaves_like 'require login'
+
+    it '正しいタイトルが表示されていること' do
+      visit edit_character_path(character_by_me)
+      expect(page).to have_title("#{I18n.t('characters.edit.title')} | CoC Fight Simulator"), 'キャラクター編集ページのタイトルが正しくありません。'
+    end
 
     describe "画面遷移" do
       it '「閲覧」ボタンが表示されていること' do

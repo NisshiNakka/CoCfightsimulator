@@ -7,6 +7,10 @@ RSpec.describe '使い方ページ', type: :system do
     context 'ログインしていない場合' do
       before { visit how_to_use_path }
 
+      it '正しいタイトルが表示されていること' do
+        expect(page).to have_title('使い方 | CoC Fight Simulator'), '使い方ページのタイトルが正しくありません。'
+      end
+
       it '使い方ページへアクセスできること' do
         expect(page).to have_current_path(how_to_use_path, ignore_query: true),
         'ログインなしで使い方ページへアクセスできませんでした'
