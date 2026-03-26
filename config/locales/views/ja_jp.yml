@@ -32,6 +32,7 @@ ja_jp:
     privacy_policy: プライバシーポリシー
   static_pages:
     top:
+      title: CoC Fight Simulator
       sub_title: クトゥルフ神話TRPG7版  戦闘シミュレーター
       what_is_this?: CoC Fight Simulatorとは
       overview_1: このサイトは、CoC7版の戦闘を簡単にシミュレートして、ボス戦の難易度を事前確認できるツールです。

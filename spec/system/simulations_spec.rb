@@ -14,6 +14,10 @@ RSpec.describe "Simulations", type: :system do
     visit new_simulations_path
   end
 
+  it '正しいタイトルが表示されていること' do
+    expect(page).to have_title('シミュレーションページ | CoC Fight Simulator'), 'シミュレーションページのタイトルが正しくありません。'
+  end
+
   describe "画面遷移" do
     it '「キャラクター登録」ボタンからキャラクター登録画面へ遷移できること' do
       within "#navigation_buttons" do
