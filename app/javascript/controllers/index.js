@@ -12,3 +12,6 @@ application.register("tutorial", TutorialController)
 
 import SimulationResultController from "./simulation_result_controller"
 application.register("simulation-result", SimulationResultController)
+
+import LoadingController from "./loading_controller"
+application.register("loading", LoadingController)
