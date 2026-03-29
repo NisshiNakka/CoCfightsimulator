@@ -86,6 +86,20 @@ MVPリリース時に作っていたいもの
 - 使用予定のライブラリ
 ・(Devise / BCDice-api / Bootstrap(CSS))
 
+著作権上の注意
+このプロジェクトは、Chaosium Inc.の製品であるCall of Cthulhu 7th Edition（CoC7e）及びその日本語版である『新クトゥルフ神話TRPG』のキャラクターシミュレーターです。すべてのルール、設定、翻訳等はChaosium Inc. または「株式会社アークライト」及び「株式会社KADOKAWA」に帰属します。
+
+このシミュレーターは、ファンによって作成された非公式のツールであり、Chaosium Inc.、株式会社アークライト 及び 株式会社KADOKAWA とは直接の関係がありません。
+
+このシミュレーターは、個人的な使用や非営利目的でのみ利用することを意図しています。
+
+本プロジェクトの開発者は、Chaosium Inc.、株式会社アークライト及び株式会社KADOKAWAの著作権と知的財産権を尊重し、それらの権利を侵害しないよう努めます。
+
+著作権
+本作は、「株式会社アークライト」及び「株式会社KADOKAWA」が権利を有する『新クトゥルフ神話TRPG』の二次創作物です。
+
+Call of Cthulhu is copyright ©1981, 2015, 2019 by Chaosium Inc. ;all rights reserved. Arranged by Arclight Inc. Call of Cthulhu is a registered trademark of Chaosium Inc. PUBLISHED BY KADOKAWA CORPORATION　「新クトゥルフ神話TRPG ルールブック」
+
 
 
 This README would normally document whatever steps are necessary to get the
