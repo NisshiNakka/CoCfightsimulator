@@ -1,4 +1,8 @@
 ja_jp:
+  ogp:
+    site_name: "CoC Fight Simulator"
+    title: "CoC Fight Simulator｜新クトゥルフ神話TRPG 戦闘シミュレーター"
+    description: "TRPG（CoC7版）シナリオ制作者向けの戦闘シミュレーションツール"
   defaults:
     create: 作成
     edit: 編集
