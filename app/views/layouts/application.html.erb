@@ -6,6 +6,21 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%# OGP meta tags %>
+    <meta property="og:title" content="<%= t('ogp.title') %>">
+    <meta property="og:description" content="<%= t('ogp.description') %>">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= root_url %>">
+    <meta property="og:image" content="<%= ogp_image_url %>">
+    <meta property="og:site_name" content="<%= t('ogp.site_name') %>">
+    <meta property="og:locale" content="<%= I18n.locale.to_s.tr('-', '_') %>">
+    <meta name="description" content="<%= t('ogp.description') %>">
+    <%# Twitter Card %>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= t('ogp.title') %>">
+    <meta name="twitter:description" content="<%= t('ogp.description') %>">
+    <meta name="twitter:image" content="<%= ogp_image_url %>">
+
     <%= yield :head %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
