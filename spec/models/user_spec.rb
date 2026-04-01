@@ -81,6 +81,112 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'Google OmniAuth 連携' do
+    let(:auth) do
+      OmniAuth::AuthHash.new(
+        provider: "google_oauth2",
+        uid: "123456789",
+        info: OmniAuth::AuthHash::InfoHash.new(
+          email: "google_user@example.com",
+          name: "Google User"
+        )
+      )
+    end
+
+    describe '.from_omniauth' do
+      context '該当する provider + uid のユーザーが存在しない場合' do
+        it '新規ユーザーを作成すること' do
+          expect { User.from_omniauth(auth) }.to change(User, :count).by(1)
+        end
+
+        it 'Google から取得したメールアドレスが設定されること' do
+          user = User.from_omniauth(auth)
+          expect(user.email).to eq "google_user@example.com"
+        end
+
+        it 'Google から取得した名前が設定されること' do
+          user = User.from_omniauth(auth)
+          expect(user.name).to eq "Google User"
+        end
+
+        it 'provider が google_oauth2 に設定されること' do
+          user = User.from_omniauth(auth)
+          expect(user.provider).to eq "google_oauth2"
+        end
+
+        it 'uid が設定されること' do
+          user = User.from_omniauth(auth)
+          expect(user.uid).to eq "123456789"
+        end
+      end
+
+      context '同じ provider + uid のユーザーが既に存在する場合' do
+        let!(:existing_user) { create(:user, provider: "google_oauth2", uid: "123456789", email: "google_user@example.com") }
+
+        it '新規ユーザーを作成しないこと' do
+          expect { User.from_omniauth(auth) }.not_to change(User, :count)
+        end
+
+        it '既存ユーザーを返すこと' do
+          user = User.from_omniauth(auth)
+          expect(user.id).to eq existing_user.id
+        end
+      end
+
+      context '同じメールアドレスで email/password ユーザーが既に存在する場合' do
+        let!(:existing_user) { create(:user, email: "google_user@example.com", provider: nil, uid: nil) }
+
+        it '新規ユーザーが作成されないこと' do
+          expect { User.from_omniauth(auth) }.not_to change(User, :count)
+        end
+
+        it '既存ユーザーに provider と uid が紐づけられること' do
+          User.from_omniauth(auth)
+          existing_user.reload
+          expect(existing_user.provider).to eq "google_oauth2"
+          expect(existing_user.uid).to eq "123456789"
+        end
+
+        it '既存ユーザーを返すこと' do
+          user = User.from_omniauth(auth)
+          expect(user.id).to eq existing_user.id
+        end
+      end
+    end
+
+    describe '#password_required?' do
+      context 'provider が設定されていない通常ユーザーの場合' do
+        it 'パスワードが必須であること' do
+          user = build(:user, provider: nil, password: nil)
+          user.valid?
+          expect(user.errors[:password]).to include('を入力してください')
+        end
+      end
+
+      context 'provider が設定されている OAuth ユーザーの場合' do
+        it 'パスワードなしでも有効であること' do
+          user = build(:user, provider: "google_oauth2", uid: "123456789", password: nil, password_confirmation: nil)
+          expect(user).to be_valid
+        end
+      end
+    end
+
+    describe '#update_without_current_password' do
+      let(:oauth_user) { create(:user, provider: "google_oauth2", uid: "123456789") }
+
+      it '名前を更新できること' do
+        oauth_user.update_without_current_password({ name: "新しい名前" })
+        expect(oauth_user.reload.name).to eq "新しい名前"
+      end
+
+      it 'password が空の場合、パスワード変更なしで更新されること' do
+        original_password = oauth_user.encrypted_password
+        oauth_user.update_without_current_password({ name: "新しい名前", password: "", password_confirmation: "" })
+        expect(oauth_user.reload.encrypted_password).to eq original_password
+      end
+    end
+  end
+
   describe 'チュートリアル' do
     let(:user) { create(:user) }
 
