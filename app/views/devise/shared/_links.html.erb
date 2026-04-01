@@ -20,6 +20,6 @@
 
 <%- if devise_mapping.omniauthable? %>
   <%- resource_class.omniauth_providers.each do |provider| %>
-    <%= button_to t('.sign_in_with_provider', provider: OmniAuth::Utils.camelize(provider)), omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "btn btn-outline-secondary btn-sm mt-1" %><br />
+    <%= button_to t('.sign_in_with_provider', provider: "Google"), omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "btn btn-outline-secondary btn-sm mt-1" %><br />
   <% end %>
 <% end %>

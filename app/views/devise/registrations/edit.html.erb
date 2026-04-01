@@ -35,11 +35,13 @@
           <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
         </div>
 
-        <div class="mb-4">
-          <%= f.label :current_password, class: "form-label fw-semibold" %>
-          <span class="text-muted small ms-1"><%= t('.we_need_your_current_password_to_confirm_your_changes') %></span>
-          <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control" %>
-        </div>
+        <% unless resource.provider.present? %>
+          <div class="mb-4">
+            <%= f.label :current_password, class: "form-label fw-semibold" %>
+            <span class="text-muted small ms-1"><%= t('.we_need_your_current_password_to_confirm_your_changes') %></span>
+            <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control" %>
+          </div>
+        <% end %>
 
         <div class="d-grid">
           <%= f.submit t('.update'), class: "btn btn-primary btn-lg shadow-sm" %>
