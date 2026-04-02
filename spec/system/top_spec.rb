@@ -136,15 +136,15 @@ RSpec.describe 'トップ画面', type: :system do
         '[新規登録]ボタンから新規登録画面へ遷移できませんでした'
       end
 
-      xit '利用規約をクリックした場合利用規約ページへ遷移すること' do
-        click_on('利用規約')
-        expect(page).to have_current_path(xxx_path, ignore_query: true),
+      it '利用規約をクリックした場合利用規約ページへ遷移すること' do
+        click_on(I18n.t('static_pages.terms.title'))
+        expect(page).to have_current_path(terms_path, ignore_query: true),
         '利用規約をクリックして利用規約ページへ遷移できませんでした'
       end
 
-      xit 'プライバシーポリシーをクリックした場合プライバシーポリシーページへ遷移すること' do
-        click_on('利用規約')
-        expect(page).to have_current_path(xxx_path, ignore_query: true),
+      it 'プライバシーポリシーをクリックした場合プライバシーポリシーページへ遷移すること' do
+        click_on(I18n.t('static_pages.privacy.title'))
+        expect(page).to have_current_path(privacy_path, ignore_query: true),
         'プライバシーポリシーをクリックしてプライバシーポリシーページへ遷移できませんでした'
       end
     end

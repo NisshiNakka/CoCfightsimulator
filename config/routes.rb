@@ -14,9 +14,13 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   root "static_pages#top"
   get "how_to_use", to: "static_pages#how_to_use"
+  get "terms",   to: "static_pages#terms"
+  get "privacy", to: "static_pages#privacy"
   resource :simulations, only: %i[new]
   post "combat_roll", to: "simulations#combat_roll"
-  resources :characters
+  resources :characters do
+    delete :purge_icon, on: :member
+  end
   resource :tutorial, only: [ :update ]
 
   # Defines the root path route ("/")

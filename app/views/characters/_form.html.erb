@@ -11,11 +11,15 @@
       <%= f.file_field :icon, class: "form-control", accept: "image/jpeg,image/png,image/gif,image/webp" %>
       <div class="form-text small">JPEG, PNG, GIF, WebP形式（5MB以下）</div>
       <% if f.object.persisted? && f.object.icon.attached? %>
-        <div class="mt-2">
+        <div class="mt-2 d-flex align-items-center gap-3">
           <%= image_tag f.object.icon.variant(resize_to_fill: [75, 100]),
             class: "img-fluid rounded object-fit-cover",
             style: "width: 75px; height: 100px;",
             alt: f.object.name %>
+          <%= link_to t("characters.purge_icon.button"),
+            purge_icon_character_path(f.object),
+            data: { turbo_method: :delete, turbo_confirm: t("characters.purge_icon.confirm") },
+            class: "btn btn-sm btn-outline-danger" %>
         </div>
       <% end %>
     </div>
