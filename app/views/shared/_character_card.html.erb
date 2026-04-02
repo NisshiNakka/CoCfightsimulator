@@ -3,14 +3,17 @@
     <div class="row g-4 align-items-start mb-4">
       <div class="col-12 col-md-auto">
         <div class="mx-auto" style="width: 120px;">
-          <%= image_tag "tentative_character_icon.png", class: "img-fluid rounded border object-fit-cover", style: "aspect-ratio: 3/4; width: 100%;" %>
-          <!-- MVPリリース後　キャラアイコン登録機能実装時に使用
-          <%# if @character.icon.attached? %>
-            <%# image_tag @character.icon, class: "img-fluid rounded border object-fit-cover", style: "aspect-ratio: 3/4; width: 100%;" %>
-          <%# else %>
-            <%= image_tag "tentative_character_icon.png", class: "img-fluid rounded border object-fit-cover", style: "aspect-ratio: 3/4; width: 100%;" %>
-          <%# end %>
-          -->
+          <% if character.icon.attached? %>
+            <%= image_tag character.icon.variant(resize_to_fill: [120, 160]),
+              class: "img-fluid rounded border object-fit-cover",
+              style: "aspect-ratio: 3/4; width: 100%;",
+              alt: character.name %>
+          <% else %>
+            <%= image_tag "tentative_character_icon.png",
+              class: "img-fluid rounded border object-fit-cover",
+              style: "aspect-ratio: 3/4; width: 100%;",
+              alt: "アイコン" %>
+          <% end %>
         </div>
       </div>
 

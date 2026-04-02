@@ -53,7 +53,7 @@ class CharactersController < ApplicationController
   # end
 
   def character_params
-    params.require(:character).permit(:name, :hitpoint, :dexterity, :evasion_rate, :evasion_correction, :armor, :damage_bonus,
+    params.require(:character).permit(:name, :hitpoint, :dexterity, :evasion_rate, :evasion_correction, :armor, :damage_bonus, :icon,
     attack_attributes: [
         :id,
         :name,

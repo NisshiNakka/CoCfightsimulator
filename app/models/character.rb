@@ -3,6 +3,8 @@ class Character < ApplicationRecord
 
   paginates_per 20
 
+  has_one_attached :icon
+
   validates :name, presence: true, length: { maximum: 50 }
   validates :hitpoint, presence: true, numericality: { only_integer: true, in: 3..100 }
   validates :dexterity, presence: true, numericality: { only_integer: true, in: 1..200 }
@@ -13,6 +15,9 @@ class Character < ApplicationRecord
     with: /\A-?\d+(?:[dD]\d+)?(?:[+\-]\d+(?:[dD]\d+)?)*\z/,
     message: "は正しいダイスロール記法で入力してください（例: 1, 1d6, 1d6+1d3, 1d6-1d3）"
   }
+
+  validate :icon_content_type_validation
+  validate :icon_size_validation
 
   belongs_to :user
   has_one :attack, dependent: :destroy
@@ -50,6 +55,20 @@ class Character < ApplicationRecord
   end
 
   private
+
+  def icon_content_type_validation
+    return unless icon.attached?
+
+    unless icon.content_type.in?(%w[image/jpeg image/png image/gif image/webp])
+      errors.add(:icon, :invalid_content_type)
+    end
+  end
+
+  def icon_size_validation
+    return unless icon.attached?
+
+    errors.add(:icon, :too_large) if icon.blob.byte_size > 5.megabytes
+  end
 
   def death?
     current_hp <= 0
