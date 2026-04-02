@@ -11,6 +11,7 @@ ja_jp:
     delete_confirm: 削除しますか？
     go_simulation: シミュレーションする
     back_index: 一覧へ戻る
+    back_top: トップへ戻る
     flash_message:
       created: "%{item}を登録しました"
       not_created: "%{item}を登録出来ませんでした"
@@ -31,9 +32,6 @@ ja_jp:
     character_index: キャラクター一覧
     character_create: キャラクター登録
     user_page: "%{name}さん"
-  footer:
-    terms_of_service: 利用規約
-    privacy_policy: プライバシーポリシー
   static_pages:
     top:
       title: CoC Fight Simulator
@@ -54,6 +52,10 @@ ja_jp:
       step_3_body: 戦闘条件を設定し、「シミュレーションスタート」ボタンを押します。
       step_4_title: "ステップ4：結果を確認する"
       step_4_body: 自動で戦闘がシミュレートされ、勝敗と戦闘ログが表示されます。
+    terms:
+      title: 利用規約
+    privacy:
+      title: プライバシーポリシー
   simulations:
     new:
       title: シミュレーションページ
@@ -137,6 +139,10 @@ ja_jp:
       result_title: シミュレーション完了！
       result_text: ここに戦闘結果が表示されます。勝敗・ターン数・攻撃ログを確認できます。これでチュートリアルは完了です！色々な条件でシミュレーションしてみましょう！
   characters:
+    purge_icon:
+      button: 現在の画像を削除
+      confirm: 登録中の画像を削除しますか？
+      success: アイコン画像を削除しました
     index:
       title: キャラクター一覧
       no_record: まだ作成されたキャラクターがいません。

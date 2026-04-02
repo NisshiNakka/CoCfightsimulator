@@ -1,0 +1,178 @@
+<% content_for(:title) { t('.title') } %>
+
+<div class="container my-5" style="max-width: 800px;">
+  <h1 class="text-center mb-2 fw-bold"><%= t('.title') %></h1>
+  <p class="text-center text-muted mb-5 small">最終更新日：2026年4月2日</p>
+
+  <div class="border p-3 rounded-bottom">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第1条（目的）</h2>
+        <p class="mb-0">
+          本プライバシーポリシーは、個人開発者が提供するサービス「CoCfightsimulator」（以下「本サービス」といいます。）において、ユーザーの個人情報の取扱いについて定めるものです。
+          本サービスは、TRPG（CoC 7th edition）の戦闘シミュレーション機能を提供し、ユーザーが安全かつ快適に利用できる環境を整備することを目的とします。
+        </p>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第2条（定義）</h2>
+        <p class="mb-3">本プライバシーポリシーにおいて使用する用語の定義は、以下の通りとします。</p>
+        <ol class="mb-0">
+          <li class="mb-2">「ユーザー」とは、本サービスを利用する個人または法人をいいます。</li>
+          <li class="mb-2">「個人情報」とは、個人情報保護法に定められる「個人情報」を指し、生存する個人に関する情報であって、当該情報に含まれる氏名、連絡先その他の記述等により特定の個人を識別できるもの（他の情報と容易に照合することができ、それにより特定の個人を識別することができることとなるものを含む。）をいいます。</li>
+          <li class="mb-0">「本サービス提供者」とは、本サービスを開発・提供する個人開発者をいいます。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第3条（個人情報の取得）</h2>
+        <ol class="mb-0">
+          <li class="mb-3">
+            本サービス提供者は、ユーザーが本サービスを利用するにあたり、以下の個人情報を取得します。
+            <ol class="mt-2">
+              <li class="mb-2">
+                ユーザー登録時：
+                <ol class="mt-1">
+                  <li>メールアドレス</li>
+                  <li>ユーザー名</li>
+                  <li>パスワード（暗号化して保存します。）</li>
+                </ol>
+              </li>
+              <li class="mb-2">
+                ログイン時：
+                <ol class="mt-1">
+                  <li>Google OAuth 2.0による認証情報（Googleアカウントに紐づく情報のうち、本サービス提供者が利用を許可された範囲の情報）</li>
+                </ol>
+              </li>
+              <li class="mb-0">
+                プロフィール登録時（任意）：
+                <ol class="mt-1">
+                  <li>画像ファイル（ユーザーが任意でアップロードするもの）</li>
+                </ol>
+              </li>
+            </ol>
+          </li>
+          <li class="mb-0">
+            本サービス提供者は、ユーザーが本サービスを利用する過程で、以下の情報を取得する場合があります。
+            <ol class="mt-2">
+              <li>IPアドレス、Cookie情報、利用履歴、端末情報など、本サービスの改善やセキュリティ維持のために必要な情報。</li>
+            </ol>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第4条（個人情報の利用目的）</h2>
+        <p class="mb-3">本サービス提供者は、取得した個人情報を以下の目的で利用します。</p>
+        <ol class="mb-0">
+          <li class="mb-2">ユーザー登録およびログイン機能の提供のため。</li>
+          <li class="mb-2">キャラクター登録機能およびシミュレーション機能の提供のため。</li>
+          <li class="mb-2">本サービスの改善、新機能の開発、および品質向上のため。</li>
+          <li class="mb-2">ユーザーからの問い合わせへの対応のため。</li>
+          <li class="mb-2">本サービスの利用規約違反行為への対応のため。</li>
+          <li class="mb-0">その他、上記利用目的に付随する目的のため。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第5条（個人情報の第三者提供）</h2>
+        <ol class="mb-0">
+          <li class="mb-3">本サービス提供者は、法令に基づく場合を除き、ユーザーの同意なく個人情報を第三者に提供することはありません。</li>
+          <li class="mb-3">
+            ただし、以下の外部サービスを利用しており、これらのサービスにおいてユーザーの個人情報が取り扱われる場合があります。
+            <ol class="mt-2">
+              <li class="mb-2"><strong>Neon（データベースサービス）</strong>：ユーザー登録情報、プロフィール情報、シミュレーション履歴などのデータを保存します。Neonは、データのセキュリティとプライバシー保護に関する厳格なポリシーを有しています。</li>
+              <li class="mb-2"><strong>Render（デプロイ先プラットフォーム）</strong>：本サービスの運用に必要なインフラストラクチャを提供します。Renderのプライバシーポリシーに基づき、データが管理されます。</li>
+              <li class="mb-0"><strong>AWS S3 API（ストレージサービス）</strong>：ユーザーがアップロードした画像ファイルを保存します。AWS S3は、高度なセキュリティ機能とデータ保護対策を提供しています。</li>
+            </ol>
+          </li>
+          <li class="mb-0">上記外部サービスへの個人情報の提供にあたっては、各サービスのプライバシーポリシーに従い、適切な安全管理措置を講じます。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第6条（個人情報の管理）</h2>
+        <ol class="mb-0">
+          <li class="mb-2">本サービス提供者は、個人情報の漏洩、滅失、毀損等を防止するため、技術的および組織的な安全管理措置を講じます。</li>
+          <li class="mb-2">本サービス提供者は、個人情報の取扱いを委託する場合には、委託先における個人情報の安全管理が図られるよう、必要かつ適切な監督を行います。</li>
+          <li class="mb-0">本サービス提供者は、サーバーダウンによるデータ消失のリスクを最小限に抑えるため、定期的なバックアップを実施します。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第7条（個人情報の開示、訂正、削除等）</h2>
+        <ol class="mb-0">
+          <li class="mb-2">ユーザーは、本サービス提供者に対し、自己の個人情報の開示、訂正、追加、削除、利用停止等を求めることができます。</li>
+          <li class="mb-2">前項の請求を行う場合は、本サービス提供者が別途定める方法により、本人確認の手続きを行った上で、請求を行うものとします。</li>
+          <li class="mb-0">本サービス提供者は、ユーザーからの請求に基づき、個人情報の開示、訂正、追加、削除、利用停止等を行った場合、遅滞なくユーザーに通知します。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第8条（Cookieの使用）</h2>
+        <ol class="mb-0">
+          <li class="mb-2">本サービスは、ユーザーの利便性向上、利用状況の把握、およびセキュリティ維持のためにCookieを使用する場合があります。</li>
+          <li class="mb-2">Cookieは、ユーザーのコンピュータに保存される小さなテキストファイルであり、ユーザーを識別する情報を含みますが、個人を特定する情報は含みません。</li>
+          <li class="mb-0">ユーザーは、ブラウザの設定により、Cookieの受け取りを拒否したり、受け取ったCookieを削除したりすることができます。ただし、その場合、本サービスの一部の機能が利用できなくなる可能性があります。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第9条（権利の帰属）</h2>
+        <p class="mb-0">
+          本アプリはTRPG（CoC 7th edition）の二次創作物であり、著作権については、Chaosium Inc. または「株式会社アークライト」及び「株式会社KADOKAWA」に帰属します。
+          本サービス提供者は、これらの権利を尊重し、著作権法および関連法令を遵守します。
+        </p>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第10条（免責事項）</h2>
+        <ol class="mb-0">
+          <li class="mb-2">本サービス提供者は、本サービスの利用によりユーザーに生じた損害について、一切の責任を負わないものとします。ただし、本サービス提供者の故意または重過失による場合はこの限りではありません。</li>
+          <li class="mb-2">本サービス提供者は、ユーザーが本サービスを利用する上で、Google OAuth 2.0、AWS S3 APIなどの外部サービスを利用する際に発生する問題について、一切の責任を負わないものとします。</li>
+          <li class="mb-0">本サービス提供者は、本サービスが提供するシミュレーション機能の結果について、その正確性や完全性を保証するものではありません。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第11条（本プライバシーポリシーの変更）</h2>
+        <ol class="mb-0">
+          <li class="mb-2">本サービス提供者は、個人情報保護法その他関連法令の改正、または本サービスの提供条件の変更等に伴い、本プライバシーポリシーを予告なく変更することがあります。</li>
+          <li class="mb-0">変更後のプライバシーポリシーは、本サービス上に掲示した時点から効力を生じるものとします。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-5">
+      <div class="card-body p-4">
+        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">第12条（お問い合わせ窓口）</h2>
+        <p class="mb-0">本プライバシーポリシーに関するお問い合わせは、以下の窓口までご連絡ください。</p>
+        <p class="mb-0 mt-2 text-muted">[ryouta.plm@gmail.com]</p>
+      </div>
+    </div>
+
+    <div class="text-center mt-2 mb-4">
+      <%= link_to t('defaults.back_top'), root_path, class: "btn btn-outline-secondary px-4" %>
+    </div>
+  </div>
+</div>

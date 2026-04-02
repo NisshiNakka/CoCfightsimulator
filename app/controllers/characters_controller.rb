@@ -46,6 +46,12 @@ class CharactersController < ApplicationController
     redirect_to characters_path, success: t("defaults.flash_message.deleted", item: Character.model_name.human), status: :see_other
   end
 
+  def purge_icon
+    character = current_user.characters.find(params[:id])
+    character.icon.purge
+    redirect_to edit_character_path(character), success: t("characters.purge_icon.success")
+  end
+
   private
 
   # def set_character
