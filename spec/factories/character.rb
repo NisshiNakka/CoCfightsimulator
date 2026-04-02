@@ -23,6 +23,36 @@ FactoryBot.define do
       end
     end
 
+    trait :with_icon do
+      after(:build) do |character|
+        character.icon.attach(
+          io: StringIO.new("fake png content"),
+          filename: "test_icon.png",
+          content_type: "image/png"
+        )
+      end
+    end
+
+    trait :with_large_icon do
+      after(:build) do |character|
+        character.icon.attach(
+          io: StringIO.new("x" * (5.megabytes + 1)),
+          filename: "large_icon.png",
+          content_type: "image/png"
+        )
+      end
+    end
+
+    trait :with_invalid_icon do
+      after(:build) do |character|
+        character.icon.attach(
+          io: StringIO.new("fake pdf content"),
+          filename: "document.pdf",
+          content_type: "application/pdf"
+        )
+      end
+    end
+
     factory :quick_character do
       hitpoint { 20 }
       dexterity { 60 }

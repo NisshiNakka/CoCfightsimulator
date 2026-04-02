@@ -12,6 +12,7 @@ ja_jp:
         evasion_correction: ボーナスダイス(回避)
         armor: 装甲
         damage_bonus: ダメージボーナス(DB)
+        icon: アイコン画像
       attack:
         name: 技能名
         success_probability: 成功率
@@ -26,6 +27,12 @@ ja_jp:
         damage: ダメージ
         attack_range: 攻撃種類
     errors:
+      models:
+        character:
+          attributes:
+            icon:
+              invalid_content_type: はJPEG, PNG, GIF, WebP形式のみアップロード可能です
+              too_large: は5MB以下にしてください
       messages:
         blank: を入力してください
         too_long: は%{count}文字以内で入力してください

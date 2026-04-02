@@ -4,10 +4,17 @@
       <div class="row g-0 align-items-center">
 
         <div class="col-auto p-2">
-          <%= image_tag "tentative_character_icon.png",
-            class: "img-fluid rounded object-fit-cover", 
-            style: "width: 75px; height: 100px;", 
-            alt: "アイコン" %>
+          <% if character.icon.attached? %>
+            <%= image_tag character.icon.variant(resize_to_fill: [75, 100]),
+              class: "img-fluid rounded object-fit-cover",
+              style: "width: 75px; height: 100px;",
+              alt: character.name %>
+          <% else %>
+            <%= image_tag "tentative_character_icon.png",
+              class: "img-fluid rounded object-fit-cover",
+              style: "width: 75px; height: 100px;",
+              alt: "アイコン" %>
+          <% end %>
         </div>
 
         <div class="col">

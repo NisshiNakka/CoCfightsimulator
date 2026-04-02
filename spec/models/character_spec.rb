@@ -209,6 +209,76 @@ RSpec.describe Character, type: :model do
       end
     end
 
+    context 'アイコン画像のバリデーション' do
+      context '正常系' do
+        it 'アイコンが未添付でも有効であること（任意項目）' do
+          expect(character).to be_valid
+        end
+
+        it 'JPEG形式の画像を添付した場合は有効であること' do
+          character.icon.attach(
+            io: StringIO.new("fake jpeg content"),
+            filename: "icon.jpg",
+            content_type: "image/jpeg"
+          )
+          character.valid?
+          expect(character.errors[:icon]).to be_empty
+        end
+
+        it 'PNG形式の画像を添付した場合は有効であること' do
+          character = build(:character, :with_icon)
+          character.valid?
+          expect(character.errors[:icon]).to be_empty
+        end
+
+        it 'GIF形式の画像を添付した場合は有効であること' do
+          character.icon.attach(
+            io: StringIO.new("fake gif content"),
+            filename: "icon.gif",
+            content_type: "image/gif"
+          )
+          character.valid?
+          expect(character.errors[:icon]).to be_empty
+        end
+
+        it 'WebP形式の画像を添付した場合は有効であること' do
+          character.icon.attach(
+            io: StringIO.new("fake webp content"),
+            filename: "icon.webp",
+            content_type: "image/webp"
+          )
+          character.valid?
+          expect(character.errors[:icon]).to be_empty
+        end
+      end
+
+      context '異常系: ファイル形式' do
+        it '許可されていない形式（PDF）を添付した場合は無効であること' do
+          character = build(:character, :with_invalid_icon)
+          character.valid?
+          expect(character.errors[:icon]).to include("はJPEG, PNG, GIF, WebP形式のみアップロード可能です")
+        end
+
+        it '許可されていない形式（テキスト）を添付した場合は無効であること' do
+          character.icon.attach(
+            io: StringIO.new("plain text"),
+            filename: "file.txt",
+            content_type: "text/plain"
+          )
+          character.valid?
+          expect(character.errors[:icon]).to include("はJPEG, PNG, GIF, WebP形式のみアップロード可能です")
+        end
+      end
+
+      context '異常系: ファイルサイズ' do
+        it '5MBを超えるファイルを添付した場合は無効であること' do
+          character = build(:character, :with_large_icon)
+          character.valid?
+          expect(character.errors[:icon]).to include("は5MB以下にしてください")
+        end
+      end
+    end
+
     context 'attack の presence バリデーション' do
       it 'attackがない場合は無効であること' do
         character = build(:character)
