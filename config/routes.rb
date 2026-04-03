@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     delete :purge_icon, on: :member
   end
   resource :tutorial, only: [ :update ]
+  resource :profile, only: [ :show ], controller: "users/profiles"
 
   # Defines the root path route ("/")
   # root "posts#index"

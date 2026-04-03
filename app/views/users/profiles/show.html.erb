@@ -1,0 +1,74 @@
+<% content_for(:title, t('.head_title')) %>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <h1 class="text-center mb-4 fw-bold"><%= t('.title') %></h1>
+
+      <div class="shadow-sm p-4 border rounded bg-white">
+
+        <%# ユーザー情報セクション %>
+        <div class="mb-3">
+          <p class="form-label fw-semibold mb-1"><%= t('.name') %></p>
+          <p class="ms-1"><%= @user.name %></p>
+        </div>
+
+        <div class="mb-3">
+          <p class="form-label fw-semibold mb-1"><%= t('.email') %></p>
+          <p class="ms-1"><%= @user.email %></p>
+        </div>
+
+        <%# ダイスコレクションセクション %>
+        <div class="border-top pt-4 mt-4">
+          <p class="form-label fw-semibold mb-3"><%= t('.dice_collection') %></p>
+
+          <div class="text-center mb-3">
+            <%= image_tag 'all_dice/simple/note_webp.webp',
+                          width: 160, height: 160,
+                          class: 'rounded border',
+                          alt: t('.dice_not_selected') %>
+            <p class="text-muted small mt-2"><%= t('.dice_not_selected') %></p>
+          </div>
+
+          <div>
+            <%= label_tag :dice_collection, t('.dice_select_label'), class: 'form-label fw-semibold' %>
+            <%= select_tag :dice_collection,
+                options_for_select([
+                  ['（未選択）', ''],
+                  ['ネコ（あずき）', 'cat/cat_azuki_webp'],
+                  ['ネコ（みけ）', 'cat/cat_mike_webp'],
+                  ['ネコ（ピンク）', 'cat/cat_pink_webp'],
+                  ['カラー（黒）', 'color/black'],
+                  ['カラー（青）', 'color/blue'],
+                  ['カラー（赤）', 'color/red'],
+                  ['クトゥルフ', 'cthulhu/cthulhu_webp'],
+                  ['クトゥルフ（黒）', 'cthulhu/cthulhu_b_webp'],
+                  ['きらきら（コスモス）', 'kirakira/cosmos_webp'],
+                  ['きらきら（クリスタル）', 'kirakira/crystal_webp'],
+                  ['きらきら（サイバー）', 'kirakira/cyber_webp'],
+                  ['きらきら（マジック）', 'kirakira/magic_webp'],
+                  ['ポップ（ベリー）', 'pop/berry_webp'],
+                  ['ポップ（キャラメル）', 'pop/caramel_webp'],
+                  ['ポップ（ハート）', 'pop/heart_webp'],
+                  ['ポップ（キッズ）', 'pop/kids_webp'],
+                  ['ポップ（スター）', 'pop/star_webp'],
+                  ['ロール', 'roll/kuru_r'],
+                  ['シンプル（ノート）', 'simple/note_webp'],
+                  ['和風（ホラー）', 'wafu/horror_webp'],
+                  ['和風（漢字）', 'wafu/kanji_webp'],
+                  ['和風（みやび）', 'wafu/miyabi_webp']
+                ]),
+                disabled: true,
+                class: 'form-select' %>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <%= link_to t('defaults.back_top'), root_path, class: 'btn btn-outline-secondary btn-lg px-4' %>
+        <%= link_to t('.edit_account'), edit_user_registration_path, class: 'btn btn-primary btn-lg shadow-sm' %>
+      </div>
+    </div>
+  </div>
+</div>

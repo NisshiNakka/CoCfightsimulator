@@ -189,7 +189,7 @@ RSpec.describe 'トップ画面', type: :system do
 
       it '[ユーザーページ]ボタンをクリックした場合ユーザーページへ遷移すること' do
         click_on("#{user.name}")
-        expect(page).to have_current_path(edit_user_registration_path, ignore_query: true),
+        expect(page).to have_current_path(profile_path, ignore_query: true),
         '[ユーザーページ]ボタンからユーザーページへ遷移できませんでした'
       end
     end
