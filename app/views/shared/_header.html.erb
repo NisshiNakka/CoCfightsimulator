@@ -2,10 +2,14 @@
   <nav class='navbar navbar-expand-lg navigation bg-white py-2 border-bottom' data-bs-theme="light">
     <div class="container-fluid">
       <%= link_to root_path, class: 'navbar-brand d-flex align-items-center gap-2 py-1', id: 'logo-link' do %>
-        <%= image_tag 'all_dice/logo_sumple.webp', class: 'header-logo', alt: 'CoC Fight Simulator ロゴ' %>
+        <% if user_signed_in? && current_user.site_icon_path %>
+          <%= image_tag current_user.site_icon_path, class: 'header-logo', alt: 'CoC Fight Simulator ロゴ' %>
+        <% elsif !user_signed_in? %>
+          <%= image_tag 'all_dice/logo_defaults.webp', class: 'header-logo', alt: 'CoC Fight Simulator ロゴ' %>
+        <% end %>
         <span class="fw-bold text-dark fs-4">CoC Fight Simulator</span>
       <% end %>
-      
+
       <button class='navbar-toggler' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent'
         aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
         <span class='navbar-toggler-icon'></span>
@@ -31,8 +35,8 @@
             </li>
 
             <li class='nav-item border-start border-dark-subtle ps-3 ms-2'>
-              <%= link_to t('header.logout'), destroy_user_session_path, 
-                          class: 'btn btn-sm btn-outline-danger px-3 fw-bold', 
+              <%= link_to t('header.logout'), destroy_user_session_path,
+                          class: 'btn btn-sm btn-outline-danger px-3 fw-bold',
                           data: { turbo_method: :delete } %>
             </li>
 
@@ -42,7 +46,7 @@
             </li>
 
             <li class='nav-item border-start border-dark-subtle ps-3 ms-2'>
-              <%= link_to t('header.registration'), new_user_registration_path, 
+              <%= link_to t('header.registration'), new_user_registration_path,
                           class: 'btn btn-sm btn-primary px-3 shadow-sm fw-bold' %>
             </li>
           <% end %>

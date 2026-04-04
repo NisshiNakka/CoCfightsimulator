@@ -148,6 +148,9 @@ ja_jp:
         dice_collection: ダイスコレクション
         dice_not_selected: （未選択）
         dice_select_label: ダイスを選択
+        save_dice: ダイスを保存
+        dice_hidden: 表示しない
+        dice_default: （デフォルトロゴを表示）
         edit_account: ユーザー情報を編集する
   characters:
     purge_icon:

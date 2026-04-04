@@ -22,45 +22,67 @@
         <div class="border-top pt-4 mt-4">
           <p class="form-label fw-semibold mb-3"><%= t('.dice_collection') %></p>
 
-          <div class="text-center mb-3">
-            <%= image_tag 'all_dice/simple/note_webp.webp',
-                          width: 160, height: 160,
-                          class: 'rounded border',
-                          alt: t('.dice_not_selected') %>
-            <p class="text-muted small mt-2"><%= t('.dice_not_selected') %></p>
-          </div>
+          <%= form_with model: @user, url: profile_path, method: :patch,
+                        data: { controller: "dice-preview" } do |f| %>
 
-          <div>
-            <%= label_tag :dice_collection, t('.dice_select_label'), class: 'form-label fw-semibold' %>
-            <%= select_tag :dice_collection,
-                options_for_select([
-                  ['（未選択）', ''],
-                  ['ネコ（あずき）', 'cat/cat_azuki_webp'],
-                  ['ネコ（みけ）', 'cat/cat_mike_webp'],
-                  ['ネコ（ピンク）', 'cat/cat_pink_webp'],
-                  ['カラー（黒）', 'color/black'],
-                  ['カラー（青）', 'color/blue'],
-                  ['カラー（赤）', 'color/red'],
-                  ['クトゥルフ', 'cthulhu/cthulhu_webp'],
-                  ['クトゥルフ（黒）', 'cthulhu/cthulhu_b_webp'],
-                  ['きらきら（コスモス）', 'kirakira/cosmos_webp'],
-                  ['きらきら（クリスタル）', 'kirakira/crystal_webp'],
-                  ['きらきら（サイバー）', 'kirakira/cyber_webp'],
-                  ['きらきら（マジック）', 'kirakira/magic_webp'],
-                  ['ポップ（ベリー）', 'pop/berry_webp'],
-                  ['ポップ（キャラメル）', 'pop/caramel_webp'],
-                  ['ポップ（ハート）', 'pop/heart_webp'],
-                  ['ポップ（キッズ）', 'pop/kids_webp'],
-                  ['ポップ（スター）', 'pop/star_webp'],
-                  ['ロール', 'roll/kuru_r'],
-                  ['シンプル（ノート）', 'simple/note_webp'],
-                  ['和風（ホラー）', 'wafu/horror_webp'],
-                  ['和風（漢字）', 'wafu/kanji_webp'],
-                  ['和風（みやび）', 'wafu/miyabi_webp']
-                ]),
-                disabled: true,
-                class: 'form-select' %>
-          </div>
+            <div class="text-center mb-3">
+              <% if @user.site_icon == "none" %>
+                <%= image_tag 'all_dice/logo_defaults.webp',
+                              width: 160, height: 160,
+                              class: 'rounded border d-none',
+                              data: { dice_preview_target: "image" },
+                              alt: t('.dice_collection') %>
+                <p class="text-muted small mt-2"
+                   data-dice-preview-target="label"><%= t('.dice_hidden') %></p>
+              <% else %>
+                <%= image_tag @user.site_icon_path,
+                              width: 160, height: 160,
+                              class: 'rounded border',
+                              data: { dice_preview_target: "image" },
+                              alt: t('.dice_collection') %>
+                <p class="text-muted small mt-2 d-none"
+                   data-dice-preview-target="label"></p>
+              <% end %>
+            </div>
+
+            <div>
+              <%= f.label :site_icon, t('.dice_select_label'), class: 'form-label fw-semibold' %>
+              <%= f.select :site_icon,
+                  options_for_select([
+                    [t('.dice_default'), 'defaults'],
+                    [t('.dice_hidden'), 'none'],
+                    ['ネコ（あずき）', 'cat/cat_azuki_webp'],
+                    ['ネコ（みけ）', 'cat/cat_mike_webp'],
+                    ['ネコ（ピンク）', 'cat/cat_pink_webp'],
+                    ['カラー（黒）', 'color/black'],
+                    ['カラー（青）', 'color/blue'],
+                    ['カラー（赤）', 'color/red'],
+                    ['クトゥルフ', 'cthulhu/cthulhu_webp'],
+                    ['クトゥルフ（黒）', 'cthulhu/cthulhu_b_webp'],
+                    ['きらきら（コスモス）', 'kirakira/cosmos_webp'],
+                    ['きらきら（クリスタル）', 'kirakira/crystal_webp'],
+                    ['きらきら（サイバー）', 'kirakira/cyber_webp'],
+                    ['きらきら（マジック）', 'kirakira/magic_webp'],
+                    ['ポップ（ベリー）', 'pop/berry_webp'],
+                    ['ポップ（キャラメル）', 'pop/caramel_webp'],
+                    ['ポップ（ハート）', 'pop/heart_webp'],
+                    ['ポップ（キッズ）', 'pop/kids_webp'],
+                    ['ポップ（スター）', 'pop/star_webp'],
+                    ['ロール', 'roll/kuru_r'],
+                    ['シンプル（ノート）', 'simple/note_webp'],
+                    ['和風（ホラー）', 'wafu/horror_webp'],
+                    ['和風（漢字）', 'wafu/kanji_webp'],
+                    ['和風（みやび）', 'wafu/miyabi_webp']
+                  ], selected: @user.site_icon),
+                  {},
+                  class: 'form-select',
+                  data: { action: "change->dice-preview#updatePreview",
+                          dice_preview_target: "select" } %>
+            </div>
+
+            <%= f.submit t('.save_dice'), class: 'btn btn-primary mt-3 w-100' %>
+
+          <% end %>
         </div>
 
       </div>

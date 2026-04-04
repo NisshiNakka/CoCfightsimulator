@@ -187,6 +187,77 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'サイトアイコン' do
+    describe 'SITE_ICON_OPTIONS' do
+      it '"defaults" が含まれること' do
+        expect(User::SITE_ICON_OPTIONS).to include("defaults")
+      end
+
+      it '"none" が含まれること' do
+        expect(User::SITE_ICON_OPTIONS).to include("none")
+      end
+
+      it '22種類のダイス画像が含まれること' do
+        dice_options = User::SITE_ICON_OPTIONS - %w[defaults none]
+        expect(dice_options.size).to eq 22
+      end
+    end
+
+    describe 'バリデーション' do
+      context '正常系' do
+        it '"defaults"（デフォルト値）は有効であること' do
+          user.site_icon = "defaults"
+          expect(user).to be_valid
+        end
+
+        it '"none"（表示しない）は有効であること' do
+          user.site_icon = "none"
+          expect(user).to be_valid
+        end
+
+        it '許可リスト内のダイス画像は有効であること' do
+          user.site_icon = "cat/cat_azuki_webp"
+          expect(user).to be_valid
+        end
+      end
+
+      context '異常系' do
+        it '許可リスト外の値は無効であること' do
+          user.site_icon = "invalid/path"
+          expect(user).to be_invalid
+          expect(user.errors[:site_icon]).to be_present
+        end
+
+        it '空文字列は無効であること' do
+          user.site_icon = ""
+          expect(user).to be_invalid
+        end
+      end
+    end
+
+    describe '#site_icon_path' do
+      it '"defaults" のとき logo_defaults.webp のパスを返すこと' do
+        user.site_icon = "defaults"
+        expect(user.site_icon_path).to eq "all_dice/logo_defaults.webp"
+      end
+
+      it '"none" のとき nil を返すこと' do
+        user.site_icon = "none"
+        expect(user.site_icon_path).to be_nil
+      end
+
+      it 'ダイス画像を選択したとき正しいパスを返すこと' do
+        user.site_icon = "cat/cat_azuki_webp"
+        expect(user.site_icon_path).to eq "all_dice/cat/cat_azuki_webp.webp"
+      end
+
+      it '別のダイス画像でも正しいパスを返すこと' do
+        user.site_icon = "cthulhu/cthulhu_webp"
+        expect(user.site_icon_path).to eq "all_dice/cthulhu/cthulhu_webp.webp"
+      end
+    end
+  end
+
   describe 'チュートリアル' do
     let(:user) { create(:user) }
 
