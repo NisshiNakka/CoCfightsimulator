@@ -15,3 +15,6 @@ application.register("simulation-result", SimulationResultController)
 
 import LoadingController from "./loading_controller"
 application.register("loading", LoadingController)
+
+import DicePreviewController from "./dice_preview_controller"
+application.register("dice-preview", DicePreviewController)

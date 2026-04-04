@@ -4,7 +4,21 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [ :google_oauth2 ]
+  SITE_ICON_OPTIONS = %w[
+    defaults
+    none
+    cat/cat_azuki_webp cat/cat_mike_webp cat/cat_pink_webp
+    color/black color/blue color/red
+    cthulhu/cthulhu_webp cthulhu/cthulhu_b_webp
+    kirakira/cosmos_webp kirakira/crystal_webp kirakira/cyber_webp kirakira/magic_webp
+    pop/berry_webp pop/caramel_webp pop/heart_webp pop/kids_webp pop/star_webp
+    roll/kuru_r
+    simple/note_webp
+    wafu/horror_webp wafu/kanji_webp wafu/miyabi_webp
+  ].freeze
+
   validates :name, presence: true, length: { maximum: 50 }
+  validates :site_icon, inclusion: { in: SITE_ICON_OPTIONS }
 
   has_many :characters, dependent: :destroy
 
@@ -51,5 +65,18 @@ class User < ApplicationRecord
 
   def dismiss_tutorial!
     update!(tutorial_step: 0)
+  end
+
+  def site_icon_path
+    case site_icon
+    when "defaults"
+      "all_dice/logo_defaults.webp"
+    when "none"
+      nil
+    when *SITE_ICON_OPTIONS
+      "all_dice/#{site_icon}.webp"
+    else
+      "all_dice/logo_defaults.webp"
+    end
   end
 end

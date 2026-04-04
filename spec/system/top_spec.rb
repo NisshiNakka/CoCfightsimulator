@@ -28,8 +28,8 @@ RSpec.describe 'トップ画面', type: :system do
 
       it 'ロゴ画像のsrcにWebP画像が設定されていること' do
         within('#logo-link') do
-          expect(page).to have_css('img[src*="logo_sumple"]'),
-          'ロゴ画像にlogo_sumpleが使用されていません'
+          expect(page).to have_css('img[src*="logo_defaults"]'),
+          'ロゴ画像にlogo_defaultsが使用されていません'
         end
       end
 

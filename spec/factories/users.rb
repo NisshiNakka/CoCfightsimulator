@@ -11,5 +11,13 @@ FactoryBot.define do
       password { nil }
       password_confirmation { nil }
     end
+
+    trait :with_site_icon do
+      site_icon { "cat/cat_azuki_webp" }
+    end
+
+    trait :site_icon_hidden do
+      site_icon { "none" }
+    end
   end
 end
