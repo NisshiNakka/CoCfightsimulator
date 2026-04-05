@@ -28,9 +28,14 @@
     <% if user_signed_in? && current_user.tutorial_active? %>
       <meta name="tutorial-step" content="<%= current_user.tutorial_step %>">
     <% end %>
+    <% if user_signed_in? && current_user.collection_tutorial_active? %>
+      <meta name="collection-tutorial-step" content="<%= current_user.collection_tutorial_step %>">
+    <% end %>
   </head>
 
-  <body data-controller="tutorial loading" data-tutorial-i18n-value="<%= t('tutorial').to_json %>">
+  <body data-controller="tutorial loading collection-tutorial"
+        data-tutorial-i18n-value="<%= t('tutorial').to_json %>"
+        data-collection-tutorial-i18n-value="<%= t('collection_tutorial').to_json %>">
     <%# ローディングオーバーレイ（z-index: 9000 でチュートリアル Shepherd より下） %>
     <div class="loading-overlay" data-loading-target="overlay">
       <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;">

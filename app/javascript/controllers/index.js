@@ -30,3 +30,6 @@ application.register("completion-popup", CompletionPopupController)
 
 import AutoShowToastController from "./auto_show_toast_controller"
 application.register("auto-show-toast", AutoShowToastController)
+
+import CollectionTutorialController from "./collection_tutorial_controller"
+application.register("collection-tutorial", CollectionTutorialController)

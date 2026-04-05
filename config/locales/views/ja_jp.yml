@@ -147,6 +147,32 @@ ja_jp:
     step6:
       result_title: シミュレーション完了！
       result_text: ここに戦闘結果が表示されます。勝敗・ターン数・攻撃ログを確認できます。これでチュートリアルは完了です！色々な条件でシミュレーションしてみましょう！
+  collection_tutorial:
+    next: 次へ
+    back: 戻る
+    skip: スキップ
+    done: 完了
+    go_to_profile: プロフィールへ
+    step1:
+      ticket_click_title: 特典券を入手しました！
+      ticket_click_text: 特典券バッジをクリックしてみましょう。
+      ticket_use_title: 特典券を使ってみましょう！
+      ticket_use_text: 特典券を使用するとダイスコレクションを入手できます！「特典券を使用する」を押してみましょう。
+      dice_result_title: ダイスを入手しました！
+      dice_result_text: 「閉じる」を押して続けましょう。
+      site_logo_title: ダイスコレクションとは？
+      site_logo_text: 入手したダイスコレクションダイスを、サイトロゴに使用することができます！
+      how_to_earn_title: 特典券の入手方法
+      how_to_earn_text: 特典券はアプリの機能を使用することで入手することができます。
+      navigate_title: プロフィール画面へ
+      navigate_text: プロフィール画面でダイスコレクションを確認できます。実際に見てみましょう！
+    step2:
+      grid_title: ダイスコレクション
+      grid_text: ダイスコレクションを集めることで選べるダイスが増えていきます！
+      icon_change_title: アイコンの変更方法
+      icon_change_text: 解放済みのダイスをクリックして選択し、「ダイスを保存」ボタンを押すとサイトアイコンが変更されます。
+      complete_title: チュートリアル完了！
+      complete_text: ダイスコレクションを集めてサイトを自分好みに彩りましょう！
   users:
     profiles:
       show:

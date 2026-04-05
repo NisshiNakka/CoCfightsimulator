@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
 
   # 特典券付与 + チュートリアル中でなければ通知フラグをセット
   def grant_tickets(action)
-    return [] if current_user.tutorial_active?
+    return [] if current_user.any_tutorial_active?
 
     granted = RewardTicketGranter.call(current_user, action: action)
     flash[:reward_ticket_granted] = granted.size if granted.any?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_04_000003) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_05_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -103,6 +103,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_04_000003) do
     t.integer "simulations_count", default: 0, null: false
     t.integer "character_edits_count", default: 0, null: false
     t.integer "dice_updates_count", default: 0, null: false
+    t.integer "collection_tutorial_step", default: 0, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
