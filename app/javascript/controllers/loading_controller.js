@@ -24,15 +24,17 @@ export default class extends Controller {
     document.addEventListener("turbo:submit-end", this.boundHide)
 
     // ページ遷移（Turbo Drive）
-    document.addEventListener("turbo:before-fetch-request", this.boundShow)
-    document.addEventListener("turbo:before-fetch-response", this.boundHide)
+    // turbo:before-fetch-request はホバー時のプリフェッチでも発火するため使用しない
+    // turbo:visit は実際のナビゲーション開始時のみ発火する
+    document.addEventListener("turbo:visit", this.boundShow)
+    document.addEventListener("turbo:load", this.boundHide)
   }
 
   disconnect() {
     document.removeEventListener("turbo:submit-start", this.boundShow)
     document.removeEventListener("turbo:submit-end", this.boundHide)
-    document.removeEventListener("turbo:before-fetch-request", this.boundShow)
-    document.removeEventListener("turbo:before-fetch-response", this.boundHide)
+    document.removeEventListener("turbo:visit", this.boundShow)
+    document.removeEventListener("turbo:load", this.boundHide)
     clearTimeout(this.showDelayTimer)
     clearTimeout(this.hideDelayTimer)
   }
