@@ -1,3 +1,23 @@
+<%# 特典券通知（チュートリアル中でなく、チケットが付与されたとき） %>
+<% if flash[:reward_ticket_granted].present? %>
+  <%= turbo_stream.replace "reward-ticket-toast-container" do %>
+    <div id="reward-ticket-toast-container">
+      <div class="toast align-items-center text-bg-warning border-0"
+           role="alert"
+           data-controller="auto-show-toast"
+           data-bs-autohide="true"
+           data-bs-delay="4000">
+        <div class="d-flex">
+          <div class="toast-body fw-bold">
+            🎫 <%= t('header.reward_ticket_granted', count: flash[:reward_ticket_granted]) %>
+          </div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
 <%# ボタンエリアを先に更新（dice_result は dice_roll_area 内にあるため） 1回目以降は「もう一度シミュレーション」テキストに変更する %>
 <%= turbo_stream.update "dice_roll_area" do %>
   <div class="container">

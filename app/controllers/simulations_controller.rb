@@ -51,6 +51,9 @@ class SimulationsController < ApplicationController
       session.delete(:enemy_hp)
     end
 
+    current_user.increment!(:simulations_count)
+    grant_tickets(:simulation)
+
     respond_to do |format|
       format.turbo_stream
     end

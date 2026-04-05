@@ -10,6 +10,24 @@
         <span class="fw-bold text-dark fs-4">CoC Fight Simulator</span>
       <% end %>
 
+      <%# 特典券バッジ: ハンバーガーメニュー外（常時表示） %>
+      <% if user_signed_in? %>
+        <%= turbo_frame_tag "reward_ticket_badge" do %>
+          <button class="btn btn-link position-relative p-1 me-1 text-decoration-none border-0"
+                  data-bs-toggle="modal"
+                  data-bs-target="#rewardTicketModal"
+                  aria-label="<%= t('header.reward_ticket') %>">
+            🎫
+            <% if current_user.reward_tickets > 0 %>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
+                    style="font-size: 0.65rem;">
+                <%= current_user.reward_tickets %>
+              </span>
+            <% end %>
+          </button>
+        <% end %>
+      <% end %>
+
       <button class='navbar-toggler' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent'
         aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
         <span class='navbar-toggler-icon'></span>
@@ -55,3 +73,107 @@
     </div>
   </nav>
 </header>
+
+<%# ===== トーストコンテナ（特典券入手通知 / 全ページ共通） ===== %>
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+  <% if flash[:reward_ticket_granted].present? %>
+    <div id="reward-ticket-toast"
+         class="toast align-items-center text-bg-warning border-0"
+         role="alert"
+         data-controller="auto-show-toast"
+         data-bs-autohide="true"
+         data-bs-delay="4000">
+      <div class="d-flex">
+        <div class="toast-body fw-bold">
+          🎫 <%= t('header.reward_ticket_granted', count: flash[:reward_ticket_granted]) %>
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  <% end %>
+  <%# Turbo Stream 経由の特典券通知挿入先 %>
+  <div id="reward-ticket-toast-container"></div>
+</div>
+
+<%# ===== ダイス入手モーダル（Turbo Stream で差し替え / 全ページ共通） ===== %>
+<div id="dice-acquired-modal-container"></div>
+
+<% if user_signed_in? %>
+  <%# 特典券使用確認モーダル %>
+  <div class="modal fade" id="rewardTicketModal" tabindex="-1"
+       aria-labelledby="rewardTicketModalLabel" aria-hidden="true"
+       data-controller="reward-ticket">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="rewardTicketModalLabel"><%= t('header.reward_ticket') %></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="reward_ticket_modal_body">
+          <p><%= t('users.profiles.use_ticket.ticket_count', count: current_user.reward_tickets) %></p>
+          <p><%= t('users.profiles.use_ticket.remaining_dice', count: User::COLLECTABLE_DICE_KEYS.size - current_user.dice_unlocks.count) %></p>
+          <% if current_user.reward_tickets == 0 %>
+            <p class="text-muted small"><%= t('users.profiles.use_ticket.no_tickets') %></p>
+          <% elsif current_user.all_dice_collected? %>
+            <p class="text-success fw-bold"><%= t('users.profiles.use_ticket.all_collected_notice') %></p>
+          <% end %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('defaults.cancel') %></button>
+          <% if current_user.reward_tickets > 0 && !current_user.all_dice_collected? %>
+            <%= link_to t('users.profiles.use_ticket.use_button'),
+                        use_ticket_profile_path,
+                        data: { turbo_method: :post, turbo_stream: true,
+                                action: "click->reward-ticket#useTicket" },
+                        class: "btn btn-warning fw-bold" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# ヘルプモーダル %>
+  <div class="modal fade" id="rewardHelpModal" tabindex="-1"
+       aria-labelledby="rewardHelpModalLabel" aria-hidden="true"
+       data-controller="reward-ticket">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="rewardHelpModalLabel"><%= t('header.help_title') %></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6 class="fw-bold"><%= t('header.first_use_bonus') %></h6>
+          <ul class="list-unstyled ms-2">
+            <% RewardMilestoneDefinitions::DEFINITIONS.select { |_, d| d[:category] == :first_use }.each do |key, definition| %>
+              <li>
+                <% if current_user.reward_milestones.exists?(milestone_key: key) %>
+                  <span class="text-success">☑</span>
+                <% else %>
+                  <span class="text-muted">☐</span>
+                <% end %>
+                <%= definition[:description] %>
+              </li>
+            <% end %>
+          </ul>
+          <h6 class="fw-bold mt-3"><%= t('header.milestone_bonus') %></h6>
+          <ul class="list-unstyled ms-2">
+            <% RewardMilestoneDefinitions::DEFINITIONS.select { |_, d| d[:category] == :milestone }.each do |key, definition| %>
+              <li>
+                <% if current_user.reward_milestones.exists?(milestone_key: key) %>
+                  <span class="text-success">☑</span>
+                <% else %>
+                  <span class="text-muted">☐</span>
+                <% end %>
+                <%= definition[:description] %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('defaults.close') %></button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
