@@ -93,6 +93,7 @@ class User < ApplicationRecord
   end
 
   TUTORIAL_LAST_STEP = 6
+  COLLECTION_TUTORIAL_LAST_STEP = 2
 
   def tutorial_active?
     tutorial_step > 0
@@ -105,6 +106,27 @@ class User < ApplicationRecord
 
   def dismiss_tutorial!
     update!(tutorial_step: 0)
+  end
+
+  def collection_tutorial_active?
+    collection_tutorial_step > 0
+  end
+
+  def any_tutorial_active?
+    tutorial_active? || collection_tutorial_active?
+  end
+
+  def start_collection_tutorial!
+    update!(collection_tutorial_step: 1)
+  end
+
+  def advance_collection_tutorial!
+    next_step = collection_tutorial_step + 1
+    update!(collection_tutorial_step: next_step <= COLLECTION_TUTORIAL_LAST_STEP ? next_step : 0)
+  end
+
+  def dismiss_collection_tutorial!
+    update!(collection_tutorial_step: 0)
   end
 
   def site_icon_path

@@ -62,6 +62,68 @@ RSpec.describe "Tutorials", type: :request do
           }.to change { user.reload.tutorial_step }.from(6).to(0)
         end
       end
+
+      context 'action_type=start_collection の場合' do
+        let(:user) { create(:user, collection_tutorial_step: 0) }
+
+        it 'collection_tutorial_step を 1 にすること' do
+          expect {
+            patch tutorial_path, params: { action_type: "start_collection" },
+              as: :json
+          }.to change { user.reload.collection_tutorial_step }.from(0).to(1)
+        end
+
+        it '200 OK を返すこと' do
+          patch tutorial_path, params: { action_type: "start_collection" },
+            as: :json
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context 'action_type=advance_collection の場合' do
+        let(:user) { create(:user, collection_tutorial_step: 1) }
+
+        it 'collection_tutorial_step を 1 進めること' do
+          expect {
+            patch tutorial_path, params: { action_type: "advance_collection" },
+              as: :json
+          }.to change { user.reload.collection_tutorial_step }.from(1).to(2)
+        end
+
+        it '200 OK を返すこと' do
+          patch tutorial_path, params: { action_type: "advance_collection" },
+            as: :json
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context 'action_type=advance_collection で最終ステップ(2)のとき' do
+        let(:user) { create(:user, collection_tutorial_step: 2) }
+
+        it 'collection_tutorial_step が 0 にリセットされること' do
+          expect {
+            patch tutorial_path, params: { action_type: "advance_collection" },
+              as: :json
+          }.to change { user.reload.collection_tutorial_step }.from(2).to(0)
+        end
+      end
+
+      context 'action_type=dismiss_collection の場合' do
+        let(:user) { create(:user, collection_tutorial_step: 1) }
+
+        it 'collection_tutorial_step を 0 にすること' do
+          expect {
+            patch tutorial_path, params: { action_type: "dismiss_collection" },
+              as: :json
+          }.to change { user.reload.collection_tutorial_step }.from(1).to(0)
+        end
+
+        it '200 OK を返すこと' do
+          patch tutorial_path, params: { action_type: "dismiss_collection" },
+            as: :json
+          expect(response).to have_http_status(:ok)
+        end
+      end
     end
 
     context '未認証ユーザーの場合' do

@@ -448,4 +448,95 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe 'コレクションチュートリアル' do
+    let(:user) { create(:user) }
+
+    describe '#collection_tutorial_active?' do
+      context 'collection_tutorial_step が 0 の場合' do
+        it 'false を返すこと' do
+          user.update!(collection_tutorial_step: 0)
+          expect(user.collection_tutorial_active?).to be false
+        end
+      end
+
+      context 'collection_tutorial_step が 1 以上の場合' do
+        it 'collection_tutorial_step=1 のとき true を返すこと' do
+          user.update!(collection_tutorial_step: 1)
+          expect(user.collection_tutorial_active?).to be true
+        end
+
+        it 'collection_tutorial_step=2（最終ステップ）のとき true を返すこと' do
+          user.update!(collection_tutorial_step: 2)
+          expect(user.collection_tutorial_active?).to be true
+        end
+      end
+    end
+
+    describe '#any_tutorial_active?' do
+      context '両方のチュートリアルが非活性の場合' do
+        it 'false を返すこと' do
+          user.update!(tutorial_step: 0, collection_tutorial_step: 0)
+          expect(user.any_tutorial_active?).to be false
+        end
+      end
+
+      context '既存チュートリアルのみ活性の場合' do
+        it 'true を返すこと' do
+          user.update!(tutorial_step: 1, collection_tutorial_step: 0)
+          expect(user.any_tutorial_active?).to be true
+        end
+      end
+
+      context 'コレクションチュートリアルのみ活性の場合' do
+        it 'true を返すこと' do
+          user.update!(tutorial_step: 0, collection_tutorial_step: 1)
+          expect(user.any_tutorial_active?).to be true
+        end
+      end
+
+      context '両方のチュートリアルが活性の場合' do
+        it 'true を返すこと' do
+          user.update!(tutorial_step: 1, collection_tutorial_step: 1)
+          expect(user.any_tutorial_active?).to be true
+        end
+      end
+    end
+
+    describe '#start_collection_tutorial!' do
+      it 'collection_tutorial_step を 1 にすること' do
+        user.update!(collection_tutorial_step: 0)
+        user.start_collection_tutorial!
+        expect(user.reload.collection_tutorial_step).to eq 1
+      end
+    end
+
+    describe '#advance_collection_tutorial!' do
+      it 'collection_tutorial_step を 1 インクリメントすること' do
+        user.update!(collection_tutorial_step: 1)
+        expect { user.advance_collection_tutorial! }
+          .to change { user.reload.collection_tutorial_step }.from(1).to(2)
+      end
+
+      it 'collection_tutorial_step=2（最終ステップ）のとき 0 にリセットすること' do
+        user.update!(collection_tutorial_step: 2)
+        user.advance_collection_tutorial!
+        expect(user.reload.collection_tutorial_step).to eq 0
+      end
+    end
+
+    describe '#dismiss_collection_tutorial!' do
+      it 'collection_tutorial_step を 0 にすること' do
+        user.update!(collection_tutorial_step: 1)
+        user.dismiss_collection_tutorial!
+        expect(user.reload.collection_tutorial_step).to eq 0
+      end
+
+      it 'collection_tutorial_step がすでに 0 のとき 0 のままであること' do
+        user.update!(collection_tutorial_step: 0)
+        user.dismiss_collection_tutorial!
+        expect(user.reload.collection_tutorial_step).to eq 0
+      end
+    end
+  end
 end

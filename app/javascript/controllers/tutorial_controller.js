@@ -382,7 +382,7 @@ export default class extends Controller {
         buttons: [
           {
             text: s.done,
-            action: () => { this.dismissTutorial(); this.tour.complete() },
+            action: () => { this.dismissTutorial() },
             classes: "shepherd-button-primary"
           }
         ]
@@ -392,6 +392,7 @@ export default class extends Controller {
 
   async dismissTutorial() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content
+    // 1. 既存チュートリアルを終了
     await fetch("/tutorial", {
       method: "PATCH",
       headers: {
@@ -400,6 +401,17 @@ export default class extends Controller {
       },
       body: JSON.stringify({ action_type: "dismiss" })
     })
+    // 2. コレクションチュートリアルを開始
+    await fetch("/tutorial", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken
+      },
+      body: JSON.stringify({ action_type: "start_collection" })
+    })
+    // 3. collection_tutorial_controller に起動を通知
+    document.dispatchEvent(new CustomEvent("collection-tutorial:start"))
     if (this.tour) this.tour.complete()
   }
 }
