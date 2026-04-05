@@ -12,6 +12,8 @@ ja_jp:
     go_simulation: シミュレーションする
     back_index: 一覧へ戻る
     back_top: トップへ戻る
+    cancel: キャンセル
+    close: 閉じる
     flash_message:
       created: "%{item}を登録しました"
       not_created: "%{item}を登録出来ませんでした"
@@ -32,6 +34,13 @@ ja_jp:
     character_index: キャラクター一覧
     character_create: キャラクター登録
     user_page: "%{name}さん"
+    reward_ticket: 特典券
+    reward_ticket_granted:
+      one: "特典券を1枚入手しました！"
+      other: "特典券を%{count}枚入手しました！"
+    help_title: 特典券の入手方法
+    first_use_bonus: "■ 初回利用ボーナス（各1枚）"
+    milestone_bonus: "■ 累積マイルストーン（各1枚）"
   static_pages:
     top:
       title: CoC Fight Simulator
@@ -150,8 +159,25 @@ ja_jp:
         dice_select_label: ダイスを選択
         save_dice: ダイスを保存
         dice_hidden: 表示しない
+        dice_hidden_short: 非表示
         dice_default: （デフォルトロゴを表示）
+        dice_default_short: デフォルト
         edit_account: ユーザー情報を編集する
+        collection_count: "収集状況: %{count} / %{total}"
+        special_icons_label: 特殊アイコン
+        collection_label: ダイスコレクション
+        locked_dice: 未解放
+      use_ticket:
+        ticket_count: "所持枚数: %{count}枚"
+        remaining_dice: "未収集ダイス: %{count}個"
+        no_tickets: 特典券がありません。アプリの機能を使用して特典券を入手しましょう！
+        all_collected_notice: すべてのダイスを収集済みです！
+        insufficient_tickets: 特典券が足りません
+        all_collected: すべてのダイスコレクションを入手済みです
+        use_button: 特典券を使用する
+        new_dice_acquired: 新しいダイスを入手しました！
+        complete_title: コンプリート！
+        all_collected_message: すべてのダイスコレクションを入手しました！
   characters:
     purge_icon:
       button: 現在の画像を削除

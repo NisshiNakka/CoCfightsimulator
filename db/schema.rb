@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_03_000001) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_04_000003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,6 +68,24 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_03_000001) do
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
 
+  create_table "user_dice_unlocks", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "dice_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "dice_key"], name: "index_user_dice_unlocks_on_user_id_and_dice_key", unique: true
+    t.index ["user_id"], name: "index_user_dice_unlocks_on_user_id"
+  end
+
+  create_table "user_reward_milestones", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "milestone_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "milestone_key"], name: "index_user_reward_milestones_on_user_id_and_milestone_key", unique: true
+    t.index ["user_id"], name: "index_user_reward_milestones_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name", limit: 50, null: false
     t.string "email", limit: 255, null: false
@@ -81,6 +99,10 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_03_000001) do
     t.string "provider"
     t.string "uid"
     t.string "site_icon", default: "defaults", null: false
+    t.integer "reward_tickets", default: 0, null: false
+    t.integer "simulations_count", default: 0, null: false
+    t.integer "character_edits_count", default: 0, null: false
+    t.integer "dice_updates_count", default: 0, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -90,4 +112,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_03_000001) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "attacks", "characters"
   add_foreign_key "characters", "users"
+  add_foreign_key "user_dice_unlocks", "users"
+  add_foreign_key "user_reward_milestones", "users"
 end

@@ -188,18 +188,39 @@ RSpec.describe User, type: :model do
   end
 
   describe 'サイトアイコン' do
-    describe 'SITE_ICON_OPTIONS' do
-      it '"defaults" が含まれること' do
-        expect(User::SITE_ICON_OPTIONS).to include("defaults")
+    describe '定数' do
+      describe 'SPECIAL_ICONS' do
+        it '"defaults" が含まれること' do
+          expect(User::SPECIAL_ICONS).to include("defaults")
+        end
+
+        it '"none" が含まれること' do
+          expect(User::SPECIAL_ICONS).to include("none")
+        end
+
+        it '2種類のみであること' do
+          expect(User::SPECIAL_ICONS.size).to eq 2
+        end
       end
 
-      it '"none" が含まれること' do
-        expect(User::SITE_ICON_OPTIONS).to include("none")
+      describe 'COLLECTABLE_DICE_KEYS' do
+        it '22種類のダイス画像が含まれること' do
+          expect(User::COLLECTABLE_DICE_KEYS.size).to eq 22
+        end
+
+        it '"defaults" が含まれないこと' do
+          expect(User::COLLECTABLE_DICE_KEYS).not_to include("defaults")
+        end
+
+        it '"none" が含まれないこと' do
+          expect(User::COLLECTABLE_DICE_KEYS).not_to include("none")
+        end
       end
 
-      it '22種類のダイス画像が含まれること' do
-        dice_options = User::SITE_ICON_OPTIONS - %w[defaults none]
-        expect(dice_options.size).to eq 22
+      describe 'MAX_TICKETS' do
+        it 'COLLECTABLE_DICE_KEYS の数と一致すること' do
+          expect(User::MAX_TICKETS).to eq User::COLLECTABLE_DICE_KEYS.size
+        end
       end
     end
 
@@ -215,13 +236,22 @@ RSpec.describe User, type: :model do
           expect(user).to be_valid
         end
 
-        it '許可リスト内のダイス画像は有効であること' do
-          user.site_icon = "cat/cat_azuki_webp"
-          expect(user).to be_valid
+        it '解放済みのダイス画像は有効であること' do
+          persisted_user = create(:user)
+          create(:user_dice_unlock, user: persisted_user, dice_key: "cat/cat_azuki_webp")
+          persisted_user.site_icon = "cat/cat_azuki_webp"
+          expect(persisted_user).to be_valid
         end
       end
 
       context '異常系' do
+        it '未解放のダイス画像は無効であること' do
+          persisted_user = create(:user)
+          persisted_user.site_icon = "cat/cat_azuki_webp"
+          expect(persisted_user).to be_invalid
+          expect(persisted_user.errors[:site_icon]).to be_present
+        end
+
         it '許可リスト外の値は無効であること' do
           user.site_icon = "invalid/path"
           expect(user).to be_invalid
@@ -254,6 +284,109 @@ RSpec.describe User, type: :model do
       it '別のダイス画像でも正しいパスを返すこと' do
         user.site_icon = "cthulhu/cthulhu_webp"
         expect(user.site_icon_path).to eq "all_dice/cthulhu/cthulhu_webp.webp"
+      end
+    end
+  end
+
+  describe 'ダイスコレクション' do
+    let(:user) { create(:user) }
+
+    describe '#unlocked_dice_keys' do
+      it '解放済みダイスのキー一覧を返すこと' do
+        create(:user_dice_unlock, user: user, dice_key: "cat/cat_azuki_webp")
+        create(:user_dice_unlock, user: user, dice_key: "color/black")
+        expect(user.unlocked_dice_keys).to contain_exactly("cat/cat_azuki_webp", "color/black")
+      end
+
+      it '解放済みダイスがない場合は空の配列を返すこと' do
+        expect(user.unlocked_dice_keys).to eq []
+      end
+    end
+
+    describe '#available_site_icons' do
+      it '新規ユーザーは SPECIAL_ICONS のみ選択可能であること' do
+        expect(user.available_site_icons).to match_array(User::SPECIAL_ICONS)
+      end
+
+      it '解放済みダイスが追加されること' do
+        create(:user_dice_unlock, user: user, dice_key: "cat/cat_azuki_webp")
+        expect(user.available_site_icons).to include("cat/cat_azuki_webp")
+        expect(user.available_site_icons).to include("defaults")
+        expect(user.available_site_icons).to include("none")
+      end
+    end
+
+    describe '#dice_unlocked?' do
+      it '解放済みのダイスに対して true を返すこと' do
+        create(:user_dice_unlock, user: user, dice_key: "cat/cat_azuki_webp")
+        expect(user.dice_unlocked?("cat/cat_azuki_webp")).to be true
+      end
+
+      it '未解放のダイスに対して false を返すこと' do
+        expect(user.dice_unlocked?("cat/cat_azuki_webp")).to be false
+      end
+    end
+
+    describe '#all_dice_collected?' do
+      it '未収集のダイスがある場合は false を返すこと' do
+        expect(user.all_dice_collected?).to be false
+      end
+
+      it '全ダイスを収集した場合は true を返すこと' do
+        User::COLLECTABLE_DICE_KEYS.each do |key|
+          create(:user_dice_unlock, user: user, dice_key: key)
+        end
+        expect(user.all_dice_collected?).to be true
+      end
+    end
+
+    describe '#use_ticket!' do
+      context 'チケットがあり、未収集ダイスがある場合' do
+        before { user.update!(reward_tickets: 1) }
+
+        it 'ランダムにダイスを解放すること' do
+          expect { user.use_ticket! }.to change { user.dice_unlocks.count }.by(1)
+        end
+
+        it 'チケットを1枚消費すること' do
+          expect { user.use_ticket! }.to change { user.reload.reward_tickets }.by(-1)
+        end
+
+        it '解放したダイスのキーを返すこと' do
+          result = user.use_ticket!
+          expect(User::COLLECTABLE_DICE_KEYS).to include(result)
+        end
+
+        it '同じダイスを二重解放しないこと' do
+          user.update!(reward_tickets: 22)
+          22.times { user.use_ticket! }
+          expect(user.dice_unlocks.pluck(:dice_key).uniq.size).to eq 22
+        end
+      end
+
+      context 'チケットがない場合' do
+        before { user.update!(reward_tickets: 0) }
+
+        it 'InsufficientTicketsError を発生させること' do
+          expect { user.use_ticket! }.to raise_error(User::InsufficientTicketsError)
+        end
+
+        it 'ダイスが解放されないこと' do
+          expect { user.use_ticket! rescue nil }.not_to change { user.dice_unlocks.count }
+        end
+      end
+
+      context '全ダイスを収集済みの場合' do
+        before do
+          user.update!(reward_tickets: 1)
+          User::COLLECTABLE_DICE_KEYS.each do |key|
+            create(:user_dice_unlock, user: user, dice_key: key)
+          end
+        end
+
+        it 'AllDiceCollectedError を発生させること' do
+          expect { user.use_ticket! }.to raise_error(User::AllDiceCollectedError)
+        end
       end
     end
   end

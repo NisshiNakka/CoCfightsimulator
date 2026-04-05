@@ -1,0 +1,33 @@
+// ダイスコレクション: グリッドアイテム
+.dice-item {
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  transition: background-color 0.15s, transform 0.15s;
+
+  &:hover:not(.locked) {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    transform: scale(1.05);
+  }
+
+  &.selected {
+    background-color: rgba(var(--bs-primary-rgb), 0.2);
+    outline: 2px solid var(--bs-primary);
+    border-radius: 8px;
+  }
+
+  &.locked {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// 未解放ダイス: グレースケール
+.dice-locked {
+  filter: grayscale(100%);
+}
+
+// 特典券トースト通知
+#reward-ticket-toast {
+  min-width: 240px;
+}

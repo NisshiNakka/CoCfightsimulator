@@ -1,0 +1,170 @@
+<%# 1. ヘッダーの特典券バッジを更新 %>
+<%= turbo_stream.replace "reward_ticket_badge" do %>
+  <%= turbo_frame_tag "reward_ticket_badge" do %>
+    <button class="btn btn-link position-relative p-1 me-1 text-decoration-none border-0"
+            data-bs-toggle="modal"
+            data-bs-target="#rewardTicketModal"
+            aria-label="<%= t('header.reward_ticket') %>">
+      🎫
+      <% if current_user.reward_tickets > 0 %>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
+              style="font-size: 0.65rem;">
+          <%= current_user.reward_tickets %>
+        </span>
+      <% end %>
+    </button>
+  <% end %>
+<% end %>
+
+<%# 2. 入手ダイスのモーダル通知を挿入 %>
+<%= turbo_stream.replace "dice-acquired-modal-container" do %>
+  <div id="dice-acquired-modal-container"
+       data-controller="completion-popup"
+       data-completion-popup-show-value="true">
+    <div class="modal fade" id="diceAcquiredModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center py-4">
+            <div style="font-size: 48px;">🎲</div>
+            <h4 class="fw-bold mt-2"><%= t('users.profiles.use_ticket.new_dice_acquired') %></h4>
+            <%= image_tag "all_dice/#{@unlocked_key}.webp",
+                          width: 120, height: 120,
+                          class: "rounded border my-3",
+                          alt: User::DICE_DISPLAY_NAMES[@unlocked_key] %>
+            <p class="fs-5 fw-semibold"><%= User::DICE_DISPLAY_NAMES[@unlocked_key] %></p>
+          </div>
+          <div class="modal-footer border-0 justify-content-center">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><%= t('defaults.close') %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<%# 3. プロフィール画面のダイスグリッドを更新（プロフィールページ以外では無視される） %>
+<%= turbo_stream.replace "dice_collection_grid" do %>
+  <%= turbo_frame_tag "dice_collection_grid" do %>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <p class="form-label fw-semibold mb-0"><%= t('users.profiles.show.dice_collection') %></p>
+      <div class="d-flex align-items-center gap-2">
+        <span class="text-muted small">
+          <%= t('users.profiles.show.collection_count',
+                count: current_user.dice_unlocks.count,
+                total: User::COLLECTABLE_DICE_KEYS.size) %>
+        </span>
+        <button class="btn btn-outline-secondary btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#rewardHelpModal">
+          ?
+        </button>
+      </div>
+    </div>
+
+    <%= form_with model: current_user, url: profile_path, method: :patch,
+                  data: { controller: "dice-collection" } do |f| %>
+
+      <div class="text-center mb-4">
+        <% if current_user.site_icon == "none" %>
+          <%= image_tag 'all_dice/logo_defaults.webp', width: 120, height: 120,
+                        class: 'rounded border d-none',
+                        data: { dice_collection_target: "preview" },
+                        alt: t('users.profiles.show.dice_collection') %>
+          <p class="text-muted small mt-2"
+             data-dice-collection-target="label"><%= t('users.profiles.show.dice_hidden') %></p>
+        <% else %>
+          <%= image_tag current_user.site_icon_path, width: 120, height: 120,
+                        class: 'rounded border',
+                        data: { dice_collection_target: "preview" },
+                        alt: t('users.profiles.show.dice_collection') %>
+          <p class="text-muted small mt-2 d-none" data-dice-collection-target="label"></p>
+        <% end %>
+      </div>
+
+      <%= f.hidden_field :site_icon, data: { dice_collection_target: "input" } %>
+
+      <div class="mb-3">
+        <p class="small fw-semibold text-muted mb-2"><%= t('users.profiles.show.special_icons_label') %></p>
+        <div class="d-flex gap-2">
+          <div class="dice-item <%= 'selected' if current_user.site_icon == 'defaults' %>"
+               data-action="click->dice-collection#select"
+               data-dice-collection-key-param="defaults">
+            <%= image_tag 'all_dice/logo_defaults.webp', width: 60, height: 60,
+                          class: 'rounded border', alt: t('users.profiles.show.dice_default') %>
+            <p class="small text-center mt-1 mb-0" style="font-size: 10px;"><%= t('users.profiles.show.dice_default_short') %></p>
+          </div>
+          <div class="dice-item <%= 'selected' if current_user.site_icon == 'none' %>"
+               data-action="click->dice-collection#select"
+               data-dice-collection-key-param="none">
+            <div class="rounded border d-flex align-items-center justify-content-center bg-light"
+                 style="width: 60px; height: 60px;">
+              <span class="text-muted" style="font-size: 20px;">×</span>
+            </div>
+            <p class="small text-center mt-1 mb-0" style="font-size: 10px;"><%= t('users.profiles.show.dice_hidden_short') %></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <p class="small fw-semibold text-muted mb-2"><%= t('users.profiles.show.collection_label') %></p>
+        <div class="row row-cols-4 row-cols-sm-6 row-cols-md-8 g-2">
+          <% User::COLLECTABLE_DICE_KEYS.each do |key| %>
+            <% unlocked = current_user.dice_unlocked?(key) %>
+            <div class="col">
+              <div class="dice-item text-center <%= 'selected' if current_user.site_icon == key %> <%= 'locked' unless unlocked %>"
+                   <% if unlocked %>
+                     data-action="click->dice-collection#select"
+                     data-dice-collection-key-param="<%= key %>"
+                   <% end %>
+                   title="<%= unlocked ? User::DICE_DISPLAY_NAMES[key] : t('users.profiles.show.locked_dice') %>">
+                <div class="position-relative d-inline-block">
+                  <%= image_tag "all_dice/#{key}.webp", width: 50, height: 50,
+                                class: "rounded border #{'dice-locked' unless unlocked}",
+                                alt: User::DICE_DISPLAY_NAMES[key] || key %>
+                  <% unless unlocked %>
+                    <div class="position-absolute top-50 start-50 translate-middle">
+                      <span style="font-size: 16px;">🔒</span>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <%= f.submit t('users.profiles.show.save_dice'), class: 'btn btn-primary mt-3 w-100' %>
+
+    <% end %>
+  <% end %>
+<% end %>
+
+<%# 4. コンプリート時のポップアップ %>
+<% if @all_collected %>
+  <%= turbo_stream.replace "completion-popup-container" do %>
+    <div id="completion-popup-container"
+         data-controller="completion-popup"
+         data-completion-popup-show-value="true">
+      <div class="modal fade" id="completionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+              <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+              <div style="font-size: 48px;">🎊</div>
+              <h4 class="fw-bold mt-2"><%= t('users.profiles.use_ticket.complete_title') %></h4>
+              <p><%= t('users.profiles.use_ticket.all_collected_message') %></p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><%= t('defaults.close') %></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

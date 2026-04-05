@@ -2,7 +2,7 @@
 
 <div class="container my-5">
   <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
+    <div class="col-md-10 col-lg-8">
       <h1 class="text-center mb-4 fw-bold"><%= t('.title') %></h1>
 
       <div class="shadow-sm p-4 border rounded bg-white">
@@ -20,69 +20,107 @@
 
         <%# ダイスコレクションセクション %>
         <div class="border-top pt-4 mt-4">
-          <p class="form-label fw-semibold mb-3"><%= t('.dice_collection') %></p>
+          <%= turbo_frame_tag "dice_collection_grid" do %>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <p class="form-label fw-semibold mb-0"><%= t('.dice_collection') %></p>
+            <div class="d-flex align-items-center gap-2">
+              <span class="text-muted small">
+                <%= t('.collection_count', count: @user.dice_unlocks.count, total: User::COLLECTABLE_DICE_KEYS.size) %>
+              </span>
+              <button class="btn btn-outline-secondary btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#rewardHelpModal">
+                ?
+              </button>
+            </div>
+          </div>
 
           <%= form_with model: @user, url: profile_path, method: :patch,
-                        data: { controller: "dice-preview" } do |f| %>
+                        data: { controller: "dice-collection", turbo_frame: "_top" } do |f| %> <%# turbo_frame: "_top"を設定し、フォームを送信した場合のみ通常通りの画面更新を行う %>
 
-            <div class="text-center mb-3">
+            <%# 現在のアイコンプレビュー %>
+            <div class="text-center mb-4">
               <% if @user.site_icon == "none" %>
                 <%= image_tag 'all_dice/logo_defaults.webp',
-                              width: 160, height: 160,
+                              width: 120, height: 120,
                               class: 'rounded border d-none',
-                              data: { dice_preview_target: "image" },
+                              data: { dice_collection_target: "preview" },
                               alt: t('.dice_collection') %>
                 <p class="text-muted small mt-2"
-                   data-dice-preview-target="label"><%= t('.dice_hidden') %></p>
+                   data-dice-collection-target="label"><%= t('.dice_hidden') %></p>
               <% else %>
                 <%= image_tag @user.site_icon_path,
-                              width: 160, height: 160,
+                              width: 120, height: 120,
                               class: 'rounded border',
-                              data: { dice_preview_target: "image" },
+                              data: { dice_collection_target: "preview" },
                               alt: t('.dice_collection') %>
                 <p class="text-muted small mt-2 d-none"
-                   data-dice-preview-target="label"></p>
+                   data-dice-collection-target="label"></p>
               <% end %>
             </div>
 
-            <div>
-              <%= f.label :site_icon, t('.dice_select_label'), class: 'form-label fw-semibold' %>
-              <%= f.select :site_icon,
-                  options_for_select([
-                    [t('.dice_default'), 'defaults'],
-                    [t('.dice_hidden'), 'none'],
-                    ['ネコ（あずき）', 'cat/cat_azuki_webp'],
-                    ['ネコ（みけ）', 'cat/cat_mike_webp'],
-                    ['ネコ（ピンク）', 'cat/cat_pink_webp'],
-                    ['カラー（黒）', 'color/black'],
-                    ['カラー（青）', 'color/blue'],
-                    ['カラー（赤）', 'color/red'],
-                    ['クトゥルフ', 'cthulhu/cthulhu_webp'],
-                    ['クトゥルフ（黒）', 'cthulhu/cthulhu_b_webp'],
-                    ['きらきら（コスモス）', 'kirakira/cosmos_webp'],
-                    ['きらきら（クリスタル）', 'kirakira/crystal_webp'],
-                    ['きらきら（サイバー）', 'kirakira/cyber_webp'],
-                    ['きらきら（マジック）', 'kirakira/magic_webp'],
-                    ['ポップ（ベリー）', 'pop/berry_webp'],
-                    ['ポップ（キャラメル）', 'pop/caramel_webp'],
-                    ['ポップ（ハート）', 'pop/heart_webp'],
-                    ['ポップ（キッズ）', 'pop/kids_webp'],
-                    ['ポップ（スター）', 'pop/star_webp'],
-                    ['ロール', 'roll/kuru_r'],
-                    ['シンプル（ノート）', 'simple/note_webp'],
-                    ['和風（ホラー）', 'wafu/horror_webp'],
-                    ['和風（漢字）', 'wafu/kanji_webp'],
-                    ['和風（みやび）', 'wafu/miyabi_webp']
-                  ], selected: @user.site_icon),
-                  {},
-                  class: 'form-select',
-                  data: { action: "change->dice-preview#updatePreview",
-                          dice_preview_target: "select" } %>
+            <%# hidden field で選択値を保持 %>
+            <%= f.hidden_field :site_icon, data: { dice_collection_target: "input" } %>
+
+            <%# 特殊アイコン（常時選択可能） %>
+            <div class="mb-3">
+              <p class="small fw-semibold text-muted mb-2"><%= t('.special_icons_label') %></p>
+              <div class="d-flex gap-2">
+                <div class="dice-item <%= 'selected' if @user.site_icon == 'defaults' %>"
+                     data-action="click->dice-collection#select"
+                     data-dice-collection-key-param="defaults"
+                     title="<%= t('.dice_default') %>">
+                  <%= image_tag 'all_dice/logo_defaults.webp', width: 60, height: 60,
+                                class: 'rounded border', alt: t('.dice_default') %>
+                  <p class="small text-center mt-1 mb-0" style="font-size: 10px;"><%= t('.dice_default_short') %></p>
+                </div>
+                <div class="dice-item <%= 'selected' if @user.site_icon == 'none' %>"
+                     data-action="click->dice-collection#select"
+                     data-dice-collection-key-param="none"
+                     title="<%= t('.dice_hidden') %>">
+                  <div class="rounded border d-flex align-items-center justify-content-center bg-light"
+                       style="width: 60px; height: 60px;">
+                    <span class="text-muted" style="font-size: 20px;">×</span>
+                  </div>
+                  <p class="small text-center mt-1 mb-0" style="font-size: 10px;"><%= t('.dice_hidden_short') %></p>
+                </div>
+              </div>
+            </div>
+
+            <%# ダイスコレクション（グリッド表示） %>
+            <div class="mb-3">
+              <p class="small fw-semibold text-muted mb-2"><%= t('.collection_label') %></p>
+              <div class="row row-cols-4 row-cols-sm-6 row-cols-md-8 g-2">
+                <% User::COLLECTABLE_DICE_KEYS.each do |key| %>
+                  <% unlocked = @user.dice_unlocked?(key) %>
+                  <div class="col">
+                    <div class="dice-item text-center <%= 'selected' if @user.site_icon == key %> <%= 'locked' unless unlocked %>"
+                         <% if unlocked %>
+                           data-action="click->dice-collection#select"
+                           data-dice-collection-key-param="<%= key %>"
+                         <% end %>
+                         title="<%= unlocked ? User::DICE_DISPLAY_NAMES[key] : t('.locked_dice') %>">
+                      <div class="position-relative d-inline-block">
+                        <%= image_tag "all_dice/#{key}.webp",
+                                      width: 50, height: 50,
+                                      class: "rounded border #{'dice-locked' unless unlocked}",
+                                      alt: User::DICE_DISPLAY_NAMES[key] || key %>
+                        <% unless unlocked %>
+                          <div class="position-absolute top-50 start-50 translate-middle">
+                            <span style="font-size: 16px;">🔒</span>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
             </div>
 
             <%= f.submit t('.save_dice'), class: 'btn btn-primary mt-3 w-100' %>
 
           <% end %>
+          <% end %><%# /turbo_frame dice_collection_grid %>
         </div>
 
       </div>
@@ -94,3 +132,6 @@
     </div>
   </div>
 </div>
+
+<%# コンプリートポップアップ（Turbo Streamで挿入される） %>
+<div id="completion-popup-container"></div>

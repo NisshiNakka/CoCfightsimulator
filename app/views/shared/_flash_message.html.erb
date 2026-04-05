@@ -1,5 +1,6 @@
 <% bootstrap_class = { "notice" => "success", "alert" => "danger" } %>
 <% flash.each do |message_type, message| %>
+  <% next if message_type == "reward_ticket_granted" %>
   <div class="alert alert-<%= bootstrap_class.fetch(message_type, message_type) %>">
     <%= message %>
   </div>

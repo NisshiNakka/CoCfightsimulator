@@ -1,6 +1,7 @@
 class CharactersController < ApplicationController
   def index
     @characters = current_user.characters.order(created_at: :desc).page(params[:page])
+    grant_tickets(:character_index)
   end
 
   def new
@@ -14,6 +15,7 @@ class CharactersController < ApplicationController
     if @character.save
       current_user.advance_tutorial! if current_user.tutorial_step == 1
       current_user.advance_tutorial! if current_user.tutorial_step == 3
+      grant_tickets(:character_create)
       redirect_to characters_path, success: t("defaults.flash_message.created", item: Character.model_name.human)
     else
       flash.now[:danger] = t("defaults.flash_message.not_created", item: Character.model_name.human)
@@ -23,6 +25,7 @@ class CharactersController < ApplicationController
 
   def show
     @character = current_user.characters.find(params[:id])
+    grant_tickets(:character_show)
   end
 
   def edit
@@ -33,6 +36,8 @@ class CharactersController < ApplicationController
   def update
     @character = current_user.characters.find(params[:id])
     if @character.update(character_params)
+      current_user.increment!(:character_edits_count)
+      grant_tickets(:character_edit)
       redirect_to character_path(@character), success: t("defaults.flash_message.updated", item: Character.model_name.human)
     else
       flash.now[:danger] = t("defaults.flash_message.not_updated", item: Character.model_name.human)

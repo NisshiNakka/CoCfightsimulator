@@ -18,3 +18,15 @@ application.register("loading", LoadingController)
 
 import DicePreviewController from "./dice_preview_controller"
 application.register("dice-preview", DicePreviewController)
+
+import DiceCollectionController from "./dice_collection_controller"
+application.register("dice-collection", DiceCollectionController)
+
+import RewardTicketController from "./reward_ticket_controller"
+application.register("reward-ticket", RewardTicketController)
+
+import CompletionPopupController from "./completion_popup_controller"
+application.register("completion-popup", CompletionPopupController)
+
+import AutoShowToastController from "./auto_show_toast_controller"
+application.register("auto-show-toast", AutoShowToastController)
