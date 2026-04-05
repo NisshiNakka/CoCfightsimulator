@@ -69,6 +69,7 @@
                 <div class="dice-item <%= 'selected' if @user.site_icon == 'defaults' %>"
                      data-action="click->dice-collection#select"
                      data-dice-collection-key-param="defaults"
+                     data-image-url="<%= image_path('all_dice/logo_defaults.webp') %>"
                      title="<%= t('.dice_default') %>">
                   <%= image_tag 'all_dice/logo_defaults.webp', width: 60, height: 60,
                                 class: 'rounded border', alt: t('.dice_default') %>
@@ -77,6 +78,7 @@
                 <div class="dice-item <%= 'selected' if @user.site_icon == 'none' %>"
                      data-action="click->dice-collection#select"
                      data-dice-collection-key-param="none"
+                     data-image-url=""
                      title="<%= t('.dice_hidden') %>">
                   <div class="rounded border d-flex align-items-center justify-content-center bg-light"
                        style="width: 60px; height: 60px;">
@@ -98,6 +100,7 @@
                          <% if unlocked %>
                            data-action="click->dice-collection#select"
                            data-dice-collection-key-param="<%= key %>"
+                           data-image-url="<%= image_path("all_dice/#{key}.webp") %>"
                          <% end %>
                          title="<%= unlocked ? User::DICE_DISPLAY_NAMES[key] : t('.locked_dice') %>">
                       <div class="position-relative d-inline-block">

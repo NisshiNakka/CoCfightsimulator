@@ -6,21 +6,20 @@ export default class extends Controller {
   select(event) {
     const key = event.params.key
     this.inputTarget.value = key
-    this._updatePreview(key)
+    this._updatePreview(event.currentTarget)
     this._updateSelectedStyle(event.currentTarget)
   }
 
-  _updatePreview(key) {
+  _updatePreview(clickedEl) {
+    const key = clickedEl.dataset.diceCollectionKeyParam
     if (key === "none") {
       this.previewTarget.classList.add("d-none")
       this.labelTarget.classList.remove("d-none")
       this.labelTarget.textContent = this.previewTarget.alt
-    } else if (key === "defaults") {
-      this.previewTarget.src = this._assetPath("all_dice/logo_defaults.webp")
-      this.previewTarget.classList.remove("d-none")
-      this.labelTarget.classList.add("d-none")
     } else {
-      this.previewTarget.src = this._assetPath(`all_dice/${key}.webp`)
+      // data-image-url にサーバー側で生成したダイジェスト付きURLを保持
+      const imageUrl = clickedEl.dataset.imageUrl
+      if (imageUrl) this.previewTarget.src = imageUrl
       this.previewTarget.classList.remove("d-none")
       this.labelTarget.classList.add("d-none")
     }
@@ -31,11 +30,5 @@ export default class extends Controller {
       el.classList.remove("selected")
     })
     clickedEl.closest(".dice-item").classList.add("selected")
-  }
-
-  _assetPath(path) {
-    const meta = document.querySelector('meta[name="asset-path"]')
-    const base = meta ? meta.content : "/assets"
-    return `${base}/${path}`
   }
 }
