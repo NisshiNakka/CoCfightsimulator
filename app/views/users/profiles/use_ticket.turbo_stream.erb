@@ -16,12 +16,26 @@
   <% end %>
 <% end %>
 
-<%# 2. 入手ダイスのモーダル通知を挿入 %>
+<%# 2. 特典券モーダル本文を更新（枚数・未収集数・ボタンの有無を反映） %>
+<%= turbo_stream.replace "reward_ticket_modal_body" do %>
+  <div class="modal-body" id="reward_ticket_modal_body">
+    <p><%= t('users.profiles.use_ticket.ticket_count', count: current_user.reward_tickets) %></p>
+    <p><%= t('users.profiles.use_ticket.remaining_dice', count: User::COLLECTABLE_DICE_KEYS.size - current_user.dice_unlocks.count) %></p>
+    <% if current_user.reward_tickets == 0 %>
+      <p class="text-muted small"><%= t('users.profiles.use_ticket.no_tickets') %></p>
+    <% elsif current_user.all_dice_collected? %>
+      <p class="text-success fw-bold"><%= t('users.profiles.use_ticket.all_collected_notice') %></p>
+    <% end %>
+  </div>
+<% end %>
+
+<%# 3. 入手ダイスのモーダル通知を挿入 %>
 <%= turbo_stream.replace "dice-acquired-modal-container" do %>
   <div id="dice-acquired-modal-container"
        data-controller="completion-popup"
        data-completion-popup-show-value="true">
-    <div class="modal fade" id="diceAcquiredModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="diceAcquiredModal" tabindex="-1" aria-hidden="true"
+         data-controller="reward-ticket">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header border-0 pb-0">
@@ -45,7 +59,7 @@
   </div>
 <% end %>
 
-<%# 3. プロフィール画面のダイスグリッドを更新（プロフィールページ以外では無視される） %>
+<%# 4. プロフィール画面のダイスグリッドを更新（プロフィールページ以外では無視される） %>
 <%= turbo_stream.replace "dice_collection_grid" do %>
   <%= turbo_frame_tag "dice_collection_grid" do %>
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -65,7 +79,7 @@
     </div>
 
     <%= form_with model: current_user, url: profile_path, method: :patch,
-                  data: { controller: "dice-collection" } do |f| %>
+                  data: { controller: "dice-collection", turbo_frame: "_top" } do |f| %>
 
       <div class="text-center mb-4">
         <% if current_user.site_icon == "none" %>
@@ -91,14 +105,16 @@
         <div class="d-flex gap-2">
           <div class="dice-item <%= 'selected' if current_user.site_icon == 'defaults' %>"
                data-action="click->dice-collection#select"
-               data-dice-collection-key-param="defaults">
+               data-dice-collection-key-param="defaults"
+               data-image-url="<%= image_path('all_dice/logo_defaults.webp') %>">
             <%= image_tag 'all_dice/logo_defaults.webp', width: 60, height: 60,
                           class: 'rounded border', alt: t('users.profiles.show.dice_default') %>
             <p class="small text-center mt-1 mb-0" style="font-size: 10px;"><%= t('users.profiles.show.dice_default_short') %></p>
           </div>
           <div class="dice-item <%= 'selected' if current_user.site_icon == 'none' %>"
                data-action="click->dice-collection#select"
-               data-dice-collection-key-param="none">
+               data-dice-collection-key-param="none"
+               data-image-url="">
             <div class="rounded border d-flex align-items-center justify-content-center bg-light"
                  style="width: 60px; height: 60px;">
               <span class="text-muted" style="font-size: 20px;">×</span>
@@ -118,6 +134,7 @@
                    <% if unlocked %>
                      data-action="click->dice-collection#select"
                      data-dice-collection-key-param="<%= key %>"
+                     data-image-url="<%= image_path("all_dice/#{key}.webp") %>"
                    <% end %>
                    title="<%= unlocked ? User::DICE_DISPLAY_NAMES[key] : t('users.profiles.show.locked_dice') %>">
                 <div class="position-relative d-inline-block">
@@ -142,7 +159,7 @@
   <% end %>
 <% end %>
 
-<%# 4. コンプリート時のポップアップ %>
+<%# 5. コンプリート時のポップアップ %>
 <% if @all_collected %>
   <%= turbo_stream.replace "completion-popup-container" do %>
     <div id="completion-popup-container"

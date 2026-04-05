@@ -1,5 +1,6 @@
 <%# 特典券通知（チュートリアル中でなく、チケットが付与されたとき） %>
 <% if flash[:reward_ticket_granted].present? %>
+  <%# トースト通知 %>
   <%= turbo_stream.replace "reward-ticket-toast-container" do %>
     <div id="reward-ticket-toast-container">
       <div class="toast align-items-center text-bg-warning border-0"
@@ -14,6 +15,37 @@
           <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
       </div>
+    </div>
+  <% end %>
+
+  <%# ヘッダーの特典券バッジを更新 %>
+  <%= turbo_stream.replace "reward_ticket_badge" do %>
+    <%= turbo_frame_tag "reward_ticket_badge" do %>
+      <button class="btn btn-link position-relative p-1 me-1 text-decoration-none border-0"
+              data-bs-toggle="modal"
+              data-bs-target="#rewardTicketModal"
+              aria-label="<%= t('header.reward_ticket') %>">
+        🎫
+        <% if current_user.reward_tickets > 0 %>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
+                style="font-size: 0.65rem;">
+            <%= current_user.reward_tickets %>
+          </span>
+        <% end %>
+      </button>
+    <% end %>
+  <% end %>
+
+  <%# 特典券モーダル本文を更新 %>
+  <%= turbo_stream.replace "reward_ticket_modal_body" do %>
+    <div class="modal-body" id="reward_ticket_modal_body">
+      <p><%= t('users.profiles.use_ticket.ticket_count', count: current_user.reward_tickets) %></p>
+      <p><%= t('users.profiles.use_ticket.remaining_dice', count: User::COLLECTABLE_DICE_KEYS.size - current_user.dice_unlocks.count) %></p>
+      <% if current_user.reward_tickets == 0 %>
+        <p class="text-muted small"><%= t('users.profiles.use_ticket.no_tickets') %></p>
+      <% elsif current_user.all_dice_collected? %>
+        <p class="text-success fw-bold"><%= t('users.profiles.use_ticket.all_collected_notice') %></p>
+      <% end %>
     </div>
   <% end %>
 <% end %>
