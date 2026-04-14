@@ -49,7 +49,7 @@ gem "bootstrap5-kaminari-views"
 gem "enum_help"
 
 # ダイスエンジン
-gem "bcdice", "3.14.0", require: false
+gem "bcdice", "3.16.1", require: false
 
 # AWS/S3を使用するためのgem
 gem "aws-sdk-s3"
