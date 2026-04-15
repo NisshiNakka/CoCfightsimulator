@@ -31,6 +31,16 @@
     <% if user_signed_in? && current_user.collection_tutorial_active? %>
       <meta name="collection-tutorial-step" content="<%= current_user.collection_tutorial_step %>">
     <% end %>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JSL1E6TT3F"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-JSL1E6TT3F');
+    </script>
   </head>
 
   <body data-controller="tutorial loading collection-tutorial"
