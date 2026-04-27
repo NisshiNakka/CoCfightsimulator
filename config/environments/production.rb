@@ -3,9 +3,6 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.hosts << "cocfightsimulator.com"      # 独自ドメイン
-  config.hosts << "www.cocfightsimulator.com"  # サブドメイン
-
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
@@ -40,7 +37,7 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :amazon
+  config.active_storage.service = :local
 
   # Mount Action Cable outside main process or domain.
   # config.action_cable.mount_path = nil
@@ -53,9 +50,6 @@ Rails.application.configure do
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
-
-  # Skip http-to-https redirect for the default health check endpoint.
-  # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new(STDOUT)
@@ -77,8 +71,6 @@ Rails.application.configure do
   # config.active_job.queue_adapter = :resque
   # config.active_job.queue_name_prefix = "myapp_production"
 
-  # Disable caching for Action Mailer templates even if Action Controller
-  # caching is enabled.
   config.action_mailer.perform_caching = false
 
   # Ignore bad email addresses and do not raise email delivery errors.
@@ -95,9 +87,6 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  # Only use :id for inspections in production.
-  # config.active_record.attributes_for_inspect = [ :id ]
-
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
   #   "example.com",     # Allow requests from example.com
@@ -105,26 +94,4 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
-
-  # 本番環境でのメール送信の設定
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.perform_deliveries = true
-  config.action_mailer.raise_delivery_errors = true
-
-  # devise/メール送信用設定
-  config.action_mailer.default_url_options = {
-    host: ENV["APP_HOST"] || "cocfightsimulator.onrender.com",
-    protocol: "https"
-  }
-
-  # SMTP設定（メール送信に必要）
-  config.action_mailer.smtp_settings = {
-    address: ENV["SMTP_ADDRESS"],          # 例: 'smtp.gmail.com'
-    port: ENV["SMTP_PORT"] || 2525,         # render仕様回避設定
-    domain: ENV["SMTP_DOMAIN"],            # 例: 'your-app-name.onrender.com'
-    user_name: ENV["SMTP_USER_NAME"],      # SMTPのユーザー名
-    password: ENV["SMTP_PASSWORD"],        # SMTPのパスワード
-    authentication: "plain",
-    enable_starttls_auto: true
-  }
 end

@@ -1,7 +1,7 @@
 require "bcdice"
 
 class ApplicationController < ActionController::Base
-  before_action :authenticate_user!, except: [ :top, :how_to_use, :terms, :privacy ]
+  before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   add_flash_types :success, :danger

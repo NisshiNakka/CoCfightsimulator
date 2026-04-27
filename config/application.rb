@@ -9,11 +9,12 @@ Bundler.require(*Rails.groups)
 module Myapp
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
+    config.load_defaults 7.1
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w[assets tasks])
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -22,14 +23,13 @@ module Myapp
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    config.generators.system_tests = nil
-    config.generators do |g|
-      g.skip_routes true
-      g.helper false
-      g.test_framework nil
-    end
 
-    config.i18n.available_locales = [ :en, :ja, :en_us, :ja_jp, :ko_kr, :zh_hans, :zh_hant ]
-    config.i18n.default_locale = :ja_jp
+    # Don't generate system test files.
+    config.generators.system_tests = nil
+
+    # autoload_paths に追加したディレクトリを load_path に追加しなくなる
+    config.add_autoload_paths_to_load_path = false
+
+    config.active_support.cache_format_version = 7.1
   end
 end
