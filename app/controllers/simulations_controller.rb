@@ -58,4 +58,11 @@ class SimulationsController < ApplicationController
       format.turbo_stream
     end
   end
+
+  private
+
+  def render_error(message)
+    flash.now[:danger] = message
+    redirect_back fallback_location: new_simulations_path, alert: message
+  end
 end

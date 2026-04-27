@@ -51,11 +51,12 @@ RSpec.describe "Simulations", type: :request do
   describe "POST /combat_roll（チュートリアル進行）" do
     # advance_tutorial! はセッション読み取りより先に実行されるため、
     # セッション設定・BattleCoordinator スタブは不要
+    let(:user) { create(:user, tutorial_step: 5) }
     before { sign_in user }
+    let!(:ally) { create(:character, user: user) }
+    let!(:enemy) { create(:character, user: user) }
 
     context 'tutorial_step が 5 のとき' do
-      let(:user) { create(:user, tutorial_step: 5) }
-
       it 'combat_roll 実行で tutorial_step が 6 に進むこと' do
         expect {
           post combat_roll_path, as: :turbo_stream

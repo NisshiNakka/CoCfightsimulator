@@ -10,7 +10,7 @@ class Attack < ApplicationRecord
   }
   validates :attack_range, presence: true
 
-  enum attack_range: { proximity: 1, ranged: 2 }
+  enum :attack_range, { proximity: 1, ranged: 2 }
 
   belongs_to :character
 
