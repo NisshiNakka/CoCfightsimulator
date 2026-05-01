@@ -18,10 +18,19 @@ export default class extends Controller {
 
   // ===== 起動制御 =====
 
-  tryStart() {
+  async tryStart() {
     const meta = document.querySelector('meta[name="collection-tutorial-step"]')
     if (!meta) return
     const step = parseInt(meta.content, 10)
+
+    // ヘッダーのプロフィールリンク経由で /profile に到達した場合、
+    // フェーズ1完了として扱いフェーズ2を起動する
+    if (step === 1 && window.location.pathname === "/profile") {
+      await this.advanceCollectionTutorial()
+      this.startTour(2)
+      return
+    }
+
     if (!this.shouldShowTour(step)) return
     this.startTour(step)
   }
@@ -89,7 +98,7 @@ export default class extends Controller {
           }
         }
       },
-      // ステップ2: 「特典券を使用する」ボタンをクリックするよう誘導
+      // ステップ2: 「特典券を使用する」ボタンをクリックするよう誘導 (ダイス入手モーダルが閉じられるまで表示し続ける)
       {
         id: "ticket-use",
         title: s.step1?.ticket_use_title,
@@ -99,37 +108,30 @@ export default class extends Controller {
         when: {
           show: () => {
             this.lowerOverlayZIndex()
-            this.diceModalShownHandler = (e) => {
-              if (e.target.id === "diceAcquiredModal") {
-                this.tour.next()
+
+            // 「特典券を使用する」押下 → rewardTicketModal が閉じ始めた瞬間にステップ2を非表示にする
+            // (attachTo 対象消失によるポップオーバーの宙浮きを防ぐ)
+            this.rewardModalHideHandler = (e) => {
+              if (e.target.id === "rewardTicketModal") {
+                const currentStep = this.tour.getCurrentStep()
+                if (currentStep && currentStep.el) {
+                  currentStep.el.style.setProperty("visibility", "hidden", "important")
+                }
               }
             }
-            document.addEventListener("shown.bs.modal", this.diceModalShownHandler)
-          },
-          hide: () => {
-            document.removeEventListener("shown.bs.modal", this.diceModalShownHandler)
-            this.restoreOverlayZIndex()
-          }
-        }
-      },
-      // ステップ3: 入手ダイスモーダルの「閉じる」ボタンをクリックするよう誘導
-      {
-        id: "dice-result",
-        title: s.step1?.dice_result_title,
-        text: s.step1?.dice_result_text,
-        attachTo: { element: "#diceAcquiredModal .modal-footer .btn-primary", on: "top" },
-        buttons: [],
-        when: {
-          show: () => {
-            this.lowerOverlayZIndex()
+            document.addEventListener("hide.bs.modal", this.rewardModalHideHandler)
+
+            // ダイス入手モーダルが閉じられたらステップ4へ遷移
             this.diceModalHiddenHandler = (e) => {
               if (e.target.id === "diceAcquiredModal") {
+                this.restoreOverlayZIndex()
                 this.tour.next()
               }
             }
             document.addEventListener("hidden.bs.modal", this.diceModalHiddenHandler)
           },
           hide: () => {
+            document.removeEventListener("hide.bs.modal", this.rewardModalHideHandler)
             document.removeEventListener("hidden.bs.modal", this.diceModalHiddenHandler)
             this.restoreOverlayZIndex()
           }
@@ -265,8 +267,8 @@ export default class extends Controller {
     if (this.modalShownHandler) {
       document.removeEventListener("shown.bs.modal", this.modalShownHandler)
     }
-    if (this.diceModalShownHandler) {
-      document.removeEventListener("shown.bs.modal", this.diceModalShownHandler)
+    if (this.rewardModalHideHandler) {
+      document.removeEventListener("hide.bs.modal", this.rewardModalHideHandler)
     }
     if (this.diceModalHiddenHandler) {
       document.removeEventListener("hidden.bs.modal", this.diceModalHiddenHandler)
